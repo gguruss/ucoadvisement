@@ -1,0 +1,69 @@
+<ui:composition template="/template/masterpagestudent.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+    <ui:define name="title">
+        Student Profile
+    </ui:define>
+    <ui:define name="fourthitem">
+        <div class="active item">
+            <i class="purple large home icon"></i> <h:link value="Home" outcome="/student/profile"  /> 
+        </div>  
+    </ui:define>
+    <ui:define name="secondcolumn">
+        <div class="ui sixteen column grid">
+            <div class="six wide column">
+                <div class="ui card">
+                    <div class="image">
+                         <h:graphicImage value="/resources/images/guru.jpg"/>
+                    </div>
+                    <div class="content">
+                        <div class="header">Guru Singh</div>
+                        <div class="meta">
+                            <a>Graduate Program</a>
+                        </div>
+                        <div class="description">
+                            Masters in Applied Mathematics and Computer Science
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="ten wide column">
+                <h3 class="ui dividing center aligned header">
+                    <i class="book icon"></i>
+                    Courses Taken
+                </h3>
+                <table class="ui small olive table">
+                    <thead>
+                        <tr>
+                            <th>Courses</th>
+                            <th>Course Name</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>CMSC5043</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>CMSC5063</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>CMSC5283</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>CMSC5023</td>
+                            <td></td>
+                        </tr>
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </ui:define>
+</ui:composition>
+

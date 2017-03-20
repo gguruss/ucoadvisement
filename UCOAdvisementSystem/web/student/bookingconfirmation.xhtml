@@ -1,0 +1,97 @@
+<ui:composition template="/template/masterpagestudent.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+    <ui:define name="title">
+        Booking Confirmation
+    </ui:define>
+    <ui:define name="secondcolumn">
+        <form class="ui form">
+            <div class="inline fields">
+                <div class="three wide field">
+                    <label>Selected Date</label>
+                </div>
+                <div class="three wide field">
+                    <div class="ui icon input">
+                        <input type="text" name="first-name" placeholder="Selected Date"/>
+                        <i class="calendar icon"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="inline fields">
+                <div class="three wide field">
+                    <label>Selected Time Solt</label>
+                </div>
+                <div class="three wide field">
+                    <div class="ui icon input">
+                        <input type="text" name="first-name" placeholder="Selected Time Slot"/>
+                        <i class="clock icon"></i>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+        <div class="ui visible info message">
+            <div class="content">Please select the courses that you have are taking this semester.</div>
+        </div>
+        <table class="ui small olive table">
+            <thead>
+                <tr>
+                    <th>Courses</th>
+                    <th>Course Name</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>CMSC5043</td>
+                    <td></td>
+                    <td>
+                        <div class="ui checkbox">
+                            <input type="checkbox" name="example"/>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>CMSC5063</td>
+                    <td></td>
+                    <td>
+                        <div class="ui checkbox">
+                            <input type="checkbox" name="example"/>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>CMSC5283</td>
+                    <td></td>
+                    <td>
+                        <div class="ui checkbox">
+                            <input type="checkbox" name="example"/>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>CMSC5023</td>
+                    <td></td>
+                    <td>
+                        <div class="ui checkbox">
+                            <input type="checkbox" name="example"/>
+                        </div>
+                    </td>
+                </tr>
+
+            </tbody>
+        </table>
+        <button class="ui blue button">Confirm Booking</button>
+    </ui:define>
+    <ui:define name="footerscripts">
+        <script type="text/javascript">
+            $('.ui.checkbox')
+                    .checkbox()
+                    ;
+        </script>
+    </ui:define>
+</ui:composition>
+

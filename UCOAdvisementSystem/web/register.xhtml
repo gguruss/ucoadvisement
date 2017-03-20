@@ -1,0 +1,68 @@
+<ui:composition template="/template/masterpages.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+    <ui:define name="title">
+        Register
+    </ui:define>
+
+    <ui:define name="banner">
+        <i class="circular inverted teal big add user icon"></i>
+        Register
+    </ui:define>
+    <ui:define name="main">
+        <div class="ui container">
+            <div class="center aligned grid">
+                <h:form class="ui form">
+                    <h4 class="ui dividing header">Student Registration Form</h4>
+                    <div class="three fields">
+                        <div class="six wide field">
+                            <label>First Name</label>
+                            <h:inputText id="firstname" value="#{registrationBean.newUser.firstname}" />
+                        </div>
+
+                        <div class="four wide field">
+                            <label>Middle Initial</label>
+                            <h:inputText value="#{registrationBean.newUser.middleinitial}"/>
+                        </div>
+                        <div class="six wide field">
+                            <label>Last Name</label>
+                            <h:inputText value="#{registrationBean.newUser.lastname}" id="lastname"/>
+                        </div>
+                    </div>
+                    <h:message for="firstname" class="ui visible error message"/>
+                    <h:message for="lastname" class="ui visible error message"/>
+                    <div class="field">
+                        <label>UCO Email</label>
+                        <h:inputText value="#{registrationBean.newUser.ucoemail}"/>
+                    </div>
+                    <div class="field">
+                        <label>Password</label>
+                        <h:inputSecret value="#{registrationBean.newUser.password}"/>
+                    </div>
+                    <div class="field">
+                        <label>Student Id</label>
+                        <h:inputText value="#{registrationBean.newUser.studentid}"/>
+                    </div>
+                    <div class="field">
+                        <label>Major</label>
+                        <h:selectOneMenu value="#{registrationBean.newUser.majorid}">
+                            <f:selectItems value="#{registrationBean.majorList}" />
+                        </h:selectOneMenu>
+                    </div>
+                    <div class="field">
+                        <label>Phone Number</label>
+                        <h:inputText value="#{registrationBean.newUser.phone}" />
+                    </div>
+
+                    <h:commandButton value="Sign Up" class="ui very fluid teal button" action="#{registrationBean.doSave()}"/>
+                </h:form>
+            </div>
+
+        </div>
+    </ui:define>
+    <ui:define name="footer"></ui:define>
+</ui:composition>
+

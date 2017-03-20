@@ -1,0 +1,401 @@
+<ui:composition template="/template/masterpageadmin.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+    <ui:define name="title">
+        Publish Advisement Dates
+    </ui:define>
+    <ui:define name="firstitem">
+        <div class="active item">
+            <i class="large calendar icon"></i>  <h:link value="Advisement Dates" outcome="/advisor/publishdates"  />
+        </div>  
+    </ui:define>
+    <ui:define name="secondcolumn">
+        <h3 class="ui dividing center aligned header">
+            <i class="calendar icon"></i>
+            Advisement Dates
+        </h3>
+        <div class="ui top attached tabular menu">
+            <a class="active item" data-tab="first">Working Hours</a>
+            <a class="item" data-tab="second">Breaks</a>
+            <a class="item" data-tab="third">Time Off</a>
+        </div>
+        <div class="ui bottom attached active tab segment" data-tab="first">
+            <div class="ui form" id="workdaysform">
+                <div class="ui visible info message">
+                    <div class="content">This field is for specifying the work hours in a day. To add breaks in between the work timing, please click the breaks tab.</div>
+                </div>
+                <div class="inline fields">
+                    <div class="two wide field">
+                        <a class="ui basic large label">Monday</a>
+                    </div>
+                    <div class="one wide field">
+                        <div class="ui toggle checkbox">
+                            <input type="checkbox" tabindex="0" class="hidden"/>
+                        </div>
+                    </div>
+                    <div class="four wide field">
+                        <div class="ui selection dropdown">
+                            <input type="hidden" name="fromTime"/>
+                            <i class="dropdown icon"></i>
+                            <div class="default text">Time From</div>
+                            <div class="menu">
+                                <div class="item" data-value="1">9:00AM</div>
+                                <div class="item" data-value="0">9:30AM</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="one wide field">
+                        <label>to</label>
+                    </div>
+                    <div class="four wide field">
+                        <div class="ui selection dropdown">
+                            <input type="hidden" name="toTime"/>
+                            <i class="dropdown icon"></i>
+                            <div class="default text">Time To</div>
+                            <div class="menu">
+                                <div class="item" data-value="1">9:00AM</div>
+                                <div class="item" data-value="0">9:30AM</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="inline fields">
+                    <div class="two wide field">
+                        <a class="ui basic large label">Tuesday</a>
+                    </div>
+                    <div class="one wide field">
+                        <div class="ui toggle checkbox">
+                            <input type="checkbox" tabindex="0" class="hidden"/>
+                        </div>
+                    </div>
+                    <div class="four wide field">
+                        <div class="ui selection dropdown">
+                            <input type="hidden" name="fromTime"/>
+                            <i class="dropdown icon"></i>
+                            <div class="default text">Time From</div>
+                            <div class="menu">
+                                <div class="item" data-value="1">9:00AM</div>
+                                <div class="item" data-value="0">9:30AM</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="one wide field">
+                        <label>to</label>
+                    </div>
+                    <div class="four wide field">
+                        <div class="ui selection dropdown">
+                            <input type="hidden" name="toTime"/>
+                            <i class="dropdown icon"></i>
+                            <div class="default text">Time To</div>
+                            <div class="menu">
+                                <div class="item" data-value="1">9:00AM</div>
+                                <div class="item" data-value="0">9:30AM</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="inline fields">
+                    <div class="two wide field">
+                        <a class="ui basic large label">Wednesday</a>
+                    </div>
+                    <div class="one wide field">
+                        <div class="ui toggle checkbox">
+                            <input type="checkbox" tabindex="0" class="hidden"/>
+                        </div>
+                    </div>
+                    <div class="four wide field">
+                        <div class="ui selection dropdown">
+                            <input type="hidden" name="fromTime"/>
+                            <i class="dropdown icon"></i>
+                            <div class="default text">Time From</div>
+                            <div class="menu">
+                                <div class="item" data-value="1">9:00AM</div>
+                                <div class="item" data-value="0">9:30AM</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="one wide field">
+                        <label>to</label>
+                    </div>
+                    <div class="four wide field">
+                        <div class="ui selection dropdown">
+                            <input type="hidden" name="toTime"/>
+                            <i class="dropdown icon"></i>
+                            <div class="default text">Time To</div>
+                            <div class="menu">
+                                <div class="item" data-value="1">9:00AM</div>
+                                <div class="item" data-value="0">9:30AM</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="inline fields">
+                    <div class="two wide field">
+                        <a class="ui basic large label">Thursday</a>
+                    </div>
+                    <div class="one wide field">
+                        <div class="ui toggle checkbox">
+                            <input type="checkbox" tabindex="0" class="hidden"/>
+                        </div>
+                    </div>
+                    <div class="four wide field">
+                        <div class="ui selection dropdown">
+                            <input type="hidden" name="fromTime"/>
+                            <i class="dropdown icon"></i>
+                            <div class="default text">Time From</div>
+                            <div class="menu">
+                                <div class="item" data-value="1">9:00AM</div>
+                                <div class="item" data-value="0">9:30AM</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="one wide field">
+                        <label>to</label>
+                    </div>
+                    <div class="four wide field">
+                        <div class="ui selection dropdown">
+                            <input type="hidden" name="toTime"/>
+                            <i class="dropdown icon"></i>
+                            <div class="default text">Time To</div>
+                            <div class="menu">
+                                <div class="item" data-value="1">9:00AM</div>
+                                <div class="item" data-value="0">9:30AM</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="inline fields">
+                    <div class="two wide field">
+                        <a class="ui basic large label">Friday</a>
+                    </div>
+                    <div class="one wide field">
+                        <div class="ui toggle checkbox">
+                            <input type="checkbox" tabindex="0" class="hidden"/>
+                        </div>
+                    </div>
+                    <div class="four wide field">
+                        <div class="ui selection dropdown">
+                            <input type="hidden" name="fromTime"/>
+                            <i class="dropdown icon"></i>
+                            <div class="default text">Time From</div>
+                            <div class="menu">
+                                <div class="item" data-value="1">9:00AM</div>
+                                <div class="item" data-value="0">9:30AM</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="one wide field">
+                        <label>to</label>
+                    </div>
+                    <div class="four wide field">
+                        <div class="ui selection dropdown">
+                            <input type="hidden" name="toTime"/>
+                            <i class="dropdown icon"></i>
+                            <div class="default text">Time To</div>
+                            <div class="menu">
+                                <div class="item" data-value="1">9:00AM</div>
+                                <div class="item" data-value="0">9:30AM</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="inline fields">
+                    <div class="two wide field">
+                        <a class="ui basic large label">Saturday</a>
+                    </div>
+                    <div class="one wide field">
+                        <div class="ui toggle checkbox">
+                            <input type="checkbox" tabindex="0" class="hidden"/>
+                        </div>
+                    </div>
+                    <div class="four wide field">
+                        <div class="ui selection dropdown">
+                            <input type="hidden" name="fromTime"/>
+                            <i class="dropdown icon"></i>
+                            <div class="default text">Time From</div>
+                            <div class="menu">
+                                <div class="item" data-value="1">9:00AM</div>
+                                <div class="item" data-value="0">9:30AM</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="one wide field">
+                        <label>to</label>
+                    </div>
+                    <div class="four wide field">
+                        <div class="ui selection dropdown">
+                            <input type="hidden" name="toTime"/>
+                            <i class="dropdown icon"></i>
+                            <div class="default text">Time To</div>
+                            <div class="menu">
+                                <div class="item" data-value="1">9:00AM</div>
+                                <div class="item" data-value="0">9:30AM</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="inline fields">
+                    <div class="two wide field">
+                        <a class="ui basic large label">Sunday</a>
+                    </div>
+                    <div class="one wide field">
+                        <div class="ui toggle checkbox">
+                            <input type="checkbox" tabindex="0" class="hidden"/>
+                        </div>
+                    </div>
+                    <div class="four wide field">
+                        <div class="ui selection dropdown">
+                            <input type="hidden" name="fromTime"/>
+                            <i class="dropdown icon"></i>
+                            <div class="default text">Time From</div>
+                            <div class="menu">
+                                <div class="item" data-value="1">9:00AM</div>
+                                <div class="item" data-value="0">9:30AM</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="one wide field">
+                        <label>to</label>
+                    </div>
+                    <div class="four wide field">
+                        <div class="ui selection dropdown">
+                            <input type="hidden" name="toTime"/>
+                            <i class="dropdown icon"></i>
+                            <div class="default text">Time To</div>
+                            <div class="menu">
+                                <div class="item" data-value="1">9:00AM</div>
+                                <div class="item" data-value="0">9:30AM</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="inline fields">
+                    <div class="four wide field">
+                        <label>Expected Duration of Advisement</label>
+                    </div>
+                    <div class="three wide field">
+                        <div class="ui icon input">
+                            <input type="text" name="service time" placeholder="Duration in mins"/>
+                            <i class="clock icon"></i>
+                        </div>
+                    </div>
+                </div>
+                <button class="ui blue button" type="submit">Save</button>
+            </div>
+        </div>
+        <div class="ui bottom attached tab segment" data-tab="second">
+            <div class="ui form" id="breaks">
+                <div class="ui visible info message">
+                    <div class="content">This field is for adding breaks in a  particular day.</div>
+                </div>
+                <div class="inline fields">
+                    <div class="two wide field">
+                        <a class="ui basic large label">Monday</a>
+                    </div>
+                    <div class="two wide field">
+                        <button class="circular ui green icon button">
+                            Add Break
+                        </button>
+                    </div>
+
+                </div>
+                <div class="inline fields">
+                    <div class="two wide field">
+                        <a class="ui basic large label">Tuesday</a>
+                    </div>
+                    <div class="two wide field">
+                        <button class="circular ui green icon button">
+                            Add Break
+                        </button>
+                    </div>
+                </div>
+                <div class="inline fields">
+                    <div class="two wide field">
+                        <a class="ui basic large label">Wednesday</a>
+                    </div>
+                    <div class="two wide field">
+                        <button class="circular ui green icon button">
+                            Add Break
+                        </button>
+                    </div>
+                </div>
+                <div class="inline fields">
+                    <div class="two wide field">
+                        <a class="ui basic large label">Thursday</a>
+                    </div>
+                    <div class="two wide field">
+                        <button class="circular ui green icon button">
+                            Add Break
+                        </button>
+                    </div>
+                </div>
+                <div class="inline fields">
+                    <div class="two wide field">
+                        <a class="ui basic large label">Friday</a>
+                    </div>
+                    <div class="two wide field">
+                        <button class="circular ui green icon button">
+                            Add Break
+                        </button>
+                    </div>
+                </div>
+                <div class="inline fields">
+                    <div class="two wide field">
+                        <a class="ui basic large label">Saturday</a>
+                    </div>
+                    <div class="two wide field">
+                        <button class="circular ui green icon button">
+                            Add Break
+                        </button>
+                    </div>
+                </div>
+                <div class="inline fields">
+                    <div class="two wide field">
+                        <a class="ui basic large label">Sunday</a>
+                    </div>
+                    <div class="two wide field">
+                        <button class="circular ui green icon button">
+                            Add Break
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="ui bottom attached tab segment" data-tab="third">
+            <div class="ui form" id="timeoff">
+                <div class="ui visible info message">
+                    <div class="content">This field is for adding time off for a particular date.</div>
+                </div>
+                <div class="inline fields">
+                    <div class="two wide field">
+                        Enter Date
+                    </div>
+                    <div class="two wide field">
+                        <div class="ui icon input">
+                            <input type="text" name="first-name" placeholder="Select a Date"/>
+                            <i class="calendar icon"></i>
+                        </div>
+                    </div>
+                </div>
+                <button class="ui blue button" type="submit">Add Time Off</button>
+            </div>
+        </div>
+    </ui:define>
+
+    <ui:define name="footerscripts">
+        <script type="text/javascript">
+            $('.menu .item')
+                    .tab()
+                    ;
+            $('.ui.checkbox')
+                    .checkbox()
+                    ;
+        </script>
+    </ui:define>
+
+</ui:composition>
+
+

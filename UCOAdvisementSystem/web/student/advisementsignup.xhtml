@@ -1,0 +1,103 @@
+<ui:composition template="/template/masterpagestudent.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+    <ui:define name="title">
+        Advisement Sign Up
+    </ui:define>
+    <ui:define name="dependencies">
+        <h:outputStylesheet name="fullcalendar.css" library="css"/>
+        <h:outputScript name="moment.min.js" library="js"/>
+        <h:outputScript name="fullcalendar.js" library="js"/>
+    </ui:define>
+    <ui:define name="jsscripts">
+        <script type="text/javascript">
+            $(document).ready(function () {
+                // page is now ready, initialize the calendar...
+                $('#calendar').fullCalendar({
+                    height: 450,
+                    weekends: false // put your options and callbacks here
+                });
+            });
+        </script>
+    </ui:define>
+    <ui:define name="seconditem">
+        <div class="active item">
+            <h:link value="Advisement SignUp" outcome="/student/advisementsignup"  /> <i class="large icons"><i class="yellow lightbulb icon"></i><i class="corner green add icon"></i></i>
+        </div>
+    </ui:define>
+    <ui:define name="secondcolumn">
+        <div class="row">
+            <div class="ui visible info message">
+                Click on a calendar day to view appointment time slots available
+            </div>
+
+            <div id="calendar">
+
+            </div>
+        </div>
+        <div class="row">
+            <form class="ui form">
+                <div class="inline fields">
+                    <div class="two wide field">
+                        <label>Selected Date</label>
+                    </div>
+                    <div class="three wide field">
+                        <div class="ui icon input">
+                            <input type="text" name="first-name" placeholder="Selected Date"/>
+                            <i class="calendar icon"></i>
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+            <table class="ui small olive table">
+                <thead>
+                    <tr>
+                        <th>Available Times</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            10:00AM
+                        </td>
+                        <td>                                                 
+                            <button class="ui negative button">Booked</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            10:10AM
+                        </td>
+                        <td>                                                 
+                            <button class="ui positive button">Book</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            10:20AM
+                        </td>
+                        <td>                                                 
+                            <button class="ui positive button">Book</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            10:30AM
+                        </td>
+                        <td>                                                 
+                            <button class="ui positive button">Book</button>
+                        </td>
+                    </tr>
+                </tbody>
+
+            </table>
+        </div>
+    </ui:define>
+
+</ui:composition>
+

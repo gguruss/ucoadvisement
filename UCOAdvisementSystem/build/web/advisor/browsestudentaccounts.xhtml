@@ -1,0 +1,100 @@
+<ui:composition template="/template/masterpageadmin.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+    <ui:define name="title">
+        Browse Student Accounts
+    </ui:define>
+    <ui:define name="thirditem">
+        <div class="active item">
+            <i class="large student icon"></i>  <h:link value="Browse Accounts" outcome="/advisor/browsestudentaccounts" />
+        </div>  
+    </ui:define>
+    <ui:define name="secondcolumn">
+        <h3 class="ui dividing center aligned header">
+            <i class="student icon"></i>
+            Browse Accounts
+        </h3>
+        <table class="ui small olive table">
+            <thead>
+                <tr>
+                    <th>Student Id</th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Major Id</th>
+                    <th>Major</th>
+                    <th>Advisement Status</th> 
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>*20365478</td>
+                    <td>Bruce</td>
+                    <td>Wayne</td>
+                    <td>6660</td>
+                    <td>Applied Mathematics and Computer Science</td>
+                    <td>Not Advised</td>
+                    <td>
+                        <div class="ui buttons">
+                            <button class="ui positive button">Edit</button>
+                            <div class="or"></div>
+                            <button class="ui negative button">Delete</button>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>*20312748</td>
+                    <td>Clark</td>
+                    <td>Kent</td>
+                    <td>6101</td>
+                    <td>Computer Science-Applied</td>
+                    <td>Advised</td>
+                    <td>
+                        <div class="ui buttons">
+                            <button class="ui positive button">Edit</button>
+                            <div class="or"></div>
+                            <button class="ui negative button">Delete</button>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>*20159876</td>
+                    <td>Hal</td>
+                    <td>Jordan</td>
+                    <td>6110</td>
+                    <td>Software Engineering</td>
+                    <td>Advised</td>
+                    <td>
+                        <div class="ui buttons">
+                            <button class="ui positive button">Edit</button>
+                            <div class="or"></div>
+                            <button class="ui negative button">Delete</button>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>*20425689</td>
+                    <td>Barry</td>
+                    <td>Allen</td>
+                    <td>6100</td>
+                    <td>Computer Science</td>
+                    <td>Not Advised</td>
+                    <td>
+                        <div class="ui buttons">
+                            <button class="ui positive button">Edit</button>
+                            <div class="or"></div>
+                            <button class="ui negative button">Delete</button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+
+        </table>
+    </ui:define>
+
+</ui:composition>
+
+

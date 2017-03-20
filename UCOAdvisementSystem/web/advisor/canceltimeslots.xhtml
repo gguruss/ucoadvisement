@@ -1,0 +1,102 @@
+<ui:composition template="/template/masterpageadmin.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+    <ui:define name="title">
+        Cancel Time Slots
+    </ui:define>
+    <ui:define name="seconditem">
+        <div class="active item">
+            <i class="large clock icon"></i>  <h:link value="Cancel Time Slots" outcome="/advisor/canceltimeslots"  />
+        </div>  
+    </ui:define>
+    <ui:define name="secondcolumn">
+        <h3 class="ui dividing center aligned header">
+            <i class="clock icon"></i>
+            Cancel Time Slots
+        </h3>
+        <form class="ui form">
+            <div class="inline fields">
+                <div class="two wide field">
+                    <label>Enter Date</label>
+                </div>
+                <div class="three wide field">
+                    <div class="ui icon input">
+                        <input type="text" name="first-name" placeholder="Select a Date"/>
+                        <i class="calendar icon"></i>
+                    </div>
+                </div>
+            </div>
+            <button class="ui blue button" type="submit">Submit</button>
+        </form>
+        <table class="ui small olive table">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Student Id</th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Major Id</th> 
+                    <th>Major</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>4/2/17</td>
+                    <td>10:00 AM</td>
+                    <td>*20426367</td>
+                    <td>Clark</td>
+                    <td>Kent</td>
+                    <td>6660</td>
+                    <td>Applied Mathematics and Computer Science</td>
+                    <td>                                                 
+                        <button class="ui negative button">Cancel Slot</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>4/2/17</td>
+                    <td>10:15 AM</td>
+                    <td>*20426365</td>
+                    <td>Bruce</td>
+                    <td>Wayne</td>
+                    <td>6101</td>
+                    <td>Computer Science-Applied</td>
+                     <td>                                                 
+                        <button class="ui negative button">Cancel Slot</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>4/2/17</td>
+                    <td>10:30 AM</td>
+                    <td>*20159876</td>
+                    <td>Hal</td>
+                    <td>Jordan</td>
+                    <td>6110</td>
+                    <td>Software Engineering</td>
+                     <td>                                                 
+                        <button class="ui negative button">Cancel Slot</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>4/2/17</td>
+                    <td>10:45 AM</td>
+                    <td>*20425689</td>
+                    <td>Barry</td>
+                    <td>Allen</td>
+                    <td>6100</td>
+                    <td>Computer Science</td>
+                     <td>                                                 
+                        <button class="ui negative button">Cancel Slot</button>
+                    </td>
+                </tr>
+            </tbody>
+
+        </table>
+    </ui:define>
+</ui:composition>
+
+

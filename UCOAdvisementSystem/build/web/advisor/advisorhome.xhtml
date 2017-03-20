@@ -1,0 +1,41 @@
+<ui:composition template="/template/masterpageadmin.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    <ui:define name="dependencies">
+        <h:outputStylesheet name="fullcalendar.css" library="css"/>
+        <h:outputScript name="moment.min.js" library="js"/>
+        <h:outputScript name="fullcalendar.js" library="js"/>
+    </ui:define>
+    <ui:define name="jsscripts">
+        <script type="text/javascript">
+            $(document).ready(function () {
+                // page is now ready, initialize the calendar...
+                $('#calendar').fullCalendar({
+                    height:450,
+                    weekends: false // put your options and callbacks here
+                });
+            });
+        </script>
+    </ui:define>
+    <ui:define name="title">
+        Advisor Home
+    </ui:define>
+    <ui:define name="sixthitem">
+        <div class="active item">
+            <i class="large home icon"></i>  <h:link outcome="/advisor/advisorhome" value="Home" /> 
+        </div>
+    </ui:define>
+    <ui:define name="secondcolumn">
+        <div class="ui visible info message">
+            Click on a calendar day to view scheduled appointments
+        </div>
+        
+        <div id="calendar">
+
+        </div>
+    </ui:define>
+</ui:composition>
+
+

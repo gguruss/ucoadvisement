@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Author: Guru Singh
+Web Server Programming, Spring 17
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      >
+    <h:head>
+        <title><ui:insert name="title">Master Page title</ui:insert></title>
+        <h:outputStylesheet name="semantic.css" library="css"/>
+        <h:outputScript name="jquery-3.1.1.min.js" library="js"/>
+        <h:outputScript name="semantic.js" library="js"/>
+        <ui:insert name="dependencies"></ui:insert>
+        <ui:insert name="jsscripts"></ui:insert>
+    </h:head>
+    <body class="Site">
+        <ui:insert name="topLayer">
+            <div class="ui inverted blue menu">
+                <div class="centered item">
+                    <i class="student large icon"></i>
+                    Student page
+                </div>
+                <div class="ui right dropdown item">
+                    Welcome, #{loginBean.user.firstname}
+                    <h:graphicImage value="/resources/images/guru.jpg"/>
+                    <i class="dropdown icon"></i>
+                    <div class="menu">
+                        <div class="item">Logout</div>
+                    </div>
+                </div>
+            </div>
+        </ui:insert>
+        <div class="Site-content">
+            <ui:insert name="main">
+                <div class="ui internally celled grid " style="padding-top: 10px;">
+                    <div class="three wide column">
+                        <ui:insert name="firstcolumn"> 
+                            <div class="ui vertical pointing menu">
+                                <ui:insert name="firstitem">
+                                    <div class="item">
+                                        <h:link value="List courses" outcome="/student/listcourses"  />  <i class="large icons"><i class="purple book icon"></i><i class="corner green add icon"></i></i>
+                                    </div>  
+                                </ui:insert>
+                                <ui:insert name="seconditem">
+                                    <div class="item">
+                                        <h:link value="Advisement SignUp" outcome="/student/advisementsignup"  /> <i class="large icons"><i class="yellow lightbulb icon"></i><i class="corner green add icon"></i></i>
+                                    </div>  
+                                </ui:insert>
+                                <ui:insert name="thirditem">
+                                    <div class="item">
+                                        <i class="large purple edit icon"></i> <h:link value="Cancel/Edit Appointment " outcome="/student/editappointment" /> 
+                                    </div>  
+                                </ui:insert>
+                                <ui:insert name="fourthitem">
+                                    <div class="item">
+                                        <i class="large purple home icon"></i> <h:link value="Home" outcome="/student/profile" /> 
+                                    </div>  
+                                </ui:insert>
+                            </div>
+                        </ui:insert>
+                    </div>
+
+                    <div class="ten wide column">
+                        <ui:insert name="secondcolumn"></ui:insert>
+                    </div>
+                </div>
+            </ui:insert>
+        </div>
+        <ui:insert name="footerscripts">
+
+        </ui:insert>
+        <script type="text/javascript">
+            $('.ui.dropdown')
+                    .dropdown()
+                    ;
+        </script>
+    </body>
+</html>
