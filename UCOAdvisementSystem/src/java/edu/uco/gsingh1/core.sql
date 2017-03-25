@@ -313,3 +313,31 @@ BEGIN
 END#
 
 DELIMITER ;
+
+--checks if ucoemail exists
+DROP FUNCTION checkIfEmailExists;
+DELIMITER #
+
+CREATE FUNCTION checkIfEmailExists(useremail VARCHAR(255))
+  RETURNS SMALLINT
+BEGIN
+  DECLARE emailCheck SMALLINT;
+  SELECT EXISTS(SELECT 1 FROM usertable WHERE LOWER(username)=LOWER(useremail)) INTO emailcheck;
+  RETURN emailCheck;
+END#
+
+DELIMITER ;
+
+--checks if student id exists 
+DROP FUNCTION checkIfStudentIdExists;
+DELIMITER #
+
+CREATE FUNCTION checkIfStudentIdExists(id VARCHAR(255))
+  RETURNS SMALLINT
+BEGIN
+  DECLARE studentIdCheck SMALLINT;
+  SELECT EXISTS(SELECT 1 FROM usertable WHERE LOWER(studentid)=LOWER(id)) INTO studentIdCheck;
+  RETURN studentIdCheck;
+END#
+
+DELIMITER ;

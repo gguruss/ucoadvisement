@@ -19,6 +19,7 @@ import javax.sql.DataSource;
  * @author guru
  */
 public class UserDAOImpl implements UserDAO {
+    
 
     @Override
     public ArrayList<User> getAllUsers(DataSource ds) throws SQLException {
@@ -154,6 +155,50 @@ public class UserDAOImpl implements UserDAO {
             getVerificationCodeQuery.execute();
             String verificationCode = getVerificationCodeQuery.getString(1);
             return verificationCode;
+
+        } finally {
+            conn.close();
+        }
+    }
+
+    @Override
+    public Integer checkIfEmailExists(String email, DataSource ds) throws SQLException {
+        if (ds == null) {
+            throw new SQLException("Cannot get DataSource");
+        }
+        Connection conn = ds.getConnection();
+        if (conn == null) {
+            throw new SQLException("Cannot get connection");
+        }
+        try {
+            CallableStatement verifyEmail = conn.prepareCall("{ ? = CALL checkIfEmailExists(?)}");
+            verifyEmail.registerOutParameter(1, Types.SMALLINT);
+            verifyEmail.setString(2, email);
+            verifyEmail.execute();
+            Integer exists = verifyEmail.getInt(1);
+            return exists;
+
+        } finally {
+            conn.close();
+        }
+    }
+
+    @Override
+    public Integer checkIfStudentIdExists(String studentId, DataSource ds) throws SQLException {
+        if (ds == null) {
+            throw new SQLException("Cannot get DataSource");
+        }
+        Connection conn = ds.getConnection();
+        if (conn == null) {
+            throw new SQLException("Cannot get connection");
+        }
+        try {
+            CallableStatement verifyStudentId = conn.prepareCall("{ ? = CALL checkIfStudentIdExists(?)}");
+            verifyStudentId.registerOutParameter(1, Types.SMALLINT);
+            verifyStudentId.setString(2, studentId);
+            verifyStudentId.execute();
+            Integer exists = verifyStudentId.getInt(1);
+            return exists;
 
         } finally {
             conn.close();

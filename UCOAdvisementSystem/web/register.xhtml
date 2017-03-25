@@ -9,81 +9,81 @@
     </ui:define>
 
     <ui:define name="banner">
-        <i class="circular inverted teal big unlock icon"></i>
-        Verify
-    </ui:define>
-    <ui:define name="customcss">
-        <style>
-            .errormsg{
-                color:red;
-            }
-        </style>
+        <i class="circular inverted teal big add user icon"></i>
+        Register
     </ui:define>
     <ui:define name="main">
         <div class="ui container">
-            <div class="center aligned grid">
-                <h:form class="ui form" id="registrationform">
-                    <h4 class="ui dividing header">Student Registration Form</h4>
-                    <div class="three fields">
-                        <div class="six wide field">
-                            <label>First Name</label>
-                            <h:inputText id="firstname" value="#{registrationBean.newUser.firstname}" />
+            <div class="ui middle aligned center aligned grid">
+                <div class="column">
+                    <h:form class="ui form" id="registrationform">
+                        <h4 class="ui dividing header">Student Registration Form</h4>
+                        <div class="three fields">
+                            <div class="six wide field">
+                                <label>First Name</label>
+                                <h:inputText id="firstname" value="#{registrationBean.newUser.firstname}" />
+                            </div>
+                            <div class="four wide field">
+                                <label>Middle Initial</label>
+                                <h:inputText value="#{registrationBean.newUser.middleinitial}"/>
+                            </div>
+                            <div class="six wide field">
+                                <label>Last Name</label>
+                                <h:inputText value="#{registrationBean.newUser.lastname}" id="lastname"/>
+                            </div>
                         </div>
-                        <div class="four wide field">
-                            <label>Middle Initial</label>
-                            <h:inputText value="#{registrationBean.newUser.middleinitial}"/>
+                        <div class="three fields">
+                            <div class="six wide field">
+                                <h:message for="firstname" class="errormsg"/>
+                            </div>
+                            <div class="four wide field">
+                            </div>
+                            <div class="six wide field">
+                                <h:message for="lastname" class="errormsg"/>
+                            </div>
                         </div>
-                        <div class="six wide field">
-                            <label>Last Name</label>
-                            <h:inputText value="#{registrationBean.newUser.lastname}" id="lastname"/>
+                        <div class="field">
+                            <label>UCO Email</label>
+                            <h:inputText value="#{registrationBean.newUser.username}" id="username">
+                                <f:validator validatorId="studentEmailValidator" />
+                                <f:ajax event="blur" render="studentEmailmessage" /> 
+                            </h:inputText>
                         </div>
-                    </div>
-                    <div class="three fields">
-                        <div class="six wide field">
-                            <h:message for="firstname" class="errormsg"/>
+                        <div class="field">
+                            <h:message id="studentEmailmessage" for="username" class="errormsg" />
                         </div>
-                        <div class="four wide field">
+                        <div class="field">
+                            <label>Password</label>
+                            <h:inputSecret value="#{registrationBean.newUser.password}" id="password"/>
                         </div>
-                        <div class="six wide field">
-                            <h:message for="lastname" class="errormsg"/>
+                        <div class="field">
+                            <h:message for="password" class="errormsg"/>
                         </div>
-                    </div>
-                    <div class="field">
-                        <label>UCO Email</label>
-                        <h:inputText value="#{registrationBean.newUser.username}" id="username"/>
-                    </div>
-                    <div class="field">
-                        <h:message for="username" class="errormsg"/>
-                    </div>
-                    <div class="field">
-                        <label>Password</label>
-                        <h:inputSecret value="#{registrationBean.newUser.password}" id="password"/>
-                    </div>
-                    <div class="field">
-                        <h:message for="password" class="errormsg"/>
-                    </div>
-                    <div class="field">
-                        <label>Student Id</label>
-                        <h:inputText value="#{registrationBean.newUser.studentid}" id="studentid"/>
-                    </div>
-                    <div class="field">
-                        <h:message for="studentid" class="errormsg"/>
-                    </div>
-                    <div class="field">
-                        <label>Major</label>
-                        <h:selectOneMenu value="#{registrationBean.newUser.majorid}">
-                            <f:selectItems value="#{registrationBean.majorList}" />
-                        </h:selectOneMenu>
-                    </div>
-                    <div class="field">
-                        <label>Phone Number</label>
-                        <h:inputText value="#{registrationBean.newUser.phone}" />
-                    </div>
+                        <div class="field">
+                            <label>Student Id</label>
+                            <h:inputText value="#{registrationBean.newUser.studentid}" id="studentid">
+                                <f:validator validatorId="studentIdValidator" />
+                                <f:ajax event="blur" render="studentIdMessage" /> 
+                            </h:inputText>
+                        </div>
+                        <div class="field">
+                            <h:message id="studentIdMessage" for="studentid" class="errormsg" />
+                        </div>
+                        <div class="field">
+                            <label>Major</label>
+                            <h:selectOneMenu value="#{registrationBean.newUser.majorid}">
+                                <f:selectItems value="#{registrationBean.majorList}" />
+                            </h:selectOneMenu>
+                        </div>
+                        <div class="field">
+                            <label>Phone Number</label>
+                            <h:inputText value="#{registrationBean.newUser.phone}" />
+                        </div>
 
-                    <h:commandButton value="Sign Up" class="ui very fluid teal button" action="#{registrationBean.doSave()}"/>
-                </h:form>
+                        <h:commandButton value="Sign Up" class="ui very fluid teal button" action="#{registrationBean.doSave()}"/>
+                    </h:form>
+                </div>
             </div>
-
         </div>
     </ui:define>
     <ui:define name="footer"></ui:define>

@@ -22,13 +22,13 @@ public class User {
     public String middleinitial;
     @NotEmpty(message = "Enter Lastname")
     public String lastname;
-    @Pattern(regexp = "^[_A-Za-z0-9-\\\\+]+(\\\\.[_A-Za-z0-9-]+)*@uco.edu", message = "Enter UCO Email")
+    //@Pattern(regexp = "^[_A-Za-z0-9-\\\\+]+(\\\\.[_A-Za-z0-9-]+)*@[uco.eduUCO.EDU]", message = "Enter UCO Email") removed to support custom validator for ajax
     public String username;
    
     @Size(max = 20, min = 8, message = "Password should be between 8-10 characters")
     public String password;
     public String usertype;
-    @Pattern(regexp = "\\*\\d{8}", message = "Please enter student id in the format *20000000")
+//    @Pattern(regexp = "\\*\\d{8}", message = " ") removed to support custom validator for ajax
     public String studentid;
     @NotNull(message = "Select major code")
     public int majorid;

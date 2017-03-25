@@ -2,7 +2,8 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:a="http://xmlns.jcp.org/jsf/passthrough">
+      xmlns:a="http://xmlns.jcp.org/jsf/passthrough"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
     <h:head>
         <title>User Login</title>
         <h:outputStylesheet name="semantic.css" library="css"/>
@@ -24,9 +25,12 @@
                         <div class="field">
                             <div class="ui left icon input">
                                 <i class="blue user icon"></i>
-                                <h:inputText id="email" value="#{loginBean.useremail}"/>
+                                <h:inputText id="email" value="#{loginBean.useremail}">
+                                    <f:validator validatorId="userEmailValidator" />
+                                    <f:ajax event="blur" render="userEmailMessage" /> 
+                                </h:inputText>
                             </div>
-                            <h:message for="email" class="ui visible error message"/>
+                            <h:message id="userEmailMessage" for="email" style="color:red;" />
                         </div>
 
                         <div class="field">
@@ -35,7 +39,7 @@
                                 <h:inputSecret id="password" value="#{loginBean.userpassword}"/>
 
                             </div>
-                            <h:message for="password" class="ui visible error message"/>
+                            <h:message for="password" class="errormsg" style="color:red;"/>
                         </div>
 
                         <h:commandButton class="ui fluid large blue submit button" value="Login" action="#{loginBean.doLogin()}"/>

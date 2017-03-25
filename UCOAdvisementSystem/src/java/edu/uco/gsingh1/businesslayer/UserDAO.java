@@ -26,8 +26,12 @@ public interface UserDAO {
     public User getUser(User user, DataSource ds) throws SQLException;
 
     public User verifyUser(String username, String password, DataSource ds) throws SQLException;
-    
+
     public boolean checkIfStudentEmailRegistered(String username, DataSource ds) throws SQLException;
-    
+
     public String getVerificationCode(String email, DataSource ds) throws SQLException;
+
+    public Integer checkIfEmailExists(String email, DataSource ds) throws SQLException;
+
+    public Integer checkIfStudentIdExists(String studentId, DataSource ds) throws SQLException;
 }
