@@ -105,22 +105,24 @@ userid INT NOT NULL AUTO_INCREMENT,
 firstname varchar(255),
 middleinitial char(1),
 lastname varchar(255),
-ucoemail varchar(255), -- tried to add UNIQUE constraint to this which causes error in dropping table major
+username varchar(255), -- tried to add UNIQUE constraint to this which causes error in dropping table major
 password char(64), /* SHA-256 encryption */
 usertype varchar(25) NOT NULL,
 studentid varchar(12),
 majorid INT,
 phone char(10),
+isverified smallint DEFAULT 0, --1 for verified --0 for not verified
+randomcode varchar(255),
 PRIMARY KEY(userid),
 FOREIGN KEY (majorid) REFERENCES major(majorcode)
 );
 
-INSERT INTO usertable(firstname,middleinitial,lastname,ucoemail,password,usertype,studentid,majorid)
+INSERT INTO usertable(firstname,middleinitial,lastname,username,password,usertype,studentid,majorid,isverified)
 VALUES
-('hong','','sung','hsung@uco.edu','89aa1e580023722db67646e8149eb246c748e180e34a1cf679ab0b41a416d904','advisor','',null);
-INSERT INTO usertable(firstname,middleinitial,lastname,ucoemail,password,usertype,studentid,majorid)
+('hong','','sung','hsung@uco.edu','89aa1e580023722db67646e8149eb246c748e180e34a1cf679ab0b41a416d904','advisor','',null,1);
+INSERT INTO usertable(firstname,middleinitial,lastname,username,password,usertype,studentid,majorid,isverified)
 VALUES
-('guru','c','singh','gsingh1@uco.edu','8d23cf6c86e834a7aa6eded54c26ce2bb2e74903538c61bdd5d2197997ab2f72','student','*20280118',6660);
+('guru','c','singh','gsingh1@uco.edu','8d23cf6c86e834a7aa6eded54c26ce2bb2e74903538c61bdd5d2197997ab2f72','student','*20280118',6660,1);
 
 
 --dropping the grouptable
@@ -128,13 +130,13 @@ DROP TABLE IF EXISTS grouptable;
 create table grouptable (
     id INT NOT NULL AUTO_INCREMENT,
     groupname varchar(255),
-    useremail varchar(255),
+    username varchar(255),
     primary key (id)
-    --FOREIGN KEY (useremail) REFERENCES usertable(ucoemail) getting wierd error while dropping tables need to analyze
+    --FOREIGN KEY (useremail) REFERENCES usertable(username) getting wierd error while dropping tables need to analyze
 );
 
-insert into grouptable (groupname, useremail) values ('advisorgroup', 'hsung@uco.edu');
-insert into grouptable (groupname, useremail) values ('studentgroup', 'gsingh1@uco.edu');
+insert into grouptable (groupname, username) values ('advisorgroup', 'hsung@uco.edu');
+insert into grouptable (groupname, username) values ('studentgroup', 'gsingh1@uco.edu');
 
 --This table consists of the prerequisites of a major
 DROP TABLE IF EXISTS prereq;
@@ -271,3 +273,43 @@ INSERT INTO studentcourses VALUES(2,'CMSC5283');
 INSERT INTO studentcourses VALUES(2,'CMSC5023');
 INSERT INTO studentcourses VALUES(2,'MATH5113');
 
+DROP TRIGGER IF EXISTS groupnameinsert_after_ins_trigger;
+
+DELIMITER #
+
+CREATE TRIGGER groupnameinsert_after_ins_trigger AFTER INSERT ON usertable
+FOR EACH ROW
+BEGIN
+  INSERT INTO grouptable (groupname, username) VALUES ("studentgroup", new.username);
+END#
+
+DELIMITER ;
+
+DROP PROCEDURE IF EXISTS getVerificationCode;
+
+DELIMITER #
+
+CREATE PROCEDURE getVerificationCode(IN useremail VARCHAR(255),
+                                      OUT verificationcode VARCHAR(255))                                          
+    BEGIN
+        DECLARE verificationcode VARCHAR(255);
+        SELECT randomcode INTO verificationcode FROM usertable 
+        WHERE username = useremail;
+   
+    END#
+DELIMITER ;
+
+DROP FUNCTION getVerCode;
+DELIMITER #
+
+CREATE FUNCTION getVerCode(useremail VARCHAR(255))
+  RETURNS VARCHAR(255)
+BEGIN
+  DECLARE verificationcode VARCHAR(255);
+  SELECT randomcode INTO verificationcode FROM usertable 
+        WHERE username = useremail;
+  RETURN verificationcode;
+
+END#
+
+DELIMITER ;

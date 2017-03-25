@@ -6,6 +6,7 @@ package edu.uco.gsingh1;
 
 import edu.uco.gsingh1.businesslayer.UserDAO;
 import edu.uco.gsingh1.businesslayer.UserDAOImpl;
+import edu.uco.gsingh1.businesslayer.Utility;
 import edu.uco.gsingh1.entity.User;
 import javax.inject.Named;
 import javax.enterprise.context.SessionScoped;
@@ -69,17 +70,17 @@ public class LoginBean implements Serializable {
 
     public String doLogin() throws SQLException {
         UserDAO userDAO = new UserDAOImpl();
-        user = userDAO.verifyUser(useremail, userpassword, ds);
+        String hashedPassword = Utility.encrypt(userpassword);
+        user = userDAO.verifyUser(useremail, hashedPassword, ds);
         if (user.userid > 0) {
-            HttpSession session = SessionUtils.getSession();
-            session.setAttribute("userid", user.userid);
-            session.setAttribute("userrole",user.usertype);
             if (user.usertype.equals("advisor")) {
                 return "advisor/advisorhome";
+            } else if ((user.usertype.equals("student"))&&(user.isuserverified==1)) {
+                 return "student/profile";
             }
             else
-            {
-                return "student/profile";
+            { 
+                return "student/verificationpage";
             }
         } else {
             FacesContext.getCurrentInstance().addMessage(

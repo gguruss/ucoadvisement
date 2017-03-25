@@ -6,6 +6,7 @@ package edu.uco.gsingh1.entity;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 import org.hibernate.validator.constraints.NotEmpty;
 
 /**
@@ -21,19 +22,43 @@ public class User {
     public String middleinitial;
     @NotEmpty(message = "Enter Lastname")
     public String lastname;
-    @NotNull(message = "Enter Email")
-    @Pattern(regexp = "^[_A-Za-z0-9-\\\\+]+(\\\\.[_A-Za-z0-9-]+)*@uco.edu", message = "enter uco email")
-    public String ucoemail;
-    @NotNull(message = "Enter password")
-    @NotEmpty(message = "Enter password")
+    @Pattern(regexp = "^[_A-Za-z0-9-\\\\+]+(\\\\.[_A-Za-z0-9-]+)*@uco.edu", message = "Enter UCO Email")
+    public String username;
+   
+    @Size(max = 20, min = 8, message = "Password should be between 8-10 characters")
     public String password;
     public String usertype;
-    @NotNull(message = "Enter Student Id")
+    @Pattern(regexp = "\\*\\d{8}", message = "Please enter student id in the format *20000000")
     public String studentid;
-    @NotNull(message = "Enter Major Code")
+    @NotNull(message = "Select major code")
     public int majorid;
     public String phone;
+    public int isuserverified;
+    public String randomcode;    
 
+    public String getRandomcode() {
+        return randomcode;
+    }
+
+    public void setRandomcode(String randomcode) {
+        this.randomcode = randomcode;
+    }
+
+    public int getIsuserverified() {
+        return isuserverified;
+    }
+
+    public void setIsuserverified(int isuserverified) {
+        this.isuserverified = isuserverified;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
     public String getPhone() {
         return phone;
     }
@@ -41,6 +66,7 @@ public class User {
     public void setPhone(String phone) {
         this.phone = phone;
     }
+
     public int getUserid() {
         return userid;
     }
@@ -71,14 +97,6 @@ public class User {
 
     public void setLastname(String lastname) {
         this.lastname = lastname;
-    }
-
-    public String getUcoemail() {
-        return ucoemail;
-    }
-
-    public void setUcoemail(String ucoemail) {
-        this.ucoemail = ucoemail;
     }
 
     public String getPassword() {

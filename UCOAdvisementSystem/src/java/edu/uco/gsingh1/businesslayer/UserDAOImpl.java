@@ -5,10 +5,12 @@
 package edu.uco.gsingh1.businesslayer;
 
 import edu.uco.gsingh1.entity.User;
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.util.ArrayList;
 import javax.sql.DataSource;
 
@@ -34,18 +36,23 @@ public class UserDAOImpl implements UserDAO {
         }
         try {
             PreparedStatement insertQuery = conn.prepareStatement(
-                    "INSERT INTO usertable(firstname,middleinitial,lastname,ucoemail,password,usertype,studentid,majorid,phone) VALUES(?,?,?,?,?,?,?,?,?)");
+                    "INSERT INTO usertable(firstname,middleinitial,lastname,username,password,usertype,studentid,majorid,phone,randomcode) VALUES(?,?,?,?,?,?,?,?,?,?)");
             insertQuery.setString(1, user.firstname);
             insertQuery.setString(2, user.middleinitial);
             insertQuery.setString(3, user.lastname);
-            insertQuery.setString(4, user.ucoemail);
+            insertQuery.setString(4, user.username);
             insertQuery.setString(5, user.password);
             insertQuery.setString(6, "student");
             insertQuery.setString(7, user.studentid);
             insertQuery.setInt(8, user.majorid);
             insertQuery.setString(9, user.phone);
+            insertQuery.setString(10, user.randomcode);
             int result = insertQuery.executeUpdate();
             if (result == 1) {
+                String verifCode = getVerificationCode(user.username, ds);
+                if (verifCode.length() > 0) {
+                    EmailHandler.sendEmail(user.username, verifCode);
+                }
                 return true;
             }
 
@@ -71,7 +78,7 @@ public class UserDAOImpl implements UserDAO {
     }
 
     @Override
-    public User verifyUser(String ucoemail, String password, DataSource ds) throws SQLException {
+    public User verifyUser(String username, String password, DataSource ds) throws SQLException {
         User user = new User();
         if (ds == null) {
             throw new SQLException("Cannot get DataSource");
@@ -82,8 +89,8 @@ public class UserDAOImpl implements UserDAO {
         }
         try {
             PreparedStatement selectQuery = conn.prepareStatement(
-                    "SELECT * FROM usertable WHERE ucoemail=? AND password=?");
-            selectQuery.setString(1, ucoemail);
+                    "SELECT * FROM usertable WHERE username=? AND password=?");
+            selectQuery.setString(1, username);
             selectQuery.setString(2, password);
 
             ResultSet result = selectQuery.executeQuery();
@@ -94,6 +101,7 @@ public class UserDAOImpl implements UserDAO {
                 user.setStudentid(result.getString("studentid"));
                 user.setMajorid(result.getInt("majorid"));
                 user.setUsertype(result.getString("usertype"));
+                user.setIsuserverified(result.getInt("isverified"));
             }
 
         } finally {
@@ -103,8 +111,7 @@ public class UserDAOImpl implements UserDAO {
     }
 
     @Override
-    public boolean checkIfStudentEmailRegistered(String ucoemail, DataSource ds) throws SQLException {
-        User user = new User();
+    public boolean checkIfStudentEmailRegistered(String username, DataSource ds) throws SQLException {
         if (ds == null) {
             throw new SQLException("Cannot get DataSource");
         }
@@ -114,8 +121,8 @@ public class UserDAOImpl implements UserDAO {
         }
         try {
             PreparedStatement selectQuery = conn.prepareStatement(
-                    "SELECT count(*) FROM usertable WHERE ucoemail=?");
-            selectQuery.setString(1, ucoemail);
+                    "SELECT count(*) FROM usertable WHERE username=?");
+            selectQuery.setString(1, username);
 
             ResultSet result = selectQuery.executeQuery();
             while (result.next()) {
@@ -129,5 +136,27 @@ public class UserDAOImpl implements UserDAO {
             conn.close();
         }
         return false;
+    }
+
+    @Override
+    public String getVerificationCode(String email, DataSource ds) throws SQLException {
+        if (ds == null) {
+            throw new SQLException("Cannot get DataSource");
+        }
+        Connection conn = ds.getConnection();
+        if (conn == null) {
+            throw new SQLException("Cannot get connection");
+        }
+        try {
+            CallableStatement getVerificationCodeQuery = conn.prepareCall("{ ? = CALL getVerCode(?)}");
+            getVerificationCodeQuery.registerOutParameter(1, Types.VARCHAR);
+            getVerificationCodeQuery.setString(2, email);
+            getVerificationCodeQuery.execute();
+            String verificationCode = getVerificationCodeQuery.getString(1);
+            return verificationCode;
+
+        } finally {
+            conn.close();
+        }
     }
 }

@@ -8,6 +8,7 @@ import edu.uco.gsingh1.businesslayer.MajorDAO;
 import edu.uco.gsingh1.businesslayer.MajorDAOImpl;
 import edu.uco.gsingh1.businesslayer.UserDAO;
 import edu.uco.gsingh1.businesslayer.UserDAOImpl;
+import edu.uco.gsingh1.businesslayer.Utility;
 import edu.uco.gsingh1.entity.Major;
 import edu.uco.gsingh1.entity.User;
 import java.io.Serializable;
@@ -63,6 +64,7 @@ public class RegistrationBean implements Serializable {
     @PostConstruct
     public void init() {
         newUser = new User();
+        newUser.randomcode = Utility.randomCodeGenerator();
         majorList = new ArrayList<>();
         MajorDAO majorDAO = new MajorDAOImpl();
         try {
@@ -70,7 +72,7 @@ public class RegistrationBean implements Serializable {
             for (Major major : majors) {
                 majorList.add(new SelectItem(major.majorcode, major.major));
             }
-            
+
         } catch (SQLException ex) {
             Logger.getLogger(RegistrationBean.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -78,6 +80,7 @@ public class RegistrationBean implements Serializable {
 
     public String doSave() throws SQLException {
         UserDAO userDAO = new UserDAOImpl();
+        newUser.password = Utility.encrypt(newUser.password);
         Boolean insert = userDAO.insertUser(newUser, ds);
         if (insert) {
             return "index";

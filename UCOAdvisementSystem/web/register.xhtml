@@ -9,20 +9,26 @@
     </ui:define>
 
     <ui:define name="banner">
-        <i class="circular inverted teal big add user icon"></i>
-        Register
+        <i class="circular inverted teal big unlock icon"></i>
+        Verify
+    </ui:define>
+    <ui:define name="customcss">
+        <style>
+            .errormsg{
+                color:red;
+            }
+        </style>
     </ui:define>
     <ui:define name="main">
         <div class="ui container">
             <div class="center aligned grid">
-                <h:form class="ui form">
+                <h:form class="ui form" id="registrationform">
                     <h4 class="ui dividing header">Student Registration Form</h4>
                     <div class="three fields">
                         <div class="six wide field">
                             <label>First Name</label>
                             <h:inputText id="firstname" value="#{registrationBean.newUser.firstname}" />
                         </div>
-
                         <div class="four wide field">
                             <label>Middle Initial</label>
                             <h:inputText value="#{registrationBean.newUser.middleinitial}"/>
@@ -32,19 +38,36 @@
                             <h:inputText value="#{registrationBean.newUser.lastname}" id="lastname"/>
                         </div>
                     </div>
-                    <h:message for="firstname" class="ui visible error message"/>
-                    <h:message for="lastname" class="ui visible error message"/>
+                    <div class="three fields">
+                        <div class="six wide field">
+                            <h:message for="firstname" class="errormsg"/>
+                        </div>
+                        <div class="four wide field">
+                        </div>
+                        <div class="six wide field">
+                            <h:message for="lastname" class="errormsg"/>
+                        </div>
+                    </div>
                     <div class="field">
                         <label>UCO Email</label>
-                        <h:inputText value="#{registrationBean.newUser.ucoemail}"/>
+                        <h:inputText value="#{registrationBean.newUser.username}" id="username"/>
+                    </div>
+                    <div class="field">
+                        <h:message for="username" class="errormsg"/>
                     </div>
                     <div class="field">
                         <label>Password</label>
-                        <h:inputSecret value="#{registrationBean.newUser.password}"/>
+                        <h:inputSecret value="#{registrationBean.newUser.password}" id="password"/>
+                    </div>
+                    <div class="field">
+                        <h:message for="password" class="errormsg"/>
                     </div>
                     <div class="field">
                         <label>Student Id</label>
-                        <h:inputText value="#{registrationBean.newUser.studentid}"/>
+                        <h:inputText value="#{registrationBean.newUser.studentid}" id="studentid"/>
+                    </div>
+                    <div class="field">
+                        <h:message for="studentid" class="errormsg"/>
                     </div>
                     <div class="field">
                         <label>Major</label>
@@ -64,5 +87,6 @@
         </div>
     </ui:define>
     <ui:define name="footer"></ui:define>
+    <h:messages globalOnly="true"/>
 </ui:composition>
 
