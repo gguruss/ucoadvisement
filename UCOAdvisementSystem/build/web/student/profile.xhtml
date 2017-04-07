@@ -17,15 +17,18 @@
             <div class="six wide column">
                 <div class="ui card">
                     <div class="image">
-                         
+
                     </div>
                     <div class="content">
-                        <div class="header">Guru Singh</div>
+                        <div class="header"><h:outputText value="#{profileBean.userview.firstname}"/><h:outputText value=" "/><h:outputText value="#{profileBean.userview.lastname}"/></div>
                         <div class="meta">
-                            <a>Graduate Program</a>
+                            <h:outputText value="#{profileBean.userview.studentid}"/>
+                        </div>
+                        <div class="meta">
+                            <h:outputText value="#{profileBean.userview.degree}"/>
                         </div>
                         <div class="description">
-                            Masters in Applied Mathematics and Computer Science
+                            <h:outputText value="#{profileBean.userview.major}"/>
                         </div>
                     </div>
                 </div>
@@ -35,33 +38,26 @@
                     <i class="book icon"></i>
                     Courses Taken
                 </h3>
-                <table class="ui small olive table">
-                    <thead>
-                        <tr>
-                            <th>Courses</th>
-                            <th>Course Name</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>CMSC5043</td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td>CMSC5063</td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td>CMSC5283</td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td>CMSC5023</td>
-                            <td></td>
-                        </tr>
+                <h:form class="ui middle aligned center aligned grid">
+                    <h:dataTable value="#{profileBean.studentCourses}" rendered="#{not empty profileBean.studentCourses}" id="maintable" var="studentcourse" class="ui olive celled collapsing table">
 
-                    </tbody>
-                </table>
+                        <h:column>
+                            <f:facet name="header">Course</f:facet>
+                            <h:outputText value="#{studentcourse.course}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">Course Title</f:facet>
+                            <h:outputText value="#{studentcourse.coursename}">
+                            </h:outputText>
+                        </h:column>
+
+                    </h:dataTable>
+                    <h:panelGroup rendered="#{empty profileBean.studentCourses}">
+                        <div style="padding-top: 10px">
+                            <h:link value="Add Courses " outcome="/student/listcourses" class="ui blue button" /> 
+                        </div>
+                    </h:panelGroup>
+                </h:form>
             </div>
         </div>
     </ui:define>

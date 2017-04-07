@@ -4,7 +4,9 @@
  */
 package edu.uco.gsingh1.businesslayer;
 
+import edu.uco.gsingh1.entity.StudentCourses;
 import edu.uco.gsingh1.entity.User;
+import edu.uco.gsingh1.entity.UserView;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import javax.sql.DataSource;
@@ -15,13 +17,13 @@ import javax.sql.DataSource;
  */
 public interface UserDAO {
 
-    public ArrayList<User> getAllUsers(DataSource ds) throws SQLException;
+    public ArrayList<UserView> getAllUsers(DataSource ds) throws SQLException;
 
     public boolean insertUser(User user, DataSource ds) throws SQLException;
 
-    public boolean updateUser(User user, DataSource ds) throws SQLException;
+    public boolean updateUser(UserView user, DataSource ds) throws SQLException;
 
-    public boolean deleteUser(User user, DataSource ds) throws SQLException;
+    public boolean deleteUser(String studentid, DataSource ds) throws SQLException;
 
     public User getUser(User user, DataSource ds) throws SQLException;
 
@@ -34,4 +36,14 @@ public interface UserDAO {
     public Integer checkIfEmailExists(String email, DataSource ds) throws SQLException;
 
     public Integer checkIfStudentIdExists(String studentId, DataSource ds) throws SQLException;
+    
+    public UserView getUserView(String useremail, DataSource ds) throws SQLException;
+    
+    public Integer doCodeCheck(String username, String code, DataSource ds) throws SQLException;
+    
+    public boolean verifyStudent(String useremail, DataSource ds) throws SQLException;
+    
+    public ArrayList<StudentCourses> getStudentCourses(String useremail, DataSource ds) throws SQLException;
+    
+    public boolean addCoursesTakenByStudents(Integer userId, String useremail, String courseTaken, DataSource ds) throws SQLException;
 }

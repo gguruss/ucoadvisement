@@ -5,6 +5,8 @@
 package edu.uco.gsingh1.businesslayer;
 
 import edu.uco.gsingh1.entity.Major;
+import edu.uco.gsingh1.entity.MajorCourses;
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -47,5 +49,34 @@ public class MajorDAOImpl implements MajorDAO {
         return majors;
     }
 
-  
+    @Override
+    public ArrayList<MajorCourses> getMajorCourses(Integer majorid, DataSource ds) throws SQLException {
+        ArrayList<MajorCourses> majorCourses = new ArrayList<>();
+        if (ds == null) {
+            throw new SQLException("Cannot get DataSource");
+        }
+        Connection conn = ds.getConnection();
+        if (conn == null) {
+            throw new SQLException("Cannot get connection");
+        }
+        try {
+            CallableStatement majorCourseView = conn.prepareCall("{CALL getMajorCourses(?)}");
+            majorCourseView.setInt(1, majorid);
+            boolean exists = majorCourseView.execute();
+            if (exists) {
+                ResultSet result = majorCourseView.getResultSet();
+                while (result.next()) {
+                    MajorCourses majorCourse = new MajorCourses();
+                    majorCourse.setCourse(result.getString("majorprereqcourse"));
+                    majorCourse.setCoursename(result.getString("coursetitle"));
+                    majorCourses.add(majorCourse);
+                }
+            }
+
+        } finally {
+            conn.close();
+        }
+        return majorCourses;
+    }
 }
+

@@ -17,82 +17,68 @@
             <i class="student icon"></i>
             Browse Accounts
         </h3>
-        <table class="ui small olive table">
-            <thead>
-                <tr>
-                    <th>Student Id</th>
-                    <th>First Name</th>
-                    <th>Last Name</th>
-                    <th>Major Id</th>
-                    <th>Major</th>
-                    <th>Advisement Status</th> 
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>*20365478</td>
-                    <td>Bruce</td>
-                    <td>Wayne</td>
-                    <td>6660</td>
-                    <td>Applied Mathematics and Computer Science</td>
-                    <td>Not Advised</td>
-                    <td>
-                        <div class="ui buttons">
-                            <button class="ui positive button">Edit</button>
-                            <div class="or"></div>
-                            <button class="ui negative button">Delete</button>
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td>*20312748</td>
-                    <td>Clark</td>
-                    <td>Kent</td>
-                    <td>6101</td>
-                    <td>Computer Science-Applied</td>
-                    <td>Advised</td>
-                    <td>
-                        <div class="ui buttons">
-                            <button class="ui positive button">Edit</button>
-                            <div class="or"></div>
-                            <button class="ui negative button">Delete</button>
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td>*20159876</td>
-                    <td>Hal</td>
-                    <td>Jordan</td>
-                    <td>6110</td>
-                    <td>Software Engineering</td>
-                    <td>Advised</td>
-                    <td>
-                        <div class="ui buttons">
-                            <button class="ui positive button">Edit</button>
-                            <div class="or"></div>
-                            <button class="ui negative button">Delete</button>
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td>*20425689</td>
-                    <td>Barry</td>
-                    <td>Allen</td>
-                    <td>6100</td>
-                    <td>Computer Science</td>
-                    <td>Not Advised</td>
-                    <td>
-                        <div class="ui buttons">
-                            <button class="ui positive button">Edit</button>
-                            <div class="or"></div>
-                            <button class="ui negative button">Delete</button>
-                        </div>
-                    </td>
-                </tr>
-            </tbody>
 
-        </table>
+        <h:form>
+            <h:dataTable value="#{userBean.users}" rendered="#{not empty userBean.users}" id="maintable" var="user" class="ui olive celled collapsing table">
+                <h:column>
+                    <f:facet name="header">Student Id</f:facet>
+                    <h:message for="studentid" style="color: red;"/>
+                    <h:outputText value="#{user.studentid}"/>
+                </h:column>
+                <h:column>
+                    <f:facet name="header">First Name</f:facet>
+                    <h:inputText value="#{user.firstname}" rendered="#{user.editable}" id="firstname">
+                    </h:inputText>
+                    <h:message for="firstname" style="color: red;"/>
+                    <h:outputText value="#{user.firstname}" rendered="#{not user.editable}" />
+                </h:column>
+                <h:column>
+                    <f:facet name="header">Last Name</f:facet>
+                    <h:inputText value="#{user.lastname}" rendered="#{user.editable}" id="lastname"/>
+                    <h:message for="lastname" style="color: red;"/> 
+                    <h:outputText value="#{user.lastname}" rendered="#{not user.editable}">
+                    </h:outputText>
+                </h:column>
+                <h:column>
+                    <f:facet name="header">Major</f:facet>
+                    <h:selectOneMenu value="#{userBean.user.majorcode}" rendered="#{user.editable}">
+                        <f:selectItems value="#{userBean.majorList}" />
+                    </h:selectOneMenu>                    
+                    <h:message for="major" style="color: red;"/>
+                    <h:outputText value="#{user.major}" rendered="#{not user.editable}" />
+                </h:column>
+                <h:column>
+                    <f:facet name="header">Phone</f:facet>
+                    <h:inputText value="#{user.phone}" rendered="#{user.editable}" id="phone">
+                    </h:inputText>
+                    <h:message for="phone" style="color: red;"/>
+                    <h:outputText value="#{user.phone}" rendered="#{not user.editable}" />
+                </h:column>
+                <h:column class="collapsing">
+                    <div class="ui buttons">
+                        <f:facet name="header">Action</f:facet>
+                        <h:commandButton value="Delete" class="ui negative button"
+                                         action="#{userBean.deleteAction(user)}" rendered="#{not user.editable}" />
+                        <h:panelGroup layout="block"  rendered="#{not user.editable}" class="or">
+
+                        </h:panelGroup>
+
+                        <h:commandButton value="Edit" class="ui positive button" id="editButton"
+                                         action="#{userBean.editAction(user)}" rendered="#{not user.editable}">
+
+                        </h:commandButton>
+                    </div>
+                    <h:commandButton value="Save" class="ui blue button" id="saveButton"
+                                     action="#{userBean.updateValue(user)}" rendered="#{user.editable}">
+
+                    </h:commandButton>
+
+                </h:column>
+            </h:dataTable>
+            <h:panelGroup rendered="#{empty userBean.users}">
+                <p>Table is empty! Please add new items.</p>
+            </h:panelGroup>
+        </h:form>
     </ui:define>
 
 </ui:composition>

@@ -9,12 +9,16 @@
 
 
 --create  major table
-
+DROP TABLE IF EXISTS appointments;
+DROP TABLE IF EXISTS timeslots;
+DROP TABLE IF EXISTS appointments;
+DROP TABLE IF EXISTS bookingstatus;
+DROP TABLE IF EXISTS majorprereq;
 DROP TABLE IF EXISTS studentcourses;
-DROP TABLE IF EXISTS prereq;
-DROP TABLE IF EXISTS usertable;
-DROP TABLE IF EXISTS grouptable;
+DROP TABLE IF EXISTS advisor;
 DROP TABLE IF EXISTS courses;
+DROP TABLE IF EXISTS grouptable;
+DROP TABLE IF EXISTS usertable;
 DROP TABLE IF EXISTS major;
 
 DROP TABLE IF EXISTS major;
@@ -42,12 +46,14 @@ INSERT INTO major VALUES(6102,'Computer Science-Information Science','Computer S
 INSERT INTO major VALUES(6101,'Computer Science-Applied','Computer Science','Bachelor of Science');
 INSERT INTO major VALUES(6660,'Applied Mathematics and Computer Science','Applied Mathematics and Computer Science','Master of Science');
 
---insert all the courses of each major into the courses table
+--insert all the courses into the courses table
+INSERT INTO courses VALUES('HSAP',0001,'High School AP',0);
 INSERT INTO courses VALUES('CMSC',1613,'Programming I',3);
-INSERT INTO courses VALUES('CMSC',1621,'Programming I Laboratory',1);
+INSERT INTO courses VALUES('CMSC',1621,'Programming I Lab',1);
 INSERT INTO courses VALUES('CMSC',2413,'Visual Programming',3);
 INSERT INTO courses VALUES('CMSC',2123,'Discrete Structures',3);
 INSERT INTO courses VALUES('CMSC',2613,'Programming II',3);
+INSERT INTO courses VALUES('CMSC',2621,'Programming II Lab',3);
 INSERT INTO courses VALUES('CMSC',2833,'Computer Organization I',3);
 INSERT INTO courses VALUES('CMSC',3833,'Computer Organization II',3);
 INSERT INTO courses VALUES('SE',3103,'Object Oriented Software Design and Construction',3);
@@ -117,13 +123,6 @@ PRIMARY KEY(userid),
 FOREIGN KEY (majorid) REFERENCES major(majorcode)
 );
 
-INSERT INTO usertable(firstname,middleinitial,lastname,username,password,usertype,studentid,majorid,isverified)
-VALUES
-('hong','','sung','hsung@uco.edu','89aa1e580023722db67646e8149eb246c748e180e34a1cf679ab0b41a416d904','advisor','',null,1);
-INSERT INTO usertable(firstname,middleinitial,lastname,username,password,usertype,studentid,majorid,isverified)
-VALUES
-('guru','c','singh','gsingh1@uco.edu','8d23cf6c86e834a7aa6eded54c26ce2bb2e74903538c61bdd5d2197997ab2f72','student','*20280118',6660,1);
-
 
 --dropping the grouptable
 DROP TABLE IF EXISTS grouptable;
@@ -134,144 +133,6 @@ create table grouptable (
     primary key (id)
     --FOREIGN KEY (useremail) REFERENCES usertable(username) getting wierd error while dropping tables need to analyze
 );
-
-insert into grouptable (groupname, username) values ('advisorgroup', 'hsung@uco.edu');
-insert into grouptable (groupname, username) values ('studentgroup', 'gsingh1@uco.edu');
-
---This table consists of the prerequisites of a major
-DROP TABLE IF EXISTS prereq;
-CREATE TABLE prereq(
-majorid int NOT NULL,
-prereqcourse VARCHAR(12) NOT NULL,
-FOREIGN KEY (majorid) REFERENCES major(majorcode),
-FOREIGN KEY (prereqcourse) REFERENCES courses(course),
-PRIMARY KEY(majorid,prereqcourse)
-);
-
---prereq for 6100 B.S. in Computer Science
-INSERT INTO prereq VALUES(6100,'CMSC1613');
-INSERT INTO prereq VALUES(6100,'CMSC1621');
-INSERT INTO prereq VALUES(6100,'CMSC2123');
-INSERT INTO prereq VALUES(6100,'CMSC2613');
-INSERT INTO prereq VALUES(6100,'CMSC2833');
-INSERT INTO prereq VALUES(6100,'SE3103');
-INSERT INTO prereq VALUES(6100,'CMSC3833');
-INSERT INTO prereq VALUES(6100,'CMSC3613');
-INSERT INTO prereq VALUES(6100,'CMSC4003');
-INSERT INTO prereq VALUES(6100,'CMSC4023');
-INSERT INTO prereq VALUES(6100,'CMSC4173');
-INSERT INTO prereq VALUES(6100,'CMSC4153');
-INSERT INTO prereq VALUES(6100,'CMSC4273');
-INSERT INTO prereq VALUES(6100,'SE4283');
-INSERT INTO prereq VALUES(6100,'CMSC4401');
-INSERT INTO prereq VALUES(6100,'CMSC4513');
-INSERT INTO prereq VALUES(6100,'MATH2313');
-INSERT INTO prereq VALUES(6100,'MATH2323');
-INSERT INTO prereq VALUES(6100,'MATH2333');
-INSERT INTO prereq VALUES(6100,'MATH3143');
-INSERT INTO prereq VALUES(6100,'STAT2113');
-INSERT INTO prereq VALUES(6100,'STAT2103');
-INSERT INTO prereq VALUES(6100,'STAT4113');
-
---prereq for 6101 B.S in Computer Science-Applied
-INSERT INTO prereq VALUES(6101,'CMSC1613');
-INSERT INTO prereq VALUES(6101,'CMSC1621');
-INSERT INTO prereq VALUES(6101,'CMSC2413');
-INSERT INTO prereq VALUES(6101,'CMSC2123');
-INSERT INTO prereq VALUES(6101,'CMSC2613');
-INSERT INTO prereq VALUES(6101,'CMSC2833');
-INSERT INTO prereq VALUES(6101,'SE3103');
-INSERT INTO prereq VALUES(6101,'CMSC3303');
-INSERT INTO prereq VALUES(6101,'SE4283');
-INSERT INTO prereq VALUES(6101,'CMSC3613');
-INSERT INTO prereq VALUES(6101,'CMSC4003');
-INSERT INTO prereq VALUES(6101,'CMSC4023');
-INSERT INTO prereq VALUES(6101,'CMSC4173');
-INSERT INTO prereq VALUES(6101,'CMSC4153');
-INSERT INTO prereq VALUES(6101,'CMSC4513');
-INSERT INTO prereq VALUES(6101,'MATH2313');
-INSERT INTO prereq VALUES(6101,'MATH2323');
-INSERT INTO prereq VALUES(6101,'STAT2113');
-INSERT INTO prereq VALUES(6101,'STAT2103');
-INSERT INTO prereq VALUES(6101,'STAT4113');
-
---prereq for 6102 B.S in Computer Science-Information Science
-INSERT INTO prereq VALUES(6102,'CMSC1613');
-INSERT INTO prereq VALUES(6102,'CMSC1621');
-INSERT INTO prereq VALUES(6102,'CMSC2123');
-INSERT INTO prereq VALUES(6102,'CMSC2413');
-INSERT INTO prereq VALUES(6102,'CMSC2613');
-INSERT INTO prereq VALUES(6102,'CMSC2833');
-INSERT INTO prereq VALUES(6102,'SE3103');
-INSERT INTO prereq VALUES(6102,'CMSC3303');
-INSERT INTO prereq VALUES(6102,'CMSC3413');
-INSERT INTO prereq VALUES(6102,'CMSC3613');
-INSERT INTO prereq VALUES(6102,'CMSC4003');
-INSERT INTO prereq VALUES(6102,'CMSC4063');
-INSERT INTO prereq VALUES(6102,'CMSC4153');
-INSERT INTO prereq VALUES(6102,'CMSC4323');
-INSERT INTO prereq VALUES(6102,'CMSC4513');
-INSERT INTO prereq VALUES(6102,'MATH2313');
-INSERT INTO prereq VALUES(6102,'MATH2323');
-INSERT INTO prereq VALUES(6102,'STAT2113');
-INSERT INTO prereq VALUES(6102,'STAT2103');
-INSERT INTO prereq VALUES(6102,'STAT4113');
-INSERT INTO prereq VALUES(6102,'ACCT2113');
-INSERT INTO prereq VALUES(6102,'ACCT2133');
-INSERT INTO prereq VALUES(6102,'MGMT3103');
-INSERT INTO prereq VALUES(6102,'ISOM3263');
-
---prereq for 6110 B.S in Software Engineering-Software Engineering
-INSERT INTO prereq VALUES(6110,'CMSC1613');
-INSERT INTO prereq VALUES(6110,'CMSC1621');
-INSERT INTO prereq VALUES(6110,'CMSC2123');
-INSERT INTO prereq VALUES(6110,'CMSC2613');
-INSERT INTO prereq VALUES(6110,'CMSC2833');
-INSERT INTO prereq VALUES(6110,'SE3103');
-INSERT INTO prereq VALUES(6110,'CMSC3613');
-INSERT INTO prereq VALUES(6110,'CMSC4003');
-INSERT INTO prereq VALUES(6110,'CMSC4153');
-INSERT INTO prereq VALUES(6110,'SE4283');
-INSERT INTO prereq VALUES(6110,'CMSC4401');
-INSERT INTO prereq VALUES(6110,'SE4423');
-INSERT INTO prereq VALUES(6110,'SE4433');
-INSERT INTO prereq VALUES(6110,'SE4513');
-INSERT INTO prereq VALUES(6110,'MATH2313');
-INSERT INTO prereq VALUES(6110,'MATH2323');
-INSERT INTO prereq VALUES(6110,'MATH2333');
-INSERT INTO prereq VALUES(6110,'MATH3143');
-INSERT INTO prereq VALUES(6110,'STAT2113');
-INSERT INTO prereq VALUES(6110,'STAT2103');
-INSERT INTO prereq VALUES(6110,'STAT4113');
-
---prereq for 6660 B.S in Software Engineering-Software Engineering
-INSERT INTO prereq VALUES(6660,'CMSC5043');
-INSERT INTO prereq VALUES(6660,'CMSC5053');
-INSERT INTO prereq VALUES(6660,'CMSC5063');
-INSERT INTO prereq VALUES(6660,'CMSC5283');
-INSERT INTO prereq VALUES(6660,'CMSC5023');
-INSERT INTO prereq VALUES(6660,'CMSC5273');
-INSERT INTO prereq VALUES(6660,'MATH5113');
-INSERT INTO prereq VALUES(6660,'MATH5143');
-INSERT INTO prereq VALUES(6660,'MATH5853');
-INSERT INTO prereq VALUES(6660,'STAT5263');
-
---This table consists of all the courses student has taken
-DROP TABLE IF EXISTS studentcourses;
-CREATE TABLE studentcourses(
-suid INT NOT NULL,
-scourse VARCHAR(12) NOT NULL,
-PRIMARY KEY(suid,scourse),
-FOREIGN KEY (suid) REFERENCES usertable(userid),
-FOREIGN KEY (scourse) REFERENCES courses(course)
-);
-
---for trial user takes these courses
-INSERT INTO studentcourses VALUES(2,'CMSC5043');
-INSERT INTO studentcourses VALUES(2,'CMSC5063');
-INSERT INTO studentcourses VALUES(2,'CMSC5283');
-INSERT INTO studentcourses VALUES(2,'CMSC5023');
-INSERT INTO studentcourses VALUES(2,'MATH5113');
 
 DROP TRIGGER IF EXISTS groupnameinsert_after_ins_trigger;
 
@@ -284,6 +145,227 @@ BEGIN
 END#
 
 DELIMITER ;
+
+DROP TRIGGER IF EXISTS groupname_after_delete_trigger;
+
+DELIMITER #
+
+CREATE TRIGGER groupname_after_delete_trigger AFTER DELETE ON usertable
+FOR EACH ROW
+BEGIN
+  DELETE FROM grouptable where username=old.username;
+END#
+
+DELIMITER ;
+
+INSERT INTO usertable(firstname,middleinitial,lastname,username,password,usertype,studentid,majorid,isverified)
+VALUES
+('hong','','sung','hsung@uco.edu','89aa1e580023722db67646e8149eb246c748e180e34a1cf679ab0b41a416d904','advisor','',null,1);
+INSERT INTO usertable(firstname,middleinitial,lastname,username,password,usertype,studentid,majorid,isverified)
+VALUES
+('guru','c','singh','gsingh1@uco.edu','8d23cf6c86e834a7aa6eded54c26ce2bb2e74903538c61bdd5d2197997ab2f72','student','*20280118',6660,1);
+INSERT INTO usertable(firstname,middleinitial,lastname,username,password,usertype,studentid,majorid,isverified)
+VALUES
+('clark','','kent','ckent@uco.edu','55c8079ac96c6a4f6a94e3460c79e4006d62374cce6e9fc8b281938a3abc7627','student','*20280119',6100,1);
+INSERT INTO usertable(firstname,middleinitial,lastname,username,password,usertype,studentid,majorid,isverified)
+VALUES
+('bruce','','wayne','bwayne@uco.edu','55c8079ac96c6a4f6a94e3460c79e4006d62374cce6e9fc8b281938a3abc7627','student','*20280120',6101,1);
+INSERT INTO usertable(firstname,middleinitial,lastname,username,password,usertype,studentid,majorid,isverified)
+VALUES
+('john','','doe','jdoe@uco.edu','55c8079ac96c6a4f6a94e3460c79e4006d62374cce6e9fc8b281938a3abc7627','student','*20280121',6102,1);
+INSERT INTO usertable(firstname,middleinitial,lastname,username,password,usertype,studentid,majorid,isverified)
+VALUES
+('jane','','doe','janedoe@uco.edu','55c8079ac96c6a4f6a94e3460c79e4006d62374cce6e9fc8b281938a3abc7627','student','*20280122',6110,1);
+INSERT INTO usertable(firstname,middleinitial,lastname,username,password,usertype,studentid,majorid,isverified)
+VALUES
+('morgan','','smith','msmith@uco.edu','55c8079ac96c6a4f6a94e3460c79e4006d62374cce6e9fc8b281938a3abc7627','student','*20280123',6660,1);
+INSERT INTO usertable(firstname,middleinitial,lastname,username,password,usertype,studentid,majorid,isverified)
+VALUES
+('matt','','damon','mdamon@uco.edu','55c8079ac96c6a4f6a94e3460c79e4006d62374cce6e9fc8b281938a3abc7627','student','*20280124',6100,1);
+
+--trigger not applicable for advisor
+UPDATE grouptable SET groupname='advisorgroup' WHERE username='hsung@uco.edu';
+
+--This table consists of the prerequisites of a major
+DROP TABLE IF EXISTS majorprereq;
+CREATE TABLE majorprereq(
+majorid int NOT NULL,
+majorprereqcourse VARCHAR(12) NOT NULL,
+FOREIGN KEY (majorid) REFERENCES major(majorcode),
+FOREIGN KEY (majorprereqcourse) REFERENCES courses(course),
+PRIMARY KEY(majorid,majorprereqcourse)
+);
+
+--prereq for 6100 B.S. in Computer Science
+INSERT INTO majorprereq VALUES(6100,'CMSC1613');
+INSERT INTO majorprereq VALUES(6100,'CMSC1621');
+INSERT INTO majorprereq VALUES(6100,'CMSC2123'); 
+INSERT INTO majorprereq VALUES(6100,'CMSC2613');
+INSERT INTO majorprereq VALUES(6100,'CMSC2833');
+INSERT INTO majorprereq VALUES(6100,'SE3103');
+INSERT INTO majorprereq VALUES(6100,'CMSC3833');
+INSERT INTO majorprereq VALUES(6100,'CMSC3613');
+INSERT INTO majorprereq VALUES(6100,'CMSC4003');
+INSERT INTO majorprereq VALUES(6100,'CMSC4023');
+INSERT INTO majorprereq VALUES(6100,'CMSC4173');
+INSERT INTO majorprereq VALUES(6100,'CMSC4153');
+INSERT INTO majorprereq VALUES(6100,'CMSC4273');
+INSERT INTO majorprereq VALUES(6100,'SE4283');
+INSERT INTO majorprereq VALUES(6100,'CMSC4401');
+INSERT INTO majorprereq VALUES(6100,'CMSC4513');
+INSERT INTO majorprereq VALUES(6100,'MATH2313');
+INSERT INTO majorprereq VALUES(6100,'MATH2323');
+INSERT INTO majorprereq VALUES(6100,'MATH2333');
+INSERT INTO majorprereq VALUES(6100,'MATH3143');
+INSERT INTO majorprereq VALUES(6100,'STAT2113');
+INSERT INTO majorprereq VALUES(6100,'STAT2103');
+INSERT INTO majorprereq VALUES(6100,'STAT4113');
+
+--majorprereq for 6101 B.S in Computer Science-Applied
+INSERT INTO majorprereq VALUES(6101,'CMSC1613');
+INSERT INTO majorprereq VALUES(6101,'CMSC1621');
+INSERT INTO majorprereq VALUES(6101,'CMSC2413');
+INSERT INTO majorprereq VALUES(6101,'CMSC2123');
+INSERT INTO majorprereq VALUES(6101,'CMSC2613');
+INSERT INTO majorprereq VALUES(6101,'CMSC2833');
+INSERT INTO majorprereq VALUES(6101,'SE3103');
+INSERT INTO majorprereq VALUES(6101,'CMSC3303');
+INSERT INTO majorprereq VALUES(6101,'SE4283');
+INSERT INTO majorprereq VALUES(6101,'CMSC3613');
+INSERT INTO majorprereq VALUES(6101,'CMSC4003');
+INSERT INTO majorprereq VALUES(6101,'CMSC4023');
+INSERT INTO majorprereq VALUES(6101,'CMSC4173');
+INSERT INTO majorprereq VALUES(6101,'CMSC4153');
+INSERT INTO majorprereq VALUES(6101,'CMSC4513');
+INSERT INTO majorprereq VALUES(6101,'MATH2313');
+INSERT INTO majorprereq VALUES(6101,'MATH2323');
+INSERT INTO majorprereq VALUES(6101,'STAT2113');
+INSERT INTO majorprereq VALUES(6101,'STAT2103');
+INSERT INTO majorprereq VALUES(6101,'STAT4113');
+
+--majorprereq for 6102 B.S in Computer Science-Information Science
+INSERT INTO majorprereq VALUES(6102,'CMSC1613');
+INSERT INTO majorprereq VALUES(6102,'CMSC1621');
+INSERT INTO majorprereq VALUES(6102,'CMSC2123');
+INSERT INTO majorprereq VALUES(6102,'CMSC2413');
+INSERT INTO majorprereq VALUES(6102,'CMSC2613');
+INSERT INTO majorprereq VALUES(6102,'CMSC2833');
+INSERT INTO majorprereq VALUES(6102,'SE3103');
+INSERT INTO majorprereq VALUES(6102,'CMSC3303');
+INSERT INTO majorprereq VALUES(6102,'CMSC3413');
+INSERT INTO majorprereq VALUES(6102,'CMSC3613');
+INSERT INTO majorprereq VALUES(6102,'CMSC4003');
+INSERT INTO majorprereq VALUES(6102,'CMSC4063');
+INSERT INTO majorprereq VALUES(6102,'CMSC4153');
+INSERT INTO majorprereq VALUES(6102,'CMSC4323');
+INSERT INTO majorprereq VALUES(6102,'CMSC4513');
+INSERT INTO majorprereq VALUES(6102,'MATH2313');
+INSERT INTO majorprereq VALUES(6102,'MATH2323');
+INSERT INTO majorprereq VALUES(6102,'STAT2113');
+INSERT INTO majorprereq VALUES(6102,'STAT2103');
+INSERT INTO majorprereq VALUES(6102,'STAT4113');
+INSERT INTO majorprereq VALUES(6102,'ACCT2113');
+INSERT INTO majorprereq VALUES(6102,'ACCT2133');
+INSERT INTO majorprereq VALUES(6102,'MGMT3103');
+INSERT INTO majorprereq VALUES(6102,'ISOM3263');
+
+--majorprereq for 6110 B.S in Software Engineering-Software Engineering
+INSERT INTO majorprereq VALUES(6110,'CMSC1613');
+INSERT INTO majorprereq VALUES(6110,'CMSC1621');
+INSERT INTO majorprereq VALUES(6110,'CMSC2123');
+INSERT INTO majorprereq VALUES(6110,'CMSC2613');
+INSERT INTO majorprereq VALUES(6110,'CMSC2833');
+INSERT INTO majorprereq VALUES(6110,'SE3103');
+INSERT INTO majorprereq VALUES(6110,'CMSC3613');
+INSERT INTO majorprereq VALUES(6110,'CMSC4003');
+INSERT INTO majorprereq VALUES(6110,'CMSC4153');
+INSERT INTO majorprereq VALUES(6110,'SE4283');
+INSERT INTO majorprereq VALUES(6110,'CMSC4401');
+INSERT INTO majorprereq VALUES(6110,'SE4423');
+INSERT INTO majorprereq VALUES(6110,'SE4433');
+INSERT INTO majorprereq VALUES(6110,'SE4513');
+INSERT INTO majorprereq VALUES(6110,'MATH2313');
+INSERT INTO majorprereq VALUES(6110,'MATH2323');
+INSERT INTO majorprereq VALUES(6110,'MATH2333');
+INSERT INTO majorprereq VALUES(6110,'MATH3143');
+INSERT INTO majorprereq VALUES(6110,'STAT2113');
+INSERT INTO majorprereq VALUES(6110,'STAT2103');
+INSERT INTO majorprereq VALUES(6110,'STAT4113');
+
+--majorprereq for 6660 B.S in Software Engineering-Software Engineering
+INSERT INTO majorprereq VALUES(6660,'CMSC5043');
+INSERT INTO majorprereq VALUES(6660,'CMSC5053');
+INSERT INTO majorprereq VALUES(6660,'CMSC5063');
+INSERT INTO majorprereq VALUES(6660,'CMSC5283');
+INSERT INTO majorprereq VALUES(6660,'CMSC5023');
+INSERT INTO majorprereq VALUES(6660,'CMSC5273');
+INSERT INTO majorprereq VALUES(6660,'MATH5113');
+INSERT INTO majorprereq VALUES(6660,'MATH5143');
+INSERT INTO majorprereq VALUES(6660,'MATH5853');
+INSERT INTO majorprereq VALUES(6660,'STAT5263');
+
+--This table defines types of booking status
+DROP TABLE IF EXISTS bookingstatus;
+CREATE TABLE bookingstatus(
+statusid INT NOT NULL AUTO_INCREMENT,
+status TINYINT, -- 0 for open -1 for cancelled and 1 for booked
+description VARCHAR(255),
+PRIMARY KEY (statusid)
+);
+
+INSERT INTO bookingstatus(status,description) VALUES (0,'open');
+INSERT INTO bookingstatus(status,description) VALUES (1,'booked');
+INSERT INTO bookingstatus(status,description) VALUES (-1,'cancelled');
+
+DROP TABLE IF EXISTS advisor;
+CREATE TABLE advisor(
+advisorid INT NOT NULL AUTO_INCREMENT,
+userid INT,
+advisorfirstname VARCHAR(255),
+advisorlastname VARCHAR(255),
+PRIMARY KEY (advisorid),
+FOREIGN KEY (userid) REFERENCES usertable(userid)
+);
+
+INSERT INTO advisor(userid,advisorfirstname,advisorlastname) VALUES (1,'hong','sung');
+
+DROP TABLE IF EXISTS timeslots;
+CREATE TABLE timeslots(
+slotid INT NOT NULL AUTO_INCREMENT,
+advisorid INT NOT NULL,
+slotday VARCHAR(20),
+startdatetime DATETIME,
+enddatetime DATETIME,
+duration INT,
+status TINYINT,
+PRIMARY KEY (slotid),
+FOREIGN KEY(advisorid) REFERENCES advisor(advisorid)
+);
+
+DROP TABLE IF EXISTS appointments;
+CREATE TABLE appointments(
+appointmentid INT NOT NULL AUTO_INCREMENT,
+appointmentslotid INT,
+advisorid INT,
+userid INT,
+PRIMARY KEY (appointmentid),
+FOREIGN KEY (advisorid) REFERENCES advisor(advisorid),
+FOREIGN KEY (userid) REFERENCES usertable(userid)
+);
+
+--This table consists of all the courses student has taken
+DROP TABLE IF EXISTS studentcourses;
+CREATE TABLE studentcourses(
+suid INT NOT NULL,
+scourse VARCHAR(12) NOT NULL,
+susername VARCHAR(255),
+PRIMARY KEY(suid,scourse),
+FOREIGN KEY (suid) REFERENCES usertable(userid),
+FOREIGN KEY (scourse) REFERENCES courses(course)
+);
+
+
+
 
 DROP PROCEDURE IF EXISTS getVerificationCode;
 
@@ -338,6 +420,89 @@ BEGIN
   DECLARE studentIdCheck SMALLINT;
   SELECT EXISTS(SELECT 1 FROM usertable WHERE LOWER(studentid)=LOWER(id)) INTO studentIdCheck;
   RETURN studentIdCheck;
+END#
+
+DELIMITER ;
+
+--checks if user has the verification code exists 
+DROP FUNCTION checkVerificationCodeForUser;
+DELIMITER #
+
+CREATE FUNCTION checkVerificationCodeForUser(useremail VARCHAR(255), verificationCode VARCHAR(255))
+  RETURNS SMALLINT
+BEGIN
+  DECLARE codeCheck SMALLINT;
+  SELECT EXISTS(SELECT 1 FROM usertable WHERE username=LOWER(useremail) AND randomcode=LOWER(verificationCode)) INTO codeCheck;
+RETURN codeCheck;
+END#
+
+DELIMITER ;
+
+DROP VIEW IF EXISTS userview;
+CREATE OR REPLACE VIEW userview
+AS
+SELECT u.userid,
+        u.firstname,
+       u.middleinitial,
+       u.lastname,
+       u.username,
+       u.studentid,
+       u.phone,
+       m.majorcode,
+       m.major,
+       m.degree
+FROM usertable u
+JOIN major m 
+ON m.majorcode=u.majorid;
+
+DROP PROCEDURE IF EXISTS getUserDetail;
+DELIMITER #
+
+CREATE PROCEDURE getUserDetail(IN useremail VARCHAR(255))
+BEGIN
+ SELECT * FROM userview WHERE username=useremail;
+END#
+
+DELIMITER ;
+
+DROP VIEW IF EXISTS studentcoursesview;
+CREATE OR REPLACE VIEW studentcoursesview
+AS
+SELECT  sc.suid,
+        sc.scourse,
+        sc.susername AS susername,
+        c.coursetitle
+FROM studentcourses sc
+JOIN courses c
+ON sc.scourse=c.course;
+
+DROP VIEW IF EXISTS majorprereqview;
+CREATE OR REPLACE VIEW majorprereqview
+AS
+SELECT  
+        majorid,
+        majorprereqcourse,
+        c.coursetitle
+       FROM majorprereq 
+JOIN courses c
+ON majorprereqcourse=c.course;
+
+DROP PROCEDURE IF EXISTS getCoursesTakenByStudents;
+DELIMITER #
+
+CREATE PROCEDURE getCoursesTakenByStudents(IN useremail VARCHAR(255))
+BEGIN
+ SELECT scourse, coursetitle FROM studentcoursesview WHERE susername=useremail;
+END#
+
+DELIMITER ;
+
+DROP PROCEDURE IF EXISTS getMajorCourses;
+DELIMITER #
+
+CREATE PROCEDURE getMajorCourses(IN majorcode INT)
+BEGIN
+ SELECT * FROM majorprereqview WHERE majorid=majorcode;
 END#
 
 DELIMITER ;

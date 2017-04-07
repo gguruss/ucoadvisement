@@ -35,8 +35,10 @@ public class LoginBean implements Serializable {
     private DataSource ds;
     @NotEmpty(message = "enter uco user email")
     private String useremail;
+    
     private User user;
-
+   
+   
     public User getUser() {
         return user;
     }
@@ -75,12 +77,10 @@ public class LoginBean implements Serializable {
         if (user.userid > 0) {
             if (user.usertype.equals("advisor")) {
                 return "advisor/advisorhome";
-            } else if ((user.usertype.equals("student"))&&(user.isuserverified==1)) {
-                 return "student/profile";
-            }
-            else
-            { 
-                return "student/verificationpage";
+            } else if ((user.usertype.equals("student")) && (user.isuserverified == 1)) {
+                return "student/profile";
+            } else {
+                return "verificationpage";
             }
         } else {
             FacesContext.getCurrentInstance().addMessage(
@@ -92,9 +92,10 @@ public class LoginBean implements Serializable {
         }
     }
 
+   
     public String logout() {
         HttpSession session = SessionUtils.getSession();
         session.invalidate();
-        return "login";
+        return "/faces/index";
     }
 }

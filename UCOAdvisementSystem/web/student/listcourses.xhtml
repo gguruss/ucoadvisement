@@ -20,55 +20,33 @@
         <div class="ui visible info message">
             <div class="content">Please select the courses that you have taken in previous semesters.</div>
         </div>
-        <table class="ui small olive table">
-            <thead>
-                <tr>
-                    <th>Courses</th>
-                    <th>Course Name</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>CMSC5043</td>
-                    <td></td>
-                    <td>
-                        <div class="ui checkbox">
-                            <input type="checkbox" name="example"/>
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td>CMSC5063</td>
-                    <td></td>
-                    <td>
-                        <div class="ui checkbox">
-                            <input type="checkbox" name="example"/>
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td>CMSC5283</td>
-                    <td></td>
-                    <td>
-                        <div class="ui checkbox">
-                            <input type="checkbox" name="example"/>
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td>CMSC5023</td>
-                    <td></td>
-                    <td>
-                        <div class="ui checkbox">
-                            <input type="checkbox" name="example"/>
-                        </div>
-                    </td>
-                </tr>
+        <h:form>
+            <div class="ui center aligned middle aligned grid">
+                <div class="column">
+                    <h:dataTable value="#{profileBean.majorCourses}" rendered="#{not empty profileBean.majorCourses}" id="maintable" var="majorcourse" class="ui olive celled padded table">
+                        <h:column>
+                            <f:facet name="header">Course</f:facet>
+                            <h:outputText value="#{majorcourse.course}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">Course Title</f:facet>
+                            <h:outputText value="#{majorcourse.coursename}">
+                            </h:outputText>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">Select</f:facet>
+                            <h:selectBooleanCheckbox value="#{profileBean.checked[majorcourse.course]}" />
+                        </h:column>
 
-            </tbody>
-        </table>
-        <button class="ui blue button">Save</button>
+                        <h:panelGroup rendered="#{empty profileBean.majorCourses}">
+                            <p>Table is empty! Please add courses.</p>
+                        </h:panelGroup>
+                    </h:dataTable>
+
+                    <h:commandButton class="ui fluid large blue submit button" value="Save" action="#{profileBean.saveCourses()}"/>
+                </div>
+            </div>
+        </h:form>
     </ui:define>
     <ui:define name="footerscripts">
         <script type="text/javascript">
