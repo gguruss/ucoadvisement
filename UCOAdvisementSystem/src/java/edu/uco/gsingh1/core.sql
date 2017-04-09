@@ -9,6 +9,9 @@
 
 
 --create  major table
+DROP TABLE IF EXISTS daytable;
+DROP TABLE IF EXISTS advisorschedule;
+DROP TABLE IF EXISTS slots;
 DROP TABLE IF EXISTS appointments;
 DROP TABLE IF EXISTS timeslots;
 DROP TABLE IF EXISTS appointments;
@@ -114,7 +117,7 @@ lastname varchar(255),
 username varchar(255), -- tried to add UNIQUE constraint to this which causes error in dropping table major
 password char(64), /* SHA-256 encryption */
 usertype varchar(25) NOT NULL,
-studentid varchar(12),
+studentid varchar(12) NOT NULL UNIQUE,
 majorid INT,
 phone char(10),
 isverified smallint DEFAULT 0, --1 for verified --0 for not verified
@@ -304,6 +307,22 @@ INSERT INTO majorprereq VALUES(6660,'MATH5143');
 INSERT INTO majorprereq VALUES(6660,'MATH5853');
 INSERT INTO majorprereq VALUES(6660,'STAT5263');
 
+DROP TABLE IF EXISTS daytable;
+CREATE TABLE daytable(
+dayid INT NOT NULL AUTO_INCREMENT,
+daynum TINYINT,
+dayname VARCHAR(12),
+PRIMARY KEY (dayid)
+);
+
+INSERT INTO daytable(daynum,dayname) VALUES (1,'sunday');
+INSERT INTO daytable(daynum,dayname) VALUES (2,'monday');
+INSERT INTO daytable(daynum,dayname) VALUES (3,'tuesday');
+INSERT INTO daytable(daynum,dayname) VALUES (4,'wednesday');
+INSERT INTO daytable(daynum,dayname) VALUES (5,'thursday');
+INSERT INTO daytable(daynum,dayname) VALUES (6,'friday');
+INSERT INTO daytable(daynum,dayname) VALUES (7,'saturday');
+
 --This table defines types of booking status
 DROP TABLE IF EXISTS bookingstatus;
 CREATE TABLE bookingstatus(
@@ -315,7 +334,8 @@ PRIMARY KEY (statusid)
 
 INSERT INTO bookingstatus(status,description) VALUES (0,'open');
 INSERT INTO bookingstatus(status,description) VALUES (1,'booked');
-INSERT INTO bookingstatus(status,description) VALUES (-1,'cancelled');
+INSERT INTO bookingstatus(status,description) VALUES (-1,'cancelledbyadvisor');
+INSERT INTO bookingstatus(status,description) VALUES (-2,'cancelledbystudent');
 
 DROP TABLE IF EXISTS advisor;
 CREATE TABLE advisor(
@@ -323,35 +343,122 @@ advisorid INT NOT NULL AUTO_INCREMENT,
 userid INT,
 advisorfirstname VARCHAR(255),
 advisorlastname VARCHAR(255),
+availFrom DATE,
+availTo DATE,
 PRIMARY KEY (advisorid),
 FOREIGN KEY (userid) REFERENCES usertable(userid)
 );
 
-INSERT INTO advisor(userid,advisorfirstname,advisorlastname) VALUES (1,'hong','sung');
+INSERT INTO advisor(userid,advisorfirstname,advisorlastname,availFrom,availTo)
+VALUES
+ (1,'hong','sung','2017-4-1','2017-5-1');
+
+DROP TABLE IF EXISTS advisorschedule;
+CREATE TABLE advisorschedule(
+advisorscheduleid INT NOT NULL AUTO_INCREMENT,
+advisorid INT NOT NULL,
+availday TINYINT,
+availfromtime TIME,
+availtotime TIME,
+duration TINYINT,
+PRIMARY KEY (advisorscheduleid),
+FOREIGN KEY (advisorid) REFERENCES advisor(advisorid)
+);
+
+INSERT INTO advisorschedule (advisorid,availday,availfromtime,availtotime,duration)
+VALUES
+(1,2,'9:30','17:30',10);
+INSERT INTO advisorschedule (advisorid,availday,availfromtime,availtotime,duration)
+VALUES
+(1,3,'11:30','15:30',10);
+INSERT INTO advisorschedule (advisorid,availday,availfromtime,availtotime,duration)
+VALUES
+(1,4,'10:00','11:45',10);
+INSERT INTO advisorschedule (advisorid,availday,availfromtime,availtotime,duration)
+VALUES
+(1,5,'14:00','15:00',10);
+INSERT INTO advisorschedule (advisorid,availday,availfromtime,availtotime,duration)
+VALUES
+(1,6,'16:00','17:30',10);
+
+
 
 DROP TABLE IF EXISTS timeslots;
 CREATE TABLE timeslots(
-slotid INT NOT NULL AUTO_INCREMENT,
+timeslotid INT NOT NULL AUTO_INCREMENT,
 advisorid INT NOT NULL,
-slotday VARCHAR(20),
-startdatetime DATETIME,
-enddatetime DATETIME,
+timeslotday TINYINT,
+start_time DATETIME,
+end_time DATETIME,
 duration INT,
-status TINYINT,
-PRIMARY KEY (slotid),
-FOREIGN KEY(advisorid) REFERENCES advisor(advisorid)
+PRIMARY KEY (timeslotid)
 );
+
+-- INSERT INTO timeslots(advisorid,timeslotday,start_time,end_time,duration)
+-- VALUES
+-- (1,'monday','09:00:00','19:00:00',10);
+-- INSERT INTO timeslots(advisorid,timeslotday,start_time,end_time,duration)
+-- VALUES
+-- (1,'tuesday','09:00:00','12:00:00',10);
+-- INSERT INTO timeslots(advisorid,timeslotday,start_time,end_time,duration)
+-- VALUES
+-- (1,'wednesday','09:00:00','17:00:00',10);
+-- INSERT INTO timeslots(advisorid,timeslotday,start_time,end_time,duration)
+-- VALUES
+-- (1,'thursday','13:00:00','15:00:00',10);
+-- INSERT INTO timeslots(advisorid,timeslotday,start_time,end_time,duration)
+-- VALUES
+-- (1,'friday','9:00:00','11:00:00',10);
+
+
+DROP TABLE IF EXISTS breaks;
+CREATE TABLE breaks(
+breakid INT NOT NULL AUTO_INCREMENT,
+advisorid INT NOT NULL,
+breakday TINYINT,
+start_time TIME,
+end_time TIME,
+PRIMARY KEY (breakid)
+);
+
+INSERT INTO breaks
+    (advisorid, breakday, start_time, end_time)
+VALUES
+    (1, 2, '11:00:00', '14:30:00');
 
 DROP TABLE IF EXISTS appointments;
 CREATE TABLE appointments(
 appointmentid INT NOT NULL AUTO_INCREMENT,
-appointmentslotid INT,
 advisorid INT,
 userid INT,
+appointmentday TINYINT,
+appointmentdate DATE,
+starttime DATETIME,
+endtime DATETIME,
+status TINYINT,
+cancelledbyusertype VARCHAR(25),
+cancelledbyuserid INT,
 PRIMARY KEY (appointmentid),
-FOREIGN KEY (advisorid) REFERENCES advisor(advisorid),
-FOREIGN KEY (userid) REFERENCES usertable(userid)
+FOREIGN KEY (userid) REFERENCES usertable(userid),
+FOREIGN KEY (cancelledbyuserid) REFERENCES usertable(userid)
 );
+
+INSERT INTO appointments
+(advisorid,userid,appointmentday,appointmentdate,starttime,endtime,status)
+VALUES
+(1,2,2,'2017-03-27','2017-03-27 16:10:00','2017-03-27 16:20:00',1);
+INSERT INTO appointments
+(advisorid,userid,appointmentday,appointmentdate,starttime,endtime,status)
+VALUES
+(1,2,2,'2017-03-27','2017-03-27 16:20:00','2017-03-27 16:30:00',1);
+INSERT INTO appointments
+(advisorid,userid,appointmentday,appointmentdate,starttime,endtime,status)
+VALUES
+(1,2,2,'2017-03-27','2017-03-27 11:10:00','2017-03-27 11:20:00',1);
+INSERT INTO appointments
+(advisorid,userid,appointmentday,appointmentdate,starttime,endtime,status)
+VALUES
+(1,2,2,'2017-03-27','2017-03-27 11:20:00','2017-03-27 11:30:00',-1);
 
 --This table consists of all the courses student has taken
 DROP TABLE IF EXISTS studentcourses;
@@ -503,6 +610,67 @@ DELIMITER #
 CREATE PROCEDURE getMajorCourses(IN majorcode INT)
 BEGIN
  SELECT * FROM majorprereqview WHERE majorid=majorcode;
+END#
+
+DELIMITER ;
+
+--gets the appointment slot given a particular date
+DROP PROCEDURE IF EXISTS getAvailableAppointmentSlots;
+DELIMITER #
+
+CREATE PROCEDURE getAvailableAppointmentSlots(IN userselecteddate DATE, IN advisorid INTEGER)
+
+BEGIN
+DECLARE availslots INT DEFAULT 0;
+DECLARE slotlimit INT DEFAULT 0;
+DECLARE appointmentslots INT DEFAULT 0;
+DECLARE advisingduration INT DEFAULT 0;
+
+SET availslots=(SELECT (TIME_TO_SEC(ads.availtotime-ads.availfromtime) div (10*60)) FROM advisorschedule ads WHERE availday=DAYOFWEEK(userselecteddate));
+SET appointmentslots=(SELECT count(*) FROM appointments WHERE appointmentdate=userselecteddate);
+SET advisingduration=(SELECT duration FROM advisorschedule WHERE availday=DAYOFWEEK(userselecteddate));
+SET slotlimit=availslots-appointmentslots;
+
+SELECT *
+FROM(
+SELECT dts.start_at,dts.end_at,ads.advisorid,ads.availday
+FROM(
+SELECT
+             num + 1 as num
+                , DATE_ADD(userselecteddate, INTERVAL (slots.num * advisingduration) MINUTE) start_at
+                , DATE_ADD(userselecteddate, INTERVAL ((slots.num + 1)* advisingduration) MINUTE) end_at
+                , DAYOFWEEK(userselecteddate) dayofweek
+            FROM (
+                  /* generates 1000 rows 0 to 999 */
+                  SELECT hundreds.digit * 100 + tens.digit * 10 + ones.digit AS num
+                  FROM (
+                        SELECT 0 AS digit UNION ALL SELECT 1 UNION ALL SELECT 2 UNION ALL SELECT 3 UNION ALL SELECT 4 UNION ALL
+                        SELECT 5 UNION ALL SELECT 6 UNION ALL SELECT 7 UNION ALL SELECT 8 UNION ALL SELECT 9
+                       ) ones
+                  CROSS JOIN (
+                        SELECT 0 AS digit UNION ALL SELECT 1 UNION ALL SELECT 2 UNION ALL SELECT 3 UNION ALL SELECT 4 UNION ALL
+                        SELECT 5 UNION ALL SELECT 6 UNION ALL SELECT 7 UNION ALL SELECT 8 UNION ALL SELECT 9
+                             ) tens
+                  CROSS JOIN (
+                        SELECT 0 AS digit UNION ALL SELECT 1 UNION ALL SELECT 2 UNION ALL SELECT 3 UNION ALL SELECT 4 UNION ALL
+                        SELECT 5 UNION ALL SELECT 6 UNION ALL SELECT 7 UNION ALL SELECT 8 UNION ALL SELECT 9
+                             ) hundreds
+                  ) slots
+)dts
+INNER JOIN advisorschedule ads
+ON
+ads.availday=dts.dayofweek
+WHERE TIME(dts.start_at)>=ads.availfromtime 
+AND TIME(dts.end_at)<=ads.availtotime
+AND ads.advisorid=advisorid)allslotsinaday
+LEFT JOIN appointments ap on
+allslotsinaday.start_at=ap.starttime
+AND
+allslotsinaday.end_at=ap.endtime
+WHERE ap.starttime is NULL
+LIMIT
+slotlimit;
+
 END#
 
 DELIMITER ;
