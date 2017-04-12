@@ -9,6 +9,8 @@ import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.UUID;
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
 
 /**
  *
@@ -33,4 +35,13 @@ public class Utility {
         return uuid;
     }
 
+    public static DateTime getTime(String time) {
+        DateTime date = DateTime.parse(time, DateTimeFormat.forPattern("HH:mm"));
+        return date;
+    }
+    
+    public static DateTime getDate(String userdate) {
+        DateTime date = DateTime.parse(userdate, DateTimeFormat.forPattern("dd/MM/yyyy"));
+        return date;
+    }
 }

@@ -78,5 +78,35 @@ public class MajorDAOImpl implements MajorDAO {
         }
         return majorCourses;
     }
-}
 
+    @Override
+    public ArrayList<MajorCourses> getMajorCoursesTakenByStudent(Integer majorid, Integer userid, DataSource ds) throws SQLException {
+        ArrayList<MajorCourses> majorCourses = new ArrayList<>();
+        if (ds == null) {
+            throw new SQLException("Cannot get DataSource");
+        }
+        Connection conn = ds.getConnection();
+        if (conn == null) {
+            throw new SQLException("Cannot get connection");
+        }
+        try {
+            CallableStatement majorCourseView = conn.prepareCall("{CALL getMajorCoursesLeftToBeTaken(?,?)}");
+            majorCourseView.setInt(1, majorid);
+            majorCourseView.setInt(2, userid);
+            boolean exists = majorCourseView.execute();
+            if (exists) {
+                ResultSet result = majorCourseView.getResultSet();
+                while (result.next()) {
+                    MajorCourses majorCourse = new MajorCourses();
+                    majorCourse.setCourse(result.getString("majorprereqcourse"));
+                    majorCourse.setCoursename(result.getString("coursetitle"));
+                    majorCourses.add(majorCourse);
+                }
+            }
+
+        } finally {
+            conn.close();
+        }
+        return majorCourses;
+    }
+}

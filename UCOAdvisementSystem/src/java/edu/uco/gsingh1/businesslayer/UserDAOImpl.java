@@ -4,6 +4,7 @@
  */
 package edu.uco.gsingh1.businesslayer;
 
+import edu.uco.gsingh1.entity.Slots;
 import edu.uco.gsingh1.entity.StudentCourses;
 import edu.uco.gsingh1.entity.User;
 import edu.uco.gsingh1.entity.UserView;
@@ -15,6 +16,9 @@ import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ArrayList;
 import javax.sql.DataSource;
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 /**
  *
@@ -232,28 +236,6 @@ public class UserDAOImpl implements UserDAO {
     }
 
     @Override
-    public Integer checkIfEmailExists(String email, DataSource ds) throws SQLException {
-        if (ds == null) {
-            throw new SQLException("Cannot get DataSource");
-        }
-        Connection conn = ds.getConnection();
-        if (conn == null) {
-            throw new SQLException("Cannot get connection");
-        }
-        try {
-            CallableStatement verifyEmail = conn.prepareCall("{ ? = CALL checkIfEmailExists(?)}");
-            verifyEmail.registerOutParameter(1, Types.SMALLINT);
-            verifyEmail.setString(2, email);
-            verifyEmail.execute();
-            Integer exists = verifyEmail.getInt(1);
-            return exists;
-
-        } finally {
-            conn.close();
-        }
-    }
-
-    @Override
     public Integer checkIfStudentIdExists(String studentId, DataSource ds) throws SQLException {
         if (ds == null) {
             throw new SQLException("Cannot get DataSource");
@@ -407,6 +389,74 @@ public class UserDAOImpl implements UserDAO {
             insertQuery.setString(3, useremail);
 
             int result = insertQuery.executeUpdate();
+            if (result == 1) {
+                return true;
+            }
+
+        } finally {
+            conn.close();
+        }
+        return false;
+    }
+
+    @Override
+    public Integer checkIfEmailExists(String email, DataSource ds) throws SQLException {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public ArrayList<Slots> getStudentSlots(DateTime userselectedDate, int advisorId, DataSource ds) throws SQLException {
+        ArrayList<Slots> slots = new ArrayList<>();
+        DateTimeFormatter fmtDate = DateTimeFormat.forPattern("yyyy-MM-dd");
+        DateTimeFormatter fmtTime = DateTimeFormat.forPattern("HH:mm a");
+        if (ds == null) {
+            throw new SQLException("Cannot get DataSource");
+        }
+        Connection conn = ds.getConnection();
+        if (conn == null) {
+            throw new SQLException("Cannot get connection");
+        }
+        try {
+            CallableStatement slotView = conn.prepareCall("{CALL getAvailableAppointmentSlots(?,?)}");
+            slotView.setDate(1, new java.sql.Date(userselectedDate.toDate().getTime()));
+            slotView.setInt(2, advisorId);
+            boolean exists = slotView.execute();
+            if (exists) {
+                ResultSet result = slotView.getResultSet();
+                while (result.next()) {
+                    Slots slot = new Slots();
+                    slot.setSlotStartDateTime(new DateTime(result.getTimestamp("start_at")));
+                    slot.setSlotEndDateTime(new DateTime(result.getTimestamp("end_at")));
+                    slot.setAvailableDate(fmtDate.print(new DateTime(result.getTimestamp("start_at"))));
+                    slot.setOutputSlotStartDateTime(fmtTime.print(new DateTime(result.getTimestamp("start_at"))));
+                    slot.setOutputSlotEndDateTime(fmtTime.print(new DateTime(result.getTimestamp("end_at"))));
+                    slots.add(slot);
+                }
+            }
+
+        } finally {
+            conn.close();
+        }
+        return slots;
+    }
+
+    @Override
+    public boolean removeCourseTakenByStudent(Integer userId, String useremail, String courseToRemove, DataSource ds) throws SQLException {
+        if (ds == null) {
+            throw new SQLException("Cannot get DataSource");
+        }
+        Connection conn = ds.getConnection();
+        if (conn == null) {
+            throw new SQLException("Cannot get connection");
+        }
+        try {
+            PreparedStatement deleteQuery = conn.prepareStatement(
+                    "DELETE FROM studentcourses WHERE suid=? AND scourse=? AND susername=?");
+            deleteQuery.setInt(1, userId);
+            deleteQuery.setString(2, courseToRemove);
+            deleteQuery.setString(3, useremail);
+
+            int result = deleteQuery.executeUpdate();
             if (result == 1) {
                 return true;
             }

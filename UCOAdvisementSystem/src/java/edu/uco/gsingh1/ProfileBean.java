@@ -97,7 +97,7 @@ public class ProfileBean {
             try {
                 userview = userDAO.getUserView(loginBean.getUseremail(), ds);
                 studentCourses = userDAO.getStudentCourses(loginBean.getUseremail(), ds);
-                majorCourses = majorDAO.getMajorCourses(userview.majorcode, ds);
+                majorCourses = majorDAO.getMajorCoursesTakenByStudent(userview.majorcode, userview.userid, ds);
             } catch (SQLException ex) {
                 Logger.getLogger(ProfileBean.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -113,5 +113,19 @@ public class ProfileBean {
         }
         checked.clear();
         return "profile.xhtml?faces-redirect=true";
+    }
+
+    public String deleteAction(StudentCourses studentcourse) {
+        UserDAO userDAO = new UserDAOImpl();
+        boolean deleted = false;
+        try {
+            deleted = userDAO.removeCourseTakenByStudent(userview.userid, loginBean.getUseremail(), studentcourse.getCourse(), ds);
+        } catch (SQLException ex) {
+            Logger.getLogger(UserBean.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        if (deleted) {
+            studentCourses.remove(studentcourse);
+        }
+        return null;
     }
 }

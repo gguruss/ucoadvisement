@@ -50,7 +50,11 @@
                             <h:outputText value="#{studentcourse.coursename}">
                             </h:outputText>
                         </h:column>
-
+                        <h:column class="collapsing">
+                            <f:facet name="header">Action</f:facet>
+                            <h:commandButton value="Delete" class="ui negative button"
+                                             action="#{profileBean.deleteAction(studentcourse)}" />
+                        </h:column>
                     </h:dataTable>
                     <h:panelGroup rendered="#{empty profileBean.studentCourses}">
                         <div style="padding-top: 10px">
@@ -58,6 +62,7 @@
                         </div>
                     </h:panelGroup>
                 </h:form>
+
             </div>
         </div>
     </ui:define>

@@ -4,12 +4,14 @@
  */
 package edu.uco.gsingh1.businesslayer;
 
+import edu.uco.gsingh1.entity.Slots;
 import edu.uco.gsingh1.entity.StudentCourses;
 import edu.uco.gsingh1.entity.User;
 import edu.uco.gsingh1.entity.UserView;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import javax.sql.DataSource;
+import org.joda.time.DateTime;
 
 /**
  *
@@ -46,4 +48,8 @@ public interface UserDAO {
     public ArrayList<StudentCourses> getStudentCourses(String useremail, DataSource ds) throws SQLException;
     
     public boolean addCoursesTakenByStudents(Integer userId, String useremail, String courseTaken, DataSource ds) throws SQLException;
+    
+    public boolean removeCourseTakenByStudent(Integer userId, String useremail, String courseToRemove, DataSource ds) throws SQLException;
+    
+    public ArrayList<Slots> getStudentSlots(DateTime userselectedDate,int advisorId, DataSource ds) throws SQLException;
 }

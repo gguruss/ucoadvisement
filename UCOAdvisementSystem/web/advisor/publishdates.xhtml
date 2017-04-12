@@ -10,6 +10,16 @@
     <ui:define name="jsscripts">
         <h:outputStylesheet name="calendar.min.css" library="css"/>
         <h:outputScript name="calendar.min.js" library="js"/>
+        <style>
+            .customhidediv{
+                display:none !important;
+            }
+            .customshowdiv
+            {
+                display:block ;
+            }
+        </style>
+
     </ui:define>
     <ui:define name="firstitem">
         <div class="active item">
@@ -40,6 +50,7 @@
                             <div class="ui input right icon">
                                 <i class="clock icon"></i>
                                 <h:inputText id="duration" value="#{publishDates.duration}"/>
+                                <h:message for="duration"/>
                             </div>
                         </div>
                     </div>
@@ -49,11 +60,12 @@
                         </div>
                         <div class="three wide field ui calendar customdate">
                             <div class="ui input right icon">
-                                <h:inputText value="#{publishDates.fromDate}">
-                                    <f:convertDateTime pattern="dd/MM/yy" />
+                                <h:inputText value="#{publishDates.fromDate}" id="fromDate">
+
                                 </h:inputText>
                                 <i class="calendar icon"></i>
                             </div>
+                            <h:message for="fromDate"/>
                         </div>
                     </div>
                     <div class="inline fields">
@@ -63,42 +75,220 @@
                         <div class="three wide field ui calendar customdate">
                             <div class="ui input right icon">
                                 <h:inputText value="#{publishDates.toDate}">
-                                    <f:convertDateTime pattern="dd/MM/yy" />
+
                                 </h:inputText>
                                 <i class="calendar icon"></i>
                             </div>
+                            <h:message for="toDate"/>
                         </div>
                     </div>
+
+                    <!--for monday date time-->
                     <div class="inline fields">
                         <div class="two wide field">
                             <a class="ui basic large label">Monday</a>
                         </div>
+
                         <div class="one wide field">
-                            <div class="ui toggle checkbox">
-                                <h:selectBooleanCheckbox tabindex="0" class="hidden" value="#{publishDates.monday}" /> 
+                            <div class="ui toggle checkbox" id="monday">
+                                <h:selectBooleanCheckbox tabindex="0" class="hidden" value="#{publishDates.monday}"/> 
                             </div>
                         </div>
-                        <div class="four wide field calendar customtime">
+
+                        <div class="four wide field calendar customtime customdiv customhidediv">
                             <div class="ui input right icon">
                                 <i class="clock icon"></i>
                                 <h:inputText value="#{publishDates.mondayFromTime}" id="mondayFromTime">
-                                    <f:convertDateTime pattern="HH:mm" />
                                 </h:inputText>
                             </div>
                         </div>
-                        <div class="one wide field">
+                        <div class="one wide field customdiv customhidediv">
                             <label>to</label>
                         </div>
-                        <div class="four wide field calendar customtime">
+                        <div class="four wide field calendar customtime customdiv customhidediv">
                             <div class="ui input right icon">
                                 <i class="clock icon"></i>
-                                <h:inputText value="#{publishDates.mondayToTime}">
-                                    <f:convertDateTime pattern="HH:mm" /> 
+                                <h:inputText value="#{publishDates.mondayToTime}" id="mondayToTime">
+
+                                </h:inputText>
+                            </div>
+                        </div>
+
+                    </div>
+                    <!--for tuesday date time-->
+                    <div class="inline fields">
+                        <div class="two wide field">
+                            <a class="ui basic large label">Tuesday</a>
+                        </div>
+                        <div class="one wide field">
+                            <div class="ui toggle checkbox">
+                                <h:selectBooleanCheckbox tabindex="0" class="hidden" value="#{publishDates.tuesday}" /> 
+                            </div>
+                        </div>
+                        <div class="four wide field calendar customtime customdiv customhidediv">
+                            <div class="ui input right icon">
+                                <i class="clock icon"></i>
+                                <h:inputText value="#{publishDates.tuesdayFromTime}" id="tuesdayFromTime">
+                                </h:inputText>
+                            </div>
+                        </div>
+                        <div class="one wide field customdiv customhidediv">
+                            <label>to</label>
+                        </div>
+                        <div class="four wide field calendar customtime customdiv customhidediv">
+                            <div class="ui input right icon">
+                                <i class="clock icon"></i>
+                                <h:inputText value="#{publishDates.tuesdayToTime}" id="tuesdayToTime">
+
                                 </h:inputText>
                             </div>
                         </div>
                     </div>
+                    <!--for wednesday date time-->
+                    <div class="inline fields">
+                        <div class="two wide field">
+                            <a class="ui basic large label">Wednesday</a>
+                        </div>
+                        <div class="one wide field">
+                            <div class="ui toggle checkbox">
+                                <h:selectBooleanCheckbox tabindex="0" class="hidden" value="#{publishDates.wednesday}" /> 
+                            </div>
+                        </div>
+                        <div class="four wide field calendar customtime customdiv customhidediv">
+                            <div class="ui input right icon">
+                                <i class="clock icon"></i>
+                                <h:inputText value="#{publishDates.wednesdayFromTime}" id="wednesdayFromTime">
+                                </h:inputText>
+                            </div>
+                        </div>
+                        <div class="one wide field customdiv customhidediv">
+                            <label>to</label>
+                        </div>
+                        <div class="four wide field calendar customtime customdiv customhidediv">
+                            <div class="ui input right icon">
+                                <i class="clock icon"></i>
+                                <h:inputText value="#{publishDates.wednesdayToTime}" id="wednesdayToTime">
 
+                                </h:inputText>
+                            </div>
+                        </div>
+                    </div>
+                    <!--for thursday date time-->
+                    <div class="inline fields">
+                        <div class="two wide field">
+                            <a class="ui basic large label">Thursday</a>
+                        </div>
+                        <div class="one wide field">
+                            <div class="ui toggle checkbox">
+                                <h:selectBooleanCheckbox tabindex="0" class="hidden" value="#{publishDates.thursday}" /> 
+                            </div>
+                        </div>
+                        <div class="four wide field calendar customtime customdiv customhidediv">
+                            <div class="ui input right icon">
+                                <i class="clock icon"></i>
+                                <h:inputText value="#{publishDates.thursdayFromTime}" id="thursdayFromTime">
+                                </h:inputText>
+                            </div>
+                        </div>
+                        <div class="one wide field customdiv customhidediv">
+                            <label>to</label>
+                        </div>
+                        <div class="four wide field calendar customtime customdiv customhidediv">
+                            <div class="ui input right icon">
+                                <i class="clock icon"></i>
+                                <h:inputText value="#{publishDates.thursdayToTime}" id="thursdayToTime">
+
+                                </h:inputText>
+                            </div>
+                        </div>
+                    </div>
+                    <!--for friday date time-->
+                    <div class="inline fields">
+                        <div class="two wide field">
+                            <a class="ui basic large label">Friday</a>
+                        </div>
+                        <div class="one wide field">
+                            <div class="ui toggle checkbox" >
+                                <h:selectBooleanCheckbox tabindex="0" class="hidden" value="#{publishDates.friday}" /> 
+                            </div>
+                        </div>
+                        <div class="four wide field calendar customtime customdiv customhidediv">
+                            <div class="ui input right icon">
+                                <i class="clock icon"></i>
+                                <h:inputText value="#{publishDates.fridayFromTime}" id="fridayFromTime">
+                                </h:inputText>
+                            </div>
+                        </div>
+                        <div class="one wide field customdiv customhidediv">
+                            <label>to</label>
+                        </div>
+                        <div class="four wide field calendar customtime customdiv customhidediv">
+                            <div class="ui input right icon">
+                                <i class="clock icon"></i>
+                                <h:inputText value="#{publishDates.fridayToTime}" id="fridayToTime">
+
+                                </h:inputText>
+                            </div>
+                        </div>
+                    </div>
+                    <!--for saturday date time-->
+                    <div class="inline fields">
+                        <div class="two wide field">
+                            <a class="ui basic large label">Saturday</a>
+                        </div>
+                        <div class="one wide field">
+                            <div class="ui toggle checkbox">
+                                <h:selectBooleanCheckbox tabindex="0" class="hidden" value="#{publishDates.saturday}" /> 
+                            </div>
+                        </div>
+                        <div class="four wide field calendar customtime customdiv customhidediv">
+                            <div class="ui input right icon">
+                                <i class="clock icon"></i>
+                                <h:inputText value="#{publishDates.saturdayFromTime}" id="saturdayFromTime">
+                                </h:inputText>
+                            </div>
+                        </div>
+                        <div class="one wide field customdiv customhidediv">
+                            <label>to</label>
+                        </div>
+                        <div class="four wide field calendar customtime customdiv customhidediv">
+                            <div class="ui input right icon">
+                                <i class="clock icon"></i>
+                                <h:inputText value="#{publishDates.saturdayToTime}" id="saturdayToTime">
+
+                                </h:inputText>
+                            </div>
+                        </div>
+                    </div>
+                    <!--for sunday date time-->
+                    <div class="inline fields">
+                        <div class="two wide field">
+                            <a class="ui basic large label">Sunday</a>
+                        </div>
+                        <div class="one wide field">
+                            <div class="ui toggle checkbox" >
+                                <h:selectBooleanCheckbox tabindex="0" class="hidden" value="#{publishDates.sunday}" /> 
+                            </div>
+                        </div>
+                        <div class="four wide field calendar customtime customdiv customhidediv">
+                            <div class="ui input right icon">
+                                <i class="clock icon"></i>
+                                <h:inputText value="#{publishDates.sundayFromTime}" id="sundayFromTime">
+                                </h:inputText>
+                            </div>
+                        </div>
+                        <div class="one wide field customdiv customhidediv">
+                            <label>to</label>
+                        </div>
+                        <div class="four wide field calendar customtime customdiv customhidediv">
+                            <div class="ui input right icon">
+                                <i class="clock icon"></i>
+                                <h:inputText value="#{publishDates.sundayToTime}" id="sundayToTime">
+
+                                </h:inputText>
+                            </div>
+                        </div>
+                    </div>
                     <h:commandButton class="ui blue button" value="Save" action="#{publishDates.save()}"/>
                 </div>
             </h:form>
@@ -220,11 +410,21 @@
                     }
                 });
                 $('.customtime').calendar({
+                    ampm: false,
                     type: 'time'
                 });
             });
             $('.menu .item').tab();
-            $('.ui.checkbox').checkbox();
+            $('.ui.checkbox').checkbox({
+                onChecked: function () {
+                    ($(this).parent().parent().siblings(".customhidediv").removeClass("customhidediv"));
+                    ($(this).parent().parent().siblings(".customdiv").addClass("customshowdiv"));
+                },
+                onUnchecked: function () {
+                    ($(this).parent().parent().siblings(".customshowdiv").removeClass("customshowdiv"));
+                    ($(this).parent().parent().siblings(".customdiv").addClass("customhidediv"));
+                }
+            });
 
         </script>
     </ui:define>

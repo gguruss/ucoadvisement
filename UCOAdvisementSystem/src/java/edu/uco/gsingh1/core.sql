@@ -147,6 +147,7 @@ BEGIN
   INSERT INTO grouptable (groupname, username) VALUES ("studentgroup", new.username);
 END#
 
+
 DELIMITER ;
 
 DROP TRIGGER IF EXISTS groupname_after_delete_trigger;
@@ -160,6 +161,7 @@ BEGIN
 END#
 
 DELIMITER ;
+
 
 INSERT INTO usertable(firstname,middleinitial,lastname,username,password,usertype,studentid,majorid,isverified)
 VALUES
@@ -343,21 +345,21 @@ advisorid INT NOT NULL AUTO_INCREMENT,
 userid INT,
 advisorfirstname VARCHAR(255),
 advisorlastname VARCHAR(255),
-availFrom DATE,
-availTo DATE,
 PRIMARY KEY (advisorid),
 FOREIGN KEY (userid) REFERENCES usertable(userid)
 );
 
-INSERT INTO advisor(userid,advisorfirstname,advisorlastname,availFrom,availTo)
+INSERT INTO advisor(userid,advisorfirstname,advisorlastname)
 VALUES
- (1,'hong','sung','2017-4-1','2017-5-1');
+ (1,'hong','sung');
 
 DROP TABLE IF EXISTS advisorschedule;
 CREATE TABLE advisorschedule(
 advisorscheduleid INT NOT NULL AUTO_INCREMENT,
 advisorid INT NOT NULL,
 availday TINYINT,
+availFrom DATE,
+availTo DATE,
 availfromtime TIME,
 availtotime TIME,
 duration TINYINT,
@@ -365,21 +367,22 @@ PRIMARY KEY (advisorscheduleid),
 FOREIGN KEY (advisorid) REFERENCES advisor(advisorid)
 );
 
-INSERT INTO advisorschedule (advisorid,availday,availfromtime,availtotime,duration)
-VALUES
-(1,2,'9:30','17:30',10);
-INSERT INTO advisorschedule (advisorid,availday,availfromtime,availtotime,duration)
-VALUES
-(1,3,'11:30','15:30',10);
-INSERT INTO advisorschedule (advisorid,availday,availfromtime,availtotime,duration)
-VALUES
-(1,4,'10:00','11:45',10);
-INSERT INTO advisorschedule (advisorid,availday,availfromtime,availtotime,duration)
-VALUES
-(1,5,'14:00','15:00',10);
-INSERT INTO advisorschedule (advisorid,availday,availfromtime,availtotime,duration)
-VALUES
-(1,6,'16:00','17:30',10);
+-- test data
+-- INSERT INTO advisorschedule (advisorid,availday,availfromtime,availtotime,duration)
+-- VALUES
+-- (1,2,'9:30','17:30',10);
+-- INSERT INTO advisorschedule (advisorid,availday,availfromtime,availtotime,duration)
+-- VALUES
+-- (1,3,'11:30','15:30',10);
+-- INSERT INTO advisorschedule (advisorid,availday,availfromtime,availtotime,duration)
+-- VALUES
+-- (1,4,'10:00','11:45',10);
+-- INSERT INTO advisorschedule (advisorid,availday,availfromtime,availtotime,duration)
+-- VALUES
+-- (1,5,'14:00','15:00',10);
+-- INSERT INTO advisorschedule (advisorid,availday,availfromtime,availtotime,duration)
+-- VALUES
+-- (1,6,'16:00','17:30',10);
 
 
 
@@ -443,22 +446,23 @@ FOREIGN KEY (userid) REFERENCES usertable(userid),
 FOREIGN KEY (cancelledbyuserid) REFERENCES usertable(userid)
 );
 
-INSERT INTO appointments
-(advisorid,userid,appointmentday,appointmentdate,starttime,endtime,status)
-VALUES
-(1,2,2,'2017-03-27','2017-03-27 16:10:00','2017-03-27 16:20:00',1);
-INSERT INTO appointments
-(advisorid,userid,appointmentday,appointmentdate,starttime,endtime,status)
-VALUES
-(1,2,2,'2017-03-27','2017-03-27 16:20:00','2017-03-27 16:30:00',1);
-INSERT INTO appointments
-(advisorid,userid,appointmentday,appointmentdate,starttime,endtime,status)
-VALUES
-(1,2,2,'2017-03-27','2017-03-27 11:10:00','2017-03-27 11:20:00',1);
-INSERT INTO appointments
-(advisorid,userid,appointmentday,appointmentdate,starttime,endtime,status)
-VALUES
-(1,2,2,'2017-03-27','2017-03-27 11:20:00','2017-03-27 11:30:00',-1);
+--test data
+-- INSERT INTO appointments
+-- (advisorid,userid,appointmentday,appointmentdate,starttime,endtime,status)
+-- VALUES
+-- (1,2,2,'2017-03-27','2017-03-27 16:10:00','2017-03-27 16:20:00',1);
+-- INSERT INTO appointments
+-- (advisorid,userid,appointmentday,appointmentdate,starttime,endtime,status)
+-- VALUES
+-- (1,2,2,'2017-03-27','2017-03-27 16:20:00','2017-03-27 16:30:00',1);
+-- INSERT INTO appointments
+-- (advisorid,userid,appointmentday,appointmentdate,starttime,endtime,status)
+-- VALUES
+-- (1,2,2,'2017-03-27','2017-03-27 11:10:00','2017-03-27 11:20:00',1);
+-- INSERT INTO appointments
+-- (advisorid,userid,appointmentday,appointmentdate,starttime,endtime,status)
+-- VALUES
+-- (1,2,2,'2017-03-27','2017-03-27 11:20:00','2017-03-27 11:30:00',-1);
 
 --This table consists of all the courses student has taken
 DROP TABLE IF EXISTS studentcourses;
@@ -614,6 +618,21 @@ END#
 
 DELIMITER ;
 
+DROP PROCEDURE IF EXISTS getMajorCoursesLeftToBeTaken;
+DELIMITER #
+
+CREATE PROCEDURE getMajorCoursesLeftToBeTaken(IN majorcode INT, userid INT)
+BEGIN
+SELECT *
+FROM majorprereqview m
+WHERE majorid=majorcode
+AND m.majorprereqcourse NOT IN(
+SELECT scourse FROM studentcourses sc 
+WHERE sc.suid=userid);
+END#
+
+DELIMITER ;
+
 --gets the appointment slot given a particular date
 DROP PROCEDURE IF EXISTS getAvailableAppointmentSlots;
 DELIMITER #
@@ -625,11 +644,11 @@ DECLARE availslots INT DEFAULT 0;
 DECLARE slotlimit INT DEFAULT 0;
 DECLARE appointmentslots INT DEFAULT 0;
 DECLARE advisingduration INT DEFAULT 0;
-
-SET availslots=(SELECT (TIME_TO_SEC(ads.availtotime-ads.availfromtime) div (10*60)) FROM advisorschedule ads WHERE availday=DAYOFWEEK(userselecteddate));
-SET appointmentslots=(SELECT count(*) FROM appointments WHERE appointmentdate=userselecteddate);
+--slot calculation is wrong causes wierd errors
+--SET availslots=(SELECT (TIME_TO_SEC(ads.availtotime-ads.availfromtime) div (10*60)) FROM advisorschedule ads WHERE availday=DAYOFWEEK(userselecteddate));
+--SET appointmentslots=(SELECT count(*) FROM appointments WHERE appointmentdate=userselecteddate);
 SET advisingduration=(SELECT duration FROM advisorschedule WHERE availday=DAYOFWEEK(userselecteddate));
-SET slotlimit=availslots-appointmentslots;
+--SET slotlimit=availslots-appointmentslots;
 
 SELECT *
 FROM(
@@ -668,9 +687,10 @@ allslotsinaday.start_at=ap.starttime
 AND
 allslotsinaday.end_at=ap.endtime
 WHERE ap.starttime is NULL
-LIMIT
-slotlimit;
+AND  DAYOFWEEK(allslotsinaday.end_at)=DAYOFWEEK(userselecteddate)
+;
 
 END#
 
 DELIMITER ;
+

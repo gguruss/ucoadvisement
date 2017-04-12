@@ -3,21 +3,16 @@
                 xmlns:f="http://xmlns.jcp.org/jsf/core"
                 xmlns:h="http://xmlns.jcp.org/jsf/html"
                 xmlns:ui="http://java.sun.com/jsf/facelets">
-    
+
     <ui:define name="dependencies">
         <h:outputStylesheet name="fullcalendar.css" library="css"/>
         <h:outputScript name="moment.min.js" library="js"/>
         <h:outputScript name="fullcalendar.js" library="js"/>
+        <h:outputScript name="functions.js" library="js"/>
     </ui:define>
     <ui:define name="jsscripts">
         <script type="text/javascript">
-            $(document).ready(function () {
-                // page is now ready, initialize the calendar...
-                $('#calendar').fullCalendar({
-                    height:450,
-                    weekends: false // put your options and callbacks here
-                });
-            });
+            
         </script>
     </ui:define>
     <ui:define name="title">
@@ -32,10 +27,28 @@
         <div class="ui visible info message">
             Click on a calendar day to view scheduled appointments
         </div>
-        
+
         <div id="calendar">
 
         </div>
+        <h:form id="calendarForm">
+            <h:inputText class="selecteddate" value="#{calendarBean.selectedDate}" style="display: none;">
+                <f:ajax event="change" listener="#{calendarBean.getAdvisorSlots()}"/> 
+            </h:inputText>
+            <h:inputText class="startdate" value="#{calendarBean.startDate}" style="display: none;">
+            </h:inputText>
+            <h:inputText class="enddate" value="#{calendarBean.endDate}" style="display: none;">
+            </h:inputText>
+        </h:form>
+        
+      
+    </ui:define>
+
+    <ui:define name="footerscripts">
+        <script type='text/javascript'>
+
+
+        </script>
     </ui:define>
 </ui:composition>
 

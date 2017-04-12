@@ -17,6 +17,8 @@ import javax.sql.DataSource;
 public interface MajorDAO {
 
     public ArrayList<Major> getAllMajor(DataSource ds) throws SQLException;
-    
+
     public ArrayList<MajorCourses> getMajorCourses(Integer majorid, DataSource ds) throws SQLException;
+
+    public ArrayList<MajorCourses> getMajorCoursesTakenByStudent(Integer majorid, Integer userid, DataSource ds) throws SQLException;
 }

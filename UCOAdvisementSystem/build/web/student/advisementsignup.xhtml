@@ -9,19 +9,18 @@
     </ui:define>
     <ui:define name="dependencies">
         <h:outputStylesheet name="fullcalendar.css" library="css"/>
+        <h:outputStylesheet name="sweetalert.css" library="css"/>
         <h:outputScript name="moment.min.js" library="js"/>
         <h:outputScript name="fullcalendar.js" library="js"/>
+        <h:outputScript name="functions.js" library="js"/>
+        <h:outputScript name="sweetalert.min.js" library="js"/>
     </ui:define>
     <ui:define name="jsscripts">
-        <script type="text/javascript">
-            $(document).ready(function () {
-                // page is now ready, initialize the calendar...
-                $('#calendar').fullCalendar({
-                    height: 450,
-                    weekends: false // put your options and callbacks here
-                });
-            });
-        </script>
+        <style>
+            .fc-state-highlight{
+                background: greenyellow;
+            }
+        </style>
     </ui:define>
     <ui:define name="seconditem">
         <div class="active item">
@@ -37,66 +36,75 @@
             <div id="calendar">
 
             </div>
-        </div>
-        <div class="row">
-            <form class="ui form">
-                <div class="inline fields">
-                    <div class="two wide field">
-                        <label>Selected Date</label>
-                    </div>
-                    <div class="three wide field">
-                        <div class="ui icon input">
-                            <input type="text" name="first-name" placeholder="Selected Date"/>
-                            <i class="calendar icon"></i>
-                        </div>
+            <h:form id="calendarForm">
+                <h:inputText class="selecteddate" value="#{dateBean.selectedDate}" style="display: none;">
+                    <f:ajax event="change" execute="@form" listener="#{dateBean.getStudentSlots()}" render="@form"/> 
+                </h:inputText>
+                <h:inputText class="startdate" value="#{dateBean.startDate}" style="display: none;">
+                </h:inputText>
+                <h:inputText class="enddate" value="#{dateBean.endDate}" style="display: none;">
+                </h:inputText>
+
+
+
+                <div class="ui text loader" style="display:none;" id="ajaxloader">Loading</div>
+                <div class="row" style="padding-top: 20px;">
+                    <div class="ui center aligned middle aligned grid">
+                        <h:dataTable id="slottable" value="#{dateBean.slots}" rendered="#{not empty dateBean.slots}" var="studentslot" class="ui olive celled collapsing table">
+                            <h:column>
+                                <f:facet name="header">Date</f:facet>
+                                <h:outputText value="#{studentslot.availableDate}">
+                                </h:outputText>
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header">From Time</f:facet>
+                                <h:outputText value="#{studentslot.outputSlotStartDateTime}">
+
+                                </h:outputText>
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header">To Time</f:facet>
+                                <h:outputText value="#{studentslot.outputSlotEndDateTime}">
+
+                                </h:outputText>
+                            </h:column>
+                            <h:column>
+                                <h:commandButton value="Book" action="#{dateBean.book(studentslot)}" class="ui blue button"/>                   
+                            </h:column>
+
+                        </h:dataTable>
+                        <h:panelGroup rendered="#{empty dateBean.slots}">
+                            <div style="padding-top: 10px">
+                                <h:outputText value="Please select a valid date to show available slots" />
+                            </div>
+                        </h:panelGroup>
                     </div>
                 </div>
-            </form>
-
-            <table class="ui small olive table">
-                <thead>
-                    <tr>
-                        <th>Available Times</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>
-                            10:00AM
-                        </td>
-                        <td>                                                 
-                            <button class="ui negative button">Booked</button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            10:10AM
-                        </td>
-                        <td>                                                 
-                            <button class="ui positive button">Book</button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            10:20AM
-                        </td>
-                        <td>                                                 
-                            <button class="ui positive button">Book</button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            10:30AM
-                        </td>
-                        <td>                                                 
-                            <button class="ui positive button">Book</button>
-                        </td>
-                    </tr>
-                </tbody>
-
-            </table>
+            </h:form>
         </div>
+    </ui:define>
+    <ui:define name="footerscripts">
+        <script>
+            jsf.ajax.addOnEvent(function (data) {
+                var ajaxstatus = data.status; // Can be "begin", "complete" and "success"
+                var ajaxloader = document.getElementById("ajaxloader");
+
+                switch (ajaxstatus) {
+                    case "begin": // This is called right before ajax request is been sent.
+//                        $('.row').dimmer('show');
+                        ajaxloader.style.display = 'block';
+                        break;
+
+                    case "complete": // This is called right after ajax response is received.
+                        ajaxloader.style.display = 'none';
+                        break;
+
+                    case "success": // This is called when ajax response is successfully processed.
+                        // NOOP.
+                        break;
+                }
+            });
+        </script>
     </ui:define>
 
 </ui:composition>
