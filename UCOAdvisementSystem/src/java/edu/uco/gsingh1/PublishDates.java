@@ -9,6 +9,7 @@ import edu.uco.gsingh1.businesslayer.AdvisorDAOImpl;
 import edu.uco.gsingh1.businesslayer.DateUtil;
 import edu.uco.gsingh1.businesslayer.Utility;
 import edu.uco.gsingh1.entity.AdvisorSchedule;
+import edu.uco.gsingh1.entity.Breaks;
 import java.io.Serializable;
 import java.sql.SQLException;
 import java.sql.Time;
@@ -50,22 +51,6 @@ public class PublishDates implements Serializable {
     @NotEmpty(message = "This is a required field.")
     private String fromDate;
 
-    public String getFromDate() {
-        return fromDate;
-    }
-
-    public void setFromDate(String fromDate) {
-        this.fromDate = fromDate;
-    }
-
-    public String getToDate() {
-        return toDate;
-    }
-
-    public void setToDate(String toDate) {
-        this.toDate = toDate;
-    }
-
     @NotEmpty(message = "This is a required field.")
     private String toDate;
     private Boolean monday;
@@ -77,6 +62,53 @@ public class PublishDates implements Serializable {
     private Boolean sunday;
     private ArrayList<AdvisorSchedule> advisorSchedules;
     private AdvisorSchedule advisorSchedule;
+    private ArrayList<Breaks> breaks1;
+    private int breakday;
+    private Breaks breaks;
+
+    public int getBreakday() {
+        return breakday;
+    }
+
+    public void setBreakday(int breakday) {
+        this.breakday = breakday;
+    }
+
+    public String getBreakFromTime() {
+        return breakFromTime;
+    }
+
+    public void setBreakFromTime(String breakFromTime) {
+        this.breakFromTime = breakFromTime;
+    }
+
+    public String getBreakToTime() {
+        return breakToTime;
+    }
+
+    public void setBreakToTime(String breakToTime) {
+        this.breakToTime = breakToTime;
+    }
+    
+    private String breakFromTime;
+    
+    private String breakToTime;
+
+    public ArrayList<Breaks> getBreaks1() {
+        return breaks1;
+    }
+
+    public void setBreaks1(ArrayList<Breaks> breaks1) {
+        this.breaks1 = breaks1;
+    }
+
+    public String getFromDate() {
+        return fromDate;
+    }
+
+    public void setFromDate(String fromDate) {
+        this.fromDate = fromDate;
+    }
 
     public ArrayList<AdvisorSchedule> getAdvisorSchedules() {
         return advisorSchedules;
@@ -84,6 +116,14 @@ public class PublishDates implements Serializable {
 
     public void setAdvisorSchedules(ArrayList<AdvisorSchedule> advisorSchedule) {
         this.advisorSchedules = advisorSchedule;
+    }
+
+    public String getToDate() {
+        return toDate;
+    }
+
+    public void setToDate(String toDate) {
+        this.toDate = toDate;
     }
 
     @PostConstruct
@@ -95,6 +135,9 @@ public class PublishDates implements Serializable {
         setFriday(false);
         setSaturday(false);
         setSunday(false);
+        breaks = new Breaks();
+        breaks1 = new ArrayList<>();
+        bindBreakGrid();
     }
 
     public Integer getDuration() {
@@ -387,4 +430,46 @@ public class PublishDates implements Serializable {
         return "advisorhome.xhtml?faces-redirect=true";
     }
 
+    public void saveBreak() {
+        Boolean result = false;
+        breaks.setAdvisorId(loginBean.getUser().userid);
+        breaks.setBreakday(getBreakday());
+        breaks.setBreakFromTime(Utility.getTime(getBreakFromTime()));
+        breaks.setBreakToTime(Utility.getTime(getBreakToTime()));
+        AdvisorDAO advisorDAO = new AdvisorDAOImpl();
+        try {
+            result = advisorDAO.insertAdvisorBreaks(breaks, ds);
+        } catch (SQLException ex) {
+            Logger.getLogger(PublishDates.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        if (result) {
+            setBreakday(1);
+            setBreakFromTime("");
+            setBreakToTime("");
+            bindBreakGrid();
+        }
+
+    }
+
+    public void deleteBreak(Breaks breaks) {
+        Boolean result = false;
+        AdvisorDAO advisorDAO = new AdvisorDAOImpl();
+        try {
+            result = advisorDAO.deleteBreaks(breaks, ds);
+        } catch (SQLException ex) {
+            Logger.getLogger(PublishDates.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        if (result) {
+            bindBreakGrid();
+        }
+    }
+
+    private void bindBreakGrid() {
+        AdvisorDAO advisorDAO = new AdvisorDAOImpl();
+        try {
+            breaks1 = advisorDAO.getBreaks(loginBean.getUser().userid, ds);
+        } catch (SQLException ex) {
+            Logger.getLogger(PublishDates.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 }

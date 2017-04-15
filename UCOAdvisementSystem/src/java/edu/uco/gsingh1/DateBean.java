@@ -11,6 +11,7 @@ import edu.uco.gsingh1.businesslayer.AdvisorDAOImpl;
 import edu.uco.gsingh1.businesslayer.UserDAO;
 import edu.uco.gsingh1.businesslayer.UserDAOImpl;
 import edu.uco.gsingh1.entity.AdvisorSchedule;
+import edu.uco.gsingh1.entity.Breaks;
 import edu.uco.gsingh1.entity.Slots;
 import java.io.Serializable;
 import java.sql.SQLException;
@@ -117,6 +118,9 @@ public class DateBean implements Serializable {
                 System.out.println(slot1.getAvailableDate());
                 System.out.println(slot1.getOutputSlotStartDateTime());
                 System.out.println(slot1.getOutputSlotEndDateTime());
+                System.out.println(slot1.getSlotStartDateTime());
+                System.out.println(slot1.getSlotEndDateTime());
+                System.out.println("This is for test date "+slot1.getTestDate());
             }
         }
         AdvisorSchedule scheduledDate = new AdvisorSchedule();

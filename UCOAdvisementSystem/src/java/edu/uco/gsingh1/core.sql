@@ -11,6 +11,7 @@
 --create  major table
 DROP TABLE IF EXISTS daytable;
 DROP TABLE IF EXISTS advisorschedule;
+DROP TABLE IF EXISTS breaks;
 DROP TABLE IF EXISTS slots;
 DROP TABLE IF EXISTS appointments;
 DROP TABLE IF EXISTS timeslots;
@@ -424,10 +425,11 @@ end_time TIME,
 PRIMARY KEY (breakid)
 );
 
-INSERT INTO breaks
-    (advisorid, breakday, start_time, end_time)
-VALUES
-    (1, 2, '11:00:00', '14:30:00');
+--testing breaks data
+-- INSERT INTO breaks
+--     (advisorid, breakday, start_time, end_time)
+-- VALUES
+--     (1, 2, '11:00:00', '14:30:00');
 
 DROP TABLE IF EXISTS appointments;
 CREATE TABLE appointments(
@@ -598,6 +600,20 @@ SELECT
 JOIN courses c
 ON majorprereqcourse=c.course;
 
+DROP VIEW IF EXISTS breakview;
+CREATE OR REPLACE VIEW breakview
+AS
+SELECT  
+        b.breakid,
+        b.breakday,
+        b.advisorid,
+        d.dayname,
+        start_time,
+        end_time
+               FROM breaks b
+JOIN daytable d
+ON breakday=d.daynum;
+
 DROP PROCEDURE IF EXISTS getCoursesTakenByStudents;
 DELIMITER #
 
@@ -644,11 +660,9 @@ DECLARE availslots INT DEFAULT 0;
 DECLARE slotlimit INT DEFAULT 0;
 DECLARE appointmentslots INT DEFAULT 0;
 DECLARE advisingduration INT DEFAULT 0;
---slot calculation is wrong causes wierd errors
---SET availslots=(SELECT (TIME_TO_SEC(ads.availtotime-ads.availfromtime) div (10*60)) FROM advisorschedule ads WHERE availday=DAYOFWEEK(userselecteddate));
---SET appointmentslots=(SELECT count(*) FROM appointments WHERE appointmentdate=userselecteddate);
+
 SET advisingduration=(SELECT duration FROM advisorschedule WHERE availday=DAYOFWEEK(userselecteddate));
---SET slotlimit=availslots-appointmentslots;
+
 
 SELECT *
 FROM(
@@ -694,3 +708,117 @@ END#
 
 DELIMITER ;
 
+-- the codes below are for setting collation type of the database
+-- SET collation_connection = 'utf8_general_ci'
+-- 
+-- ALTER DATABASE your_database_name CHARACTER SET utf8 COLLATE utf8_general_ci
+-- 
+-- ALTER TABLE your_table_name CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci
+-- 
+-- SELECT CONCAT('ALTER TABLE `', table_name, '` MODIFY `', column_name, '` ', DATA_TYPE, ' CHARACTER SET UTF8 COLLATE utf8_general_ci', (CASE WHEN IS_NULLABLE = 'NO' THEN ' NOT NULL' ELSE '' END), ';')
+-- FROM information_schema.COLUMNS 
+-- WHERE TABLE_SCHEMA = 'wspdemo'
+-- AND DATA_TYPE != 'varchar'
+-- AND 
+-- (
+-- 	CHARACTER_SET_NAME != 'utf8_general_ci'
+-- 	OR
+-- 	COLLATION_NAME != 'utf8_general_ci'
+-- );
+-- 
+-- SELECT table_schema, table_name, column_name, character_set_name, collation_name
+-- 
+-- FROM information_schema.columns
+-- 
+-- WHERE collation_name = 'latin1_swedish_ci'
+-- 
+-- ORDER BY table_schema, table_name,ordinal_position; 
+
+-- SELECT CONCAT('ALTER TABLE `', table_name, '` MODIFY `', column_name, '` ', DATA_TYPE, ' CHARACTER SET UTF8 COLLATE utf8_general_ci', (CASE WHEN IS_NULLABLE = 'NO' THEN ' NOT NULL' ELSE '' END), ';')
+-- FROM information_schema.COLUMNS 
+-- WHERE TABLE_SCHEMA = 'mysql'
+-- AND DATA_TYPE != 'varchar'
+-- AND 
+-- (
+-- 	CHARACTER_SET_NAME != 'utf8'
+-- 	OR
+-- 	COLLATION_NAME != 'utf8_general_ci'
+-- );
+
+--procedure to check breaks at a particular date
+DROP PROCEDURE IF EXISTS getBreakAtDate;
+DELIMITER #
+
+CREATE PROCEDURE getBreakAtDate(IN selectedDate DATETIME,IN advisorId int)
+BEGIN
+SELECT breakday,start_time,end_time
+FROM breaks
+WHERE breakday=DAYOFWEEK(selectedDate)
+AND advisorid = advisorid;
+END#
+
+DELIMITER ;
+
+--procedure to get time slots that are not booked and that is within advisors available time in a particular day and excludes time range which fall on breaks
+DROP PROCEDURE IF EXISTS getAvailableAppointmentSlotsWithoutBreaks;
+DELIMITER #
+
+CREATE PROCEDURE getAvailableAppointmentSlotsWithoutBreaks(IN userselecteddate DATE, IN advisorid INTEGER)
+
+BEGIN
+DECLARE availslots INT DEFAULT 0;
+DECLARE slotlimit INT DEFAULT 0;
+DECLARE appointmentslots INT DEFAULT 0;
+DECLARE advisingduration INT DEFAULT 0;
+
+SET advisingduration=(SELECT duration FROM advisorschedule WHERE availday=DAYOFWEEK(userselecteddate));
+SELECT *
+FROM(
+SELECT dts.start_at,dts.end_at,ads.advisorid,ads.availday
+FROM(
+SELECT
+             num + 1 as num
+                , DATE_ADD(userselecteddate, INTERVAL (slots.num * advisingduration) MINUTE) start_at
+                , DATE_ADD(userselecteddate, INTERVAL ((slots.num + 1)* advisingduration) MINUTE) end_at
+                , DAYOFWEEK(userselecteddate) dayofweek
+            FROM (
+                  /* generates 1000 rows 0 to 999 */
+                  SELECT hundreds.digit * 100 + tens.digit * 10 + ones.digit AS num
+                  FROM (
+                        SELECT 0 AS digit UNION ALL SELECT 1 UNION ALL SELECT 2 UNION ALL SELECT 3 UNION ALL SELECT 4 UNION ALL
+                        SELECT 5 UNION ALL SELECT 6 UNION ALL SELECT 7 UNION ALL SELECT 8 UNION ALL SELECT 9
+                       ) ones
+                  CROSS JOIN (
+                        SELECT 0 AS digit UNION ALL SELECT 1 UNION ALL SELECT 2 UNION ALL SELECT 3 UNION ALL SELECT 4 UNION ALL
+                        SELECT 5 UNION ALL SELECT 6 UNION ALL SELECT 7 UNION ALL SELECT 8 UNION ALL SELECT 9
+                             ) tens
+                  CROSS JOIN (
+                        SELECT 0 AS digit UNION ALL SELECT 1 UNION ALL SELECT 2 UNION ALL SELECT 3 UNION ALL SELECT 4 UNION ALL
+                        SELECT 5 UNION ALL SELECT 6 UNION ALL SELECT 7 UNION ALL SELECT 8 UNION ALL SELECT 9
+                             ) hundreds
+                  ) slots
+)dts
+INNER JOIN advisorschedule ads
+ON
+ads.availday=dts.dayofweek
+WHERE TIME(dts.start_at)>=ads.availfromtime 
+AND TIME(dts.end_at)<=ads.availtotime
+AND ads.advisorid=advisorid)allslotsinaday
+LEFT JOIN appointments ap on
+allslotsinaday.start_at=ap.starttime
+AND
+allslotsinaday.end_at=ap.endtime
+LEFT JOIN breaks br ON
+TIME(allslotsinaday.start_at)>=br.start_time
+AND
+TIME(allslotsinaday.end_at)<=br.end_time
+AND
+DAYOFWEEK(allslotsinaday.end_at) = br.breakday
+WHERE ap.starttime is NULL
+AND br.start_time is NULL
+AND  DAYOFWEEK(allslotsinaday.end_at)=DAYOFWEEK(userselecteddate)
+;
+
+END#
+
+DELIMITER ;

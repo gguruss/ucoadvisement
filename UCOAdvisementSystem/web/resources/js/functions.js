@@ -19,24 +19,17 @@ $(document).ready(function () {
         header: {
             left: 'prev,next today',
             center: 'title',
-            right: 'month,agendaDay'
+            right: 'month'
         },
         dayClick: function (date, jsEvent, view) {
-
-//            if (view.name === 'month' || view.name === 'agendaWeek') {
-//                $('#calendar').fullCalendar('changeView', 'agendaDay');
-//                $('#calendar').fullCalendar('gotoDate', date);
-//            }
-            $(".fc-state-highlight").removeClass("fc-state-highlight");
-            $(jsEvent.target).addClass("fc-state-highlight");
-            if (date < (startDateMomentVal)) {
+            if (date.format() < (moment().format('YYYY-MM-DD'))) {
                 swal({
                     title: "Please select a different date",
                     text: "Advisor not available on this date!",
                     type: "error",
                     confirmButtonText: "Ok"
                 });
-            } else if (date > (endDateMomentVal)) {
+            } else if (date.format() > (endDateMomentVal)) {
                 swal({
                     title: "Please select a different date",
                     text: "Advisor not available on this date!",
@@ -47,9 +40,6 @@ $(document).ready(function () {
                 selectedDate.val(date.format());
                 selectedDate.change();
             }
-        },
-        dayRender: function (date, cell) {
-
         }
     });
 

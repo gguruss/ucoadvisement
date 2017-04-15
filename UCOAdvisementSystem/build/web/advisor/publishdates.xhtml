@@ -10,6 +10,7 @@
     <ui:define name="jsscripts">
         <h:outputStylesheet name="calendar.min.css" library="css"/>
         <h:outputScript name="calendar.min.js" library="js"/>
+        <h:outputScript name="validatebreaks.js" library="js"/>
         <style>
             .customhidediv{
                 display:none !important;
@@ -34,7 +35,6 @@
         <div class="ui top attached tabular menu">
             <a class="active item" data-tab="first">Working Hours</a>
             <a class="item" data-tab="second">Breaks</a>
-            <a class="item" data-tab="third">Time Off</a>
         </div>
         <div class="ui bottom attached active tab segment" data-tab="first">
             <h:form id="publishdateform">
@@ -74,7 +74,7 @@
                         </div>
                         <div class="three wide field ui calendar customdate">
                             <div class="ui input right icon">
-                                <h:inputText value="#{publishDates.toDate}">
+                                <h:inputText value="#{publishDates.toDate}" id="toDate">
 
                                 </h:inputText>
                                 <i class="calendar icon"></i>
@@ -298,134 +298,110 @@
                 <div class="ui visible info message">
                     <div class="content">This field is for adding breaks in a  particular day.</div>
                 </div>
-                <div class="inline fields">
-                    <div class="two wide field">
-                        <a class="ui basic large label">Monday</a>
-                    </div>
-                    <div class="two wide field">
-                        <button class="circular ui green icon button">
-                            Add Break
-                        </button>
-                    </div>
-
-                </div>
-                <div class="inline fields">
-                    <div class="two wide field">
-                        <a class="ui basic large label">Tuesday</a>
-                    </div>
-                    <div class="two wide field">
-                        <button class="circular ui green icon button">
-                            Add Break
-                        </button>
-                    </div>
-                </div>
-                <div class="inline fields">
-                    <div class="two wide field">
-                        <a class="ui basic large label">Wednesday</a>
-                    </div>
-                    <div class="two wide field">
-                        <button class="circular ui green icon button">
-                            Add Break
-                        </button>
-                    </div>
-                </div>
-                <div class="inline fields">
-                    <div class="two wide field">
-                        <a class="ui basic large label">Thursday</a>
-                    </div>
-                    <div class="two wide field">
-                        <button class="circular ui green icon button">
-                            Add Break
-                        </button>
-                    </div>
-                </div>
-                <div class="inline fields">
-                    <div class="two wide field">
-                        <a class="ui basic large label">Friday</a>
-                    </div>
-                    <div class="two wide field">
-                        <button class="circular ui green icon button">
-                            Add Break
-                        </button>
-                    </div>
-                </div>
-                <div class="inline fields">
-                    <div class="two wide field">
-                        <a class="ui basic large label">Saturday</a>
-                    </div>
-                    <div class="two wide field">
-                        <button class="circular ui green icon button">
-                            Add Break
-                        </button>
-                    </div>
-                </div>
-                <div class="inline fields">
-                    <div class="two wide field">
-                        <a class="ui basic large label">Sunday</a>
-                    </div>
-                    <div class="two wide field">
-                        <button class="circular ui green icon button">
-                            Add Break
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="ui bottom attached tab segment" data-tab="third">
-            <div class="ui form" id="timeoff">
-                <div class="ui visible info message">
-                    <div class="content">This field is for adding time off for a particular date.</div>
-                </div>
-                <div class="inline fields">
-                    <div class="two wide field">
-                        Enter Date
-                    </div>
-                    <div class="two wide field">
-                        <div class="ui icon input">
-                            <input type="text" name="first-name" placeholder="Select a Date"/>
-                            <i class="calendar icon"></i>
+                <h:form id="breakform">
+                    <div class="inline fields">
+                        <div class="two wide field">
+                            Select Day
+                        </div>
+                        <div class="four wide field">
+                            <h:selectOneMenu value="#{publishDates.breakday}">
+                                <f:selectItem itemValue="1" itemLabel="Sunday" />
+                                <f:selectItem itemValue="2" itemLabel="Monday" />
+                                <f:selectItem itemValue="3" itemLabel="Tuesday" />
+                                <f:selectItem itemValue="4" itemLabel="Wednesday" />
+                                <f:selectItem itemValue="5" itemLabel="Thursday" />
+                                <f:selectItem itemValue="6" itemLabel="Friday" />
+                                <f:selectItem itemValue="7" itemLabel="Saturday" />
+                            </h:selectOneMenu>
                         </div>
                     </div>
-                </div>
-                <h:commandButton value="Save" action="#{publishDates.save()}"/>
+                    <div class="inline fields">
+                        <div class="two wide field">
+                            Select From Time
+                        </div>
+                        <div class="four wide field calendar customtime">
+                            <div class="ui input right icon">
+                                <i class="clock icon"></i>
+                                <h:inputText value="#{publishDates.breakFromTime}" id="breakfromtime">
+                                </h:inputText>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="inline fields">
+                        <div class="two wide field">
+                            Select To Time
+                        </div>
+                        <div class="four wide field calendar customtime">
+                            <div class="ui input right icon">
+                                <i class="clock icon"></i>
+                                <h:inputText value="#{publishDates.breakToTime}" id="breaktotime">
+                                </h:inputText>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h:commandButton value="Save" class="ui blue button savebreak" action="#{publishDates.saveBreak()}" onclick="return validateBreak();">
+                        <f:ajax  execute="@form" render="@form"/> 
+                    </h:commandButton>
+
+                    <h:dataTable value="#{publishDates.breaks1}" rendered="#{not empty publishDates.breaks1}" id="breakstable" var="breakData" class="ui olive celled collapsing table">
+                        <h:column>
+                            <f:facet name="header">Break Id</f:facet>
+                            <h:outputText value="#{breakData.breakId}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">Day</f:facet>
+                            <h:outputText value="#{breakData.breakWeekDay}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">Break Start</f:facet>
+                            <h:outputText value="#{breakData.outputBreakFromTime}" />
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">Break End</f:facet>
+                            <h:outputText value="#{breakData.outputBreakToTime}">
+                            </h:outputText>
+                        </h:column>
+                        <h:column class="collapsing">
+                            <f:facet name="header">Action</f:facet>
+                            <h:commandButton value="Delete" class="ui negative button" id="deleteBreaks" action="#{publishDates.deleteBreak(breakData)}">
+                                <f:ajax execute="@form" render="@form"/> 
+                            </h:commandButton>
+                        </h:column>
+
+                    </h:dataTable>
+                    <h:panelGroup rendered="#{empty publishDates.breaks1}">
+
+                    </h:panelGroup>
+                    <h:messages id="messages" globalOnly="true" layout="table" />   
+                </h:form>
+                <div class="ui text loader" style="display:none;" id="ajaxloader">Loading</div>
             </div>
         </div>
+
     </ui:define>
 
     <ui:define name="footerscripts">
-        <script type="text/javascript">
-            $(document).ready(function () {
-                $('.customdate').calendar({
-                    type: 'date',
-                    monthFirst: false,
-                    formatter: {
-                        date: function (date, settings) {
-                            if (!date)
-                                return '';
-                            var day = date.getDate();
-                            var month = date.getMonth() + 1;
-                            var year = date.getFullYear();
-                            return day + '/' + month + '/' + year;
-                        }
-                    }
-                });
-                $('.customtime').calendar({
-                    ampm: false,
-                    type: 'time'
-                });
-            });
-            $('.menu .item').tab();
-            $('.ui.checkbox').checkbox({
-                onChecked: function () {
-                    ($(this).parent().parent().siblings(".customhidediv").removeClass("customhidediv"));
-                    ($(this).parent().parent().siblings(".customdiv").addClass("customshowdiv"));
-                },
-                onUnchecked: function () {
-                    ($(this).parent().parent().siblings(".customshowdiv").removeClass("customshowdiv"));
-                    ($(this).parent().parent().siblings(".customdiv").addClass("customhidediv"));
+        <script>
+            jsf.ajax.addOnEvent(function (data) {
+                var ajaxstatus = data.status; // Can be "begin", "complete" and "success"
+                var ajaxloader = document.getElementById("ajaxloader");
+                switch (ajaxstatus) {
+                    case "begin": // This is called right before ajax request is been sent.
+                        ajaxloader.style.display = 'block';
+                        break;
+
+                    case "complete": // This is called right after ajax response is received.
+                        ajaxloader.style.display = 'none';
+                        loadCalendar();
+                        break;
+
+                    case "success": // This is called when ajax response is successfully processed.
+                        // NOOP.
+                        loadCalendar();
+                        break;
                 }
             });
-
         </script>
     </ui:define>
 

@@ -409,6 +409,7 @@ public class UserDAOImpl implements UserDAO {
         ArrayList<Slots> slots = new ArrayList<>();
         DateTimeFormatter fmtDate = DateTimeFormat.forPattern("yyyy-MM-dd");
         DateTimeFormatter fmtTime = DateTimeFormat.forPattern("HH:mm a");
+        DateTimeFormatter fmtDateTime = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm");
         if (ds == null) {
             throw new SQLException("Cannot get DataSource");
         }
@@ -417,7 +418,7 @@ public class UserDAOImpl implements UserDAO {
             throw new SQLException("Cannot get connection");
         }
         try {
-            CallableStatement slotView = conn.prepareCall("{CALL getAvailableAppointmentSlots(?,?)}");
+            CallableStatement slotView = conn.prepareCall("{CALL getAvailableAppointmentSlotsWithoutBreaks(?,?)}");
             slotView.setDate(1, new java.sql.Date(userselectedDate.toDate().getTime()));
             slotView.setInt(2, advisorId);
             boolean exists = slotView.execute();
@@ -430,6 +431,7 @@ public class UserDAOImpl implements UserDAO {
                     slot.setAvailableDate(fmtDate.print(new DateTime(result.getTimestamp("start_at"))));
                     slot.setOutputSlotStartDateTime(fmtTime.print(new DateTime(result.getTimestamp("start_at"))));
                     slot.setOutputSlotEndDateTime(fmtTime.print(new DateTime(result.getTimestamp("end_at"))));
+                    slot.setTestDate(fmtDateTime.print(new DateTime(result.getTimestamp("start_at"))));
                     slots.add(slot);
                 }
             }

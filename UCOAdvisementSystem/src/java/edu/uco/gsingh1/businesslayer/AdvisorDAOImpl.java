@@ -6,6 +6,7 @@ package edu.uco.gsingh1.businesslayer;
 
 import edu.uco.gsingh1.entity.Advisor;
 import edu.uco.gsingh1.entity.AdvisorSchedule;
+import edu.uco.gsingh1.entity.Breaks;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -15,6 +16,8 @@ import java.util.ArrayList;
 import javax.annotation.Resource;
 import javax.sql.DataSource;
 import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 /**
  *
@@ -88,6 +91,92 @@ public class AdvisorDAOImpl implements AdvisorDAO {
             conn.close();
         }
         return dates;
+    }
+
+    @Override
+    public boolean insertAdvisorBreaks(Breaks breaks, DataSource ds) throws SQLException {
+        if (ds == null) {
+            throw new SQLException("Cannot get DataSource");
+        }
+        Connection conn = ds.getConnection();
+        if (conn == null) {
+            throw new SQLException("Cannot get connection");
+        }
+        try {
+            PreparedStatement insertQuery = conn.prepareStatement(
+                    "INSERT INTO breaks"
+                    + "(advisorid,breakday,start_time,end_time) "
+                    + "VALUES(?,?,?,?)");
+            insertQuery.setInt(1, breaks.getAdvisorId());
+            insertQuery.setInt(2, breaks.getBreakday());
+            insertQuery.setTime(3, new java.sql.Time(breaks.getBreakFromTime().toDate().getTime()));
+            insertQuery.setTime(4, new java.sql.Time(breaks.getBreakToTime().toDate().getTime()));
+
+            int result = insertQuery.executeUpdate();
+            if (result == 1) {
+                return true;
+            }
+
+        } finally {
+            conn.close();
+        }
+        return false;
+    }
+
+    @Override
+    public ArrayList<Breaks> getBreaks(int advisorId, DataSource ds) throws SQLException {
+        ArrayList<Breaks> advisorBreaks = new ArrayList<>();
+        DateTimeFormatter fmtTime = DateTimeFormat.forPattern("HH:mm a");
+        if (ds == null) {
+            throw new SQLException("Cannot get DataSource");
+        }
+        Connection conn = ds.getConnection();
+        if (conn == null) {
+            throw new SQLException("Cannot get connection");
+        }
+        try {
+            PreparedStatement selectQuery = conn.prepareStatement(
+                    "SELECT * FROM breakview WHERE advisorid=?");
+            selectQuery.setInt(1, advisorId);
+
+            ResultSet result = selectQuery.executeQuery();
+            while (result.next()) {
+                Breaks advisorBreak = new Breaks();
+                advisorBreak.setBreakId(result.getInt("breakid"));
+                advisorBreak.setBreakday(result.getInt("breakday"));
+                advisorBreak.setBreakWeekDay(result.getString("dayname"));
+                advisorBreak.setOutputBreakFromTime(fmtTime.print(new DateTime(result.getTimestamp("start_time"))));
+                advisorBreak.setOutputBreakToTime(fmtTime.print(new DateTime(result.getTimestamp("end_time"))));
+                advisorBreaks.add(advisorBreak);
+            }
+
+        } finally {
+            conn.close();
+        }
+        return advisorBreaks;
+    }
+
+    @Override
+    public boolean deleteBreaks(Breaks breaks, DataSource ds) throws SQLException {
+        if (ds == null) {
+            throw new SQLException("Cannot get DataSource");
+        }
+        Connection conn = ds.getConnection();
+        if (conn == null) {
+            throw new SQLException("Cannot get connection");
+        }
+        try {
+            PreparedStatement deleteQuery = conn.prepareStatement(
+                    "DELETE FROM breaks WHERE breakid=?");
+            deleteQuery.setInt(1, breaks.getBreakId());
+            int deleted = deleteQuery.executeUpdate();
+            if (deleted == -1) {
+                return false;
+            }
+        } finally {
+            conn.close();
+        }
+        return true;
     }
 
 }

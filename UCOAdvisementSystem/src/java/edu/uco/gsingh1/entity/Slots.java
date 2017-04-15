@@ -61,4 +61,14 @@ public class Slots {
     public void setAvailableDate(String availableDate) {
         this.availableDate = availableDate;
     }
+    
+    private String testDate;
+
+    public String getTestDate() {
+        return testDate;
+    }
+
+    public void setTestDate(String testDate) {
+        this.testDate = testDate;
+    }
 }
