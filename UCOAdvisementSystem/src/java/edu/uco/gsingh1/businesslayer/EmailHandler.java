@@ -4,8 +4,10 @@
  */
 package edu.uco.gsingh1.businesslayer;
 
+import java.io.UnsupportedEncodingException;
 import java.util.Date;
 import java.util.Properties;
+import java.util.ResourceBundle;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Session;
@@ -21,15 +23,15 @@ import javax.mail.internet.MimeMessage;
  */
 public class EmailHandler {
 
-    public static void sendEmail(String email, String verificationcode) {
+    public static void sendVerificationCodeEmail(String email, String verificationcode) throws UnsupportedEncodingException {
         try {
             String host = "smtp.gmail.com";
-            String user = "developer2046@gmail.com";
-            String fromEmail = "developer2046@gmail.com"; //parametrize this to read from xml or database file
+            String user = ResourceBundle.getBundle("/edu/uco/gsingh1/emailconfig").getString("emailsender");
+            String fromEmail = ResourceBundle.getBundle("/edu/uco/gsingh1/emailconfig").getString("emailsender");
             String toEmail = email;
-            String password = "357b95b11518c501c72f9682e2cd969c6f0e24531107d988285576b23ba2b316";//parameterize this to read from xml or database file
-            String subject = "UCO CS Advisement: Successful Registration";
-            String message = "Dear User, <br/> Thankyou for registering to CS Advisement System. Please login to the system using the verification code: <br/><b>"+verificationcode+"</b>.<br/> Regards,<br/> CS Advisement team";
+            String password = ResourceBundle.getBundle("/edu/uco/gsingh1/emailconfig").getString("emailpassword");
+            String subject = "Successful Registration";
+            String message = "Dear User, <br/> Thankyou for registering to CS Advisement System. Please login to the system using the verification code: <br/><b>" + verificationcode + "</b>.<br/> Regards,<br/> CS Advisement team";
             Properties props = System.getProperties();
             props.put("mail.smtp.starttls.enable", "true");
             props.put("mail.smtp.host", "true");
@@ -42,13 +44,13 @@ public class EmailHandler {
             Session mailSession = Session.getDefaultInstance(props, null);
             mailSession.setDebug(true);
             Message msg = new MimeMessage(mailSession);
-            msg.setFrom(new InternetAddress(fromEmail));
+            msg.setFrom(new InternetAddress(fromEmail, "UCO CS Advisement"));
             InternetAddress[] address = {new InternetAddress(toEmail)};
             msg.setRecipients(Message.RecipientType.TO, address);
             msg.setSubject(subject);
             msg.setContent(message, "text/html; charset=utf-8");
             msg.setSentDate(new Date());
-            
+
             Transport transport = mailSession.getTransport("smtp");
             transport.addTransportListener(new TransportListener() {
                 @Override
@@ -66,7 +68,7 @@ public class EmailHandler {
                     throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
                 }
             });
-            
+
             transport.connect(host, user, password);
             transport.sendMessage(msg, address);
             transport.close();
@@ -75,4 +77,117 @@ public class EmailHandler {
         }
     }
 
+    public static void sendAppointmentConfirmation(String email, String AppointmentDate, String AppointmentFromTime, String AppointmentToTime) throws UnsupportedEncodingException {
+        try {
+            String host = "smtp.gmail.com";
+            String user = ResourceBundle.getBundle("/edu/uco/gsingh1/emailconfig").getString("emailsender");
+            String fromEmail = ResourceBundle.getBundle("/edu/uco/gsingh1/emailconfig").getString("emailsender");
+            String toEmail = email;
+            String password = ResourceBundle.getBundle("/edu/uco/gsingh1/emailconfig").getString("emailpassword");
+            String subject = "Booking Confirmed";
+            String message = "Dear User, <br/>Your appointment has been scheduled for <br/><b>Date: " + AppointmentDate
+                    + "</b><br/><b>From Time: " + AppointmentFromTime
+                    + "</b><br/><b>To Time: " + AppointmentToTime
+                    + "</b><br/>Regards,<br/> CS Advisement team";
+            Properties props = System.getProperties();
+            props.put("mail.smtp.starttls.enable", "true");
+            props.put("mail.smtp.host", "true");
+            props.put("mail.smtp.port", "587");
+            props.put("mail.smtp.auth", "true");
+            props.put("mail.smtp.starttls.required", "true");
+
+            java.security.Security.addProvider(new com.sun.net.ssl.internal.ssl.Provider());
+
+            Session mailSession = Session.getDefaultInstance(props, null);
+            mailSession.setDebug(true);
+            Message msg = new MimeMessage(mailSession);
+            msg.setFrom(new InternetAddress(fromEmail, "UCO CS Advisement"));
+            InternetAddress[] address = {new InternetAddress(toEmail)};
+            msg.setRecipients(Message.RecipientType.TO, address);
+            msg.setSubject(subject);
+            msg.setContent(message, "text/html; charset=utf-8");
+            msg.setSentDate(new Date());
+
+            Transport transport = mailSession.getTransport("smtp");
+            transport.addTransportListener(new TransportListener() {
+                @Override
+                public void messageDelivered(TransportEvent te) {
+                    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+                }
+
+                @Override
+                public void messageNotDelivered(TransportEvent te) {
+                    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+                }
+
+                @Override
+                public void messagePartiallyDelivered(TransportEvent te) {
+                    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+                }
+            });
+
+            transport.connect(host, user, password);
+            transport.sendMessage(msg, address);
+            transport.close();
+        } catch (MessagingException ex) {
+            System.out.println("Could not send email " + ex);
+        }
+    }
+
+    public static void sendAppointmentCancellation(String email, String AppointmentDate, String AppointmentFromTime, String AppointmentToTime) throws UnsupportedEncodingException {
+        try {
+            String host = "smtp.gmail.com";
+            String user = ResourceBundle.getBundle("/edu/uco/gsingh1/emailconfig").getString("emailsender");
+            String fromEmail = ResourceBundle.getBundle("/edu/uco/gsingh1/emailconfig").getString("emailsender");
+            String toEmail = email;
+            String password = ResourceBundle.getBundle("/edu/uco/gsingh1/emailconfig").getString("emailpassword");
+            String subject = "Appointment Cancelled";
+            String message = "Dear User, <br/>Your appointment scheduled has been cancelled for the booking below: <br/><b>Date: " + AppointmentDate
+                    + "</b><br/><b>From Time: " + AppointmentFromTime
+                    + "</b><br/><b>To Time: " + AppointmentToTime
+                    + "</b><br/>Please login to the advisement system and choose a different date and time of booking<br/>.Regards,<br/> CS Advisement team";
+            Properties props = System.getProperties();
+            props.put("mail.smtp.starttls.enable", "true");
+            props.put("mail.smtp.host", "true");
+            props.put("mail.smtp.port", "587");
+            props.put("mail.smtp.auth", "true");
+            props.put("mail.smtp.starttls.required", "true");
+
+            java.security.Security.addProvider(new com.sun.net.ssl.internal.ssl.Provider());
+
+            Session mailSession = Session.getDefaultInstance(props, null);
+            mailSession.setDebug(true);
+            Message msg = new MimeMessage(mailSession);
+            msg.setFrom(new InternetAddress(fromEmail, "UCO CS Advisement"));
+            InternetAddress[] address = {new InternetAddress(toEmail)};
+            msg.setRecipients(Message.RecipientType.TO, address);
+            msg.setSubject(subject);
+            msg.setContent(message, "text/html; charset=utf-8");
+            msg.setSentDate(new Date());
+
+            Transport transport = mailSession.getTransport("smtp");
+            transport.addTransportListener(new TransportListener() {
+                @Override
+                public void messageDelivered(TransportEvent te) {
+                    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+                }
+
+                @Override
+                public void messageNotDelivered(TransportEvent te) {
+                    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+                }
+
+                @Override
+                public void messagePartiallyDelivered(TransportEvent te) {
+                    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+                }
+            });
+
+            transport.connect(host, user, password);
+            transport.sendMessage(msg, address);
+            transport.close();
+        } catch (MessagingException ex) {
+            System.out.println("Could not send email " + ex);
+        }
+    }
 }

@@ -4,7 +4,11 @@
  */
 package edu.uco.gsingh1.businesslayer;
 
+import edu.uco.gsingh1.entity.AppointmentView;
+import edu.uco.gsingh1.entity.FileInfo;
 import edu.uco.gsingh1.entity.Slots;
+import edu.uco.gsingh1.entity.StudentAdvisementView;
+import edu.uco.gsingh1.entity.StudentAppointments;
 import edu.uco.gsingh1.entity.StudentCourses;
 import edu.uco.gsingh1.entity.User;
 import edu.uco.gsingh1.entity.UserView;
@@ -38,18 +42,30 @@ public interface UserDAO {
     public Integer checkIfEmailExists(String email, DataSource ds) throws SQLException;
 
     public Integer checkIfStudentIdExists(String studentId, DataSource ds) throws SQLException;
-    
+
     public UserView getUserView(String useremail, DataSource ds) throws SQLException;
-    
+
     public Integer doCodeCheck(String username, String code, DataSource ds) throws SQLException;
-    
+
     public boolean verifyStudent(String useremail, DataSource ds) throws SQLException;
-    
+
     public ArrayList<StudentCourses> getStudentCourses(String useremail, DataSource ds) throws SQLException;
-    
+
     public boolean addCoursesTakenByStudents(Integer userId, String useremail, String courseTaken, DataSource ds) throws SQLException;
-    
+
     public boolean removeCourseTakenByStudent(Integer userId, String useremail, String courseToRemove, DataSource ds) throws SQLException;
+
+    public ArrayList<Slots> getStudentSlots(DateTime userselectedDate, int advisorId, DataSource ds) throws SQLException;
+
+    public boolean insertAppointment(StudentAppointments appointment, String useremail, DataSource ds) throws SQLException;
+
+    public ArrayList<AppointmentView> getAppointments(String useremail, DataSource ds) throws SQLException;
+
+    public boolean cancelAppointmentByStudent(Integer appointmentId, Integer userId, DataSource ds) throws SQLException;
+
+    public FileInfo loadFileInfo(String userEmail, DataSource ds) throws SQLException;
     
-    public ArrayList<Slots> getStudentSlots(DateTime userselectedDate,int advisorId, DataSource ds) throws SQLException;
+     public ArrayList<StudentAdvisementView> getAllStudentAdvisementStatus(DataSource ds) throws SQLException;
+
+    public boolean updateAdvisementStatus(int userId, DataSource ds) throws SQLException;
 }

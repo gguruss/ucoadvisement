@@ -96,6 +96,24 @@ public class UserView {
     public String major;
     public String degree;
     public String phone;
+    public int advisementStatus;
+
+    public int getAdvisementStatus() {
+        return advisementStatus;
+    }
+
+    public void setAdvisementStatus(int advisementStatus) {
+        this.advisementStatus = advisementStatus;
+    }
+
+    public String getAdvisementDescription() {
+        return advisementDescription;
+    }
+
+    public void setAdvisementDescription(String advisementDescription) {
+        this.advisementDescription = advisementDescription;
+    }
+    public String advisementDescription;
 
     public String getPhone() {
         return phone;

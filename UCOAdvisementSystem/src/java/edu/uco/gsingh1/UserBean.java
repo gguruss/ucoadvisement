@@ -9,6 +9,7 @@ import edu.uco.gsingh1.businesslayer.MajorDAOImpl;
 import edu.uco.gsingh1.businesslayer.UserDAO;
 import edu.uco.gsingh1.businesslayer.UserDAOImpl;
 import edu.uco.gsingh1.entity.Major;
+import edu.uco.gsingh1.entity.StudentAdvisementView;
 import edu.uco.gsingh1.entity.UserView;
 import java.io.Serializable;
 import java.sql.SQLException;
@@ -78,6 +79,16 @@ public class UserBean implements Serializable {
         this.majors = majors;
     }
 
+    private ArrayList<StudentAdvisementView> studentAdvisementView;
+
+    public ArrayList<StudentAdvisementView> getStudentAdvisementView() {
+        return studentAdvisementView;
+    }
+
+    public void setStudentAdvisementView(ArrayList<StudentAdvisementView> studentAdvisementView) {
+        this.studentAdvisementView = studentAdvisementView;
+    }
+
     @PostConstruct
     public void init() {
         System.out.println("Inside init");
@@ -86,12 +97,15 @@ public class UserBean implements Serializable {
 
     public void bindData() {
         users = new ArrayList<>();
+        studentAdvisementView = new ArrayList<>();
         UserDAO userDAO = new UserDAOImpl();
         try {
             users = userDAO.getAllUsers(ds);
+            studentAdvisementView = userDAO.getAllStudentAdvisementStatus(ds);
         } catch (SQLException ex) {
             Logger.getLogger(UserBean.class.getName()).log(Level.SEVERE, null, ex);
         }
+
         majorList = new ArrayList<>();
         MajorDAO majorDAO = new MajorDAOImpl();
         try {
@@ -101,7 +115,7 @@ public class UserBean implements Serializable {
             }
 
         } catch (SQLException ex) {
-            Logger.getLogger(RegistrationBean.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(UserBean.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -136,6 +150,20 @@ public class UserBean implements Serializable {
         }
         if (updated) {
             user.editable = false;
+            bindData();
+        }
+        return null;
+    }
+
+    public String updateAction(StudentAdvisementView user) {
+        boolean updated = false;
+        UserDAO userDAO = new UserDAOImpl();
+        try {
+            updated = userDAO.updateAdvisementStatus(user.getUserId(), ds);
+        } catch (SQLException ex) {
+            Logger.getLogger(UserBean.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        if (updated) {
             bindData();
         }
         return null;

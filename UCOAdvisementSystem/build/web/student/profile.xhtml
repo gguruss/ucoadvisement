@@ -7,18 +7,25 @@
     <ui:define name="title">
         Student Profile
     </ui:define>
+    <ui:define name="dependencies">
+        <h:outputScript name="imageuploader.js" library="js"/>
+    </ui:define>
     <ui:define name="fourthitem">
         <div class="active item">
             <i class="purple large home icon"></i> <h:link value="Home" outcome="/student/profile"  /> 
         </div>  
     </ui:define>
     <ui:define name="secondcolumn">
-        <div class="ui sixteen column grid">
+        <div class="ui sixteen column internally grid">
             <div class="six wide column">
                 <div class="ui card">
-                    <div class="image">
 
-                    </div>
+                    <!-- show profile image of user if exists-->
+                    <h:panelGroup class="image" rendered="#{profileBean.fileinfo.size gt 0}">
+                        <image src="ImageServlet?fileid=#{profileBean.userview.userid}&amp;inline=true"
+                               height="70" width="100" />
+                    </h:panelGroup>
+                    <!--show user summary-->
                     <div class="content">
                         <div class="header"><h:outputText value="#{profileBean.userview.firstname}"/><h:outputText value=" "/><h:outputText value="#{profileBean.userview.lastname}"/></div>
                         <div class="meta">
@@ -30,16 +37,86 @@
                         <div class="description">
                             <h:outputText value="#{profileBean.userview.major}"/>
                         </div>
+
+                    </div>
+                    <div class="extra content">
+                        <div class="right floated author">
+                            <h:panelGroup rendered="#{profileBean.userview.advisementStatus eq 1}">
+                                <i class="green check icon"></i>
+                                Advised
+                            </h:panelGroup>
+                            <h:panelGroup rendered="#{profileBean.userview.advisementStatus eq 0}">
+                                <i class="red remove icon"></i>
+                                Advisement Pending
+                            </h:panelGroup>
+                        </div>
+
                     </div>
                 </div>
+                <!--add user image div-->
+                <h:panelGroup class="image" rendered="#{profileBean.fileinfo.size eq 0}" >
+                    <div class="ui visible info message">
+                        Click on browse button below to select profile image
+                    </div>
+                    <h:form id="uploadForm" enctype="multipart/form-data">
+                        <h:panelGrid>
+                            <h:inputFile id="file" label="file" value="#{profileBean.part}"
+                                         validator="#{profileBean.validateFile}" class="customupload" />
+                            <img class="ui fluid image imagepreview" id="imagepreview" />
+                            <h:message for="file" class="ui visible error message"/>
+
+                            <h:commandButton id="upload" action="#{profileBean.uploadFile}"
+                                             value="Upload Image" class="middle aligned ui blue button"/>
+                            <h:message for="upload" class="ui visible error message" />
+                        </h:panelGrid>
+                    </h:form> 
+                </h:panelGroup>
+                <!--show user appointments-->
+                <div>
+                    <h3 class="ui dividing center aligned header">
+                        <i class="green checked calendar icon"></i>
+                        Appointments
+                    </h3>
+
+                    <h:form class="ui middle aligned center aligned grid">
+                        <h:dataTable value="#{profileBean.appointmentView}" rendered="#{not empty profileBean.appointmentView}" id="bookingtable" var="studentbooking" class="ui olive celled collapsing table">
+                            <h:column>
+                                <f:facet name="header">Date</f:facet>
+                                <h:outputText value="#{studentbooking.outputAppointmentDate}">
+                                </h:outputText>
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header">From</f:facet>
+                                <h:outputText value="#{studentbooking.outputAppointmentStartTime}">
+                                </h:outputText>
+                            </h:column> 
+                            <h:column>
+                                <f:facet name="header">To</f:facet>
+                                <h:outputText value="#{studentbooking.outputAppointmentEndTime}">
+                                </h:outputText>
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header">Status</f:facet>
+                                <h:outputText value="#{studentbooking.statusDescription}">
+                                </h:outputText>
+                            </h:column>
+                        </h:dataTable>
+                        <h:panelGroup rendered="#{empty profileBean.appointmentView}">
+                            <div style="padding-top: 10px">
+                                <h:link value="Book Appointment " outcome="/student/advisementsignup" class="ui blue button" /> 
+                            </div>
+                        </h:panelGroup>
+                    </h:form>
+                </div>
             </div>
-            <div class="ten wide column">
+            <!-- div for adding courses-->
+            <div class="eight wide column">
                 <h3 class="ui dividing center aligned header">
                     <i class="book icon"></i>
                     Courses Taken
                 </h3>
                 <h:form class="ui middle aligned center aligned grid">
-                    <h:dataTable value="#{profileBean.studentCourses}" rendered="#{not empty profileBean.studentCourses}" id="maintable" var="studentcourse" class="ui olive celled collapsing table">
+                    <h:dataTable value="#{profileBean.studentCourses}" rendered="#{not empty profileBean.studentCourses}" id="maintable" var="studentcourse" class="ui olive celled compact table">
 
                         <h:column>
                             <f:facet name="header">Course</f:facet>
@@ -66,5 +143,6 @@
             </div>
         </div>
     </ui:define>
+
 </ui:composition>
 

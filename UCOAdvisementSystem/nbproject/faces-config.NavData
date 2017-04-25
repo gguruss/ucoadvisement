@@ -2,11 +2,27 @@
 <Scene Scope="Project" version="2">
     <Scope Scope="Faces Configuration Only"/>
     <Scope Scope="Project">
+        <Node id="404.xhtml" x="900" y="450" zoom="true"/>
+        <Node id="advisor/publishdates.xhtml" x="400" y="600" zoom="true"/>
+        <Node id="error.xhtml" x="1150" y="150" zoom="true"/>
+        <Node id="template/masterpageadmin.xhtml" x="400" y="450" zoom="true"/>
         <Node id="student/profile.xhtml" x="150" y="300" zoom="true"/>
         <Node id="index.xhtml" x="650" y="150" zoom="true"/>
+        <Node id="verificationpage.xhtml" x="900" y="150" zoom="true"/>
+        <Node id="advisor/browsestudentaccounts.xhtml" x="150" y="450" zoom="true"/>
+        <Node id="advisor/browsestudentappointments.xhtml" x="1400" y="150" zoom="true"/>
+        <Node id="student/advisementsignup.xhtml" x="150" y="600" zoom="true"/>
+        <Node id="advisor/changestatusofadvisement.xhtml" x="1650" y="150" zoom="true"/>
         <Node id="template/masterpages.xhtml" x="400" y="300" zoom="true"/>
+        <Node id="403.xhtml" x="400" y="750" zoom="true"/>
+        <Node id="student/listcourses.xhtml" x="150" y="750" zoom="true"/>
+        <Node id="login.xhtml" x="650" y="600" zoom="true"/>
+        <Node id="loginError.xhtml" x="1150" y="300" zoom="true"/>
+        <Node id="student/bookingconfirmation.xhtml" x="900" y="300" zoom="true"/>
+        <Node id="register.xhtml" x="650" y="450" zoom="true"/>
+        <Node id="template/masterpagestudent.xhtml" x="150" y="900" zoom="true"/>
         <Node id="advisor/advisorhome.xhtml" x="400" y="150" zoom="true"/>
-        <Node id="index.html" x="150" y="150" zoom="true"/>
+        <Node id="student/editappointment.xhtml" x="650" y="300" zoom="true"/>
     </Scope>
     <Scope Scope="All Faces Configurations"/>
 </Scene>

@@ -20,26 +20,41 @@
             <i class="clock icon"></i>
             Cancel Time Slots
         </h3>
-       
-        <table class="ui small olive table">
-            <thead>
-                <tr>
-                    <th>Date</th>
-                    <th>Time</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>4/2/17</td>
-                    <td>10:00 AM</td>
-                    <td>                                                 
-                        <button class="ui negative button">Cancel Slot</button>
-                    </td>
-                </tr>
-            </tbody>
 
-        </table>
+        <h:form class="ui middle aligned center aligned grid">
+            <h:dataTable value="#{profileBean.appointmentView}" rendered="#{not empty profileBean.appointmentView}" id="bookingtable" var="studentbooking" class="ui olive celled collapsing table">
+                <h:column>
+                    <f:facet name="header">Date</f:facet>
+                    <h:outputText value="#{studentbooking.outputAppointmentDate}">
+                    </h:outputText>
+                </h:column>
+                <h:column>
+                    <f:facet name="header">From</f:facet>
+                    <h:outputText value="#{studentbooking.outputAppointmentStartTime}">
+                    </h:outputText>
+                </h:column> 
+                <h:column>
+                    <f:facet name="header">To</f:facet>
+                    <h:outputText value="#{studentbooking.outputAppointmentEndTime}">
+                    </h:outputText>
+                </h:column>
+                <h:column>
+                    <f:facet name="header">Status</f:facet>
+                    <h:outputText value="#{studentbooking.statusDescription}">
+                    </h:outputText>
+                </h:column>
+                <h:column>
+                    <f:facet name="header">Action</f:facet>
+                    <h:commandButton value="Cancel Booking" class="ui negative button"
+                                     action="#{profileBean.cancelBookingByStudent(studentbooking)}" rendered="#{studentbooking.status eq 1 }" />
+                </h:column>
+            </h:dataTable>
+            <h:panelGroup rendered="#{empty profileBean.appointmentView}">
+                <div style="padding-top: 10px">
+                    <h:link value="Book Appointment " outcome="/student/advisementsignup" class="ui blue button" /> 
+                </div>
+            </h:panelGroup>
+        </h:form>
     </ui:define>
 
 </ui:composition>

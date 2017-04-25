@@ -3,13 +3,14 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
+            <file>file:/C:/Users/guru/Desktop/wsp/wspprojects/UCOAdvisementSystem/src/java/edu/uco/gsingh1/businesslayer/EmailHandler.java</file>
             <file>file:/C:/Users/guru/Desktop/wsp/wspprojects/UCOAdvisementSystem/src/java/edu/uco/gsingh1/DateBean.java</file>
-            <file>file:/C:/Users/guru/Desktop/wsp/wspprojects/UCOAdvisementSystem/web/advisor/publishdates.xhtml</file>
-            <file>file:/C:/Users/guru/Desktop/wsp/wspprojects/UCOAdvisementSystem/src/java/edu/uco/gsingh1/entity/StudentAppointments.java</file>
-            <file>file:/C:/Users/guru/Desktop/wsp/wspprojects/UCOAdvisementSystem/src/java/edu/uco/gsingh1/PublishDates.java</file>
+            <file>file:/C:/Users/guru/Desktop/wsp/wspprojects/UCOAdvisementSystem/src/java/edu/uco/gsingh1/entity/FileInfo.java</file>
+            <file>file:/C:/Users/guru/Desktop/wsp/wspprojects/UCOAdvisementSystem/web/index.xhtml</file>
             <file>file:/C:/Users/guru/Desktop/wsp/wspprojects/UCOAdvisementSystem/src/java/edu/uco/gsingh1/core.sql</file>
-            <file>file:/C:/Users/guru/Desktop/wsp/wspprojects/UCOAdvisementSystem/web/resources/js/validatebreaks.js</file>
-            <file>file:/C:/Users/guru/Desktop/wsp/wspprojects/UCOAdvisementSystem/web/student/advisementsignup.xhtml</file>
+            <file>file:/C:/Users/guru/Desktop/wsp/wspprojects/UCOAdvisementSystem/web/student/profile.xhtml</file>
+            <file>file:/C:/Users/guru/Desktop/wsp/wspprojects/UCOAdvisementSystem/src/java/edu/uco/gsingh1/businesslayer/UserDAOImpl.java</file>
+            <file>file:/C:/Users/guru/Desktop/wsp/wspprojects/UCOAdvisementSystem/src/java/edu/uco/gsingh1/ProfileBean.java</file>
         </group>
     </open-files>
 </project-private>

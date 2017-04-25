@@ -42,16 +42,15 @@
                 </div>
                 <h:form id="calendarForm">
                     <h:inputText class="selecteddate" value="#{dateBean.selectedDate}" style="display: none;">
-                        <f:ajax event="change" execute="@form" listener="#{dateBean.getStudentSlots()}" render="@form"/> 
+                        <f:ajax event="change" execute="@form" listener="#{dateBean.getStudentSlots()}" render=":slotform"/> 
                     </h:inputText>
                     <h:inputText class="startdate" value="#{dateBean.startDate}" style="display: none;">
                     </h:inputText>
                     <h:inputText class="enddate" value="#{dateBean.endDate}" style="display: none;">
                     </h:inputText>
-
-
-
-                    <div class="ui text loader" style="display:none;" id="ajaxloader">Loading</div>
+                </h:form>
+                <div class="ui text loader" style="display:none;" id="ajaxloader">Loading</div>
+                <h:form id="slotform">
                     <div class="row" style="padding-top: 20px;">
                         <div class="ui center aligned middle aligned grid">
                             <h:dataTable id="slottable" value="#{dateBean.slots}" rendered="#{not empty dateBean.slots}" var="studentslot" class="ui olive celled collapsing table">
@@ -73,11 +72,9 @@
                                     </h:outputText>
                                 </h:column>
                                 <h:column>
-                                    <h:commandButton value="Book" class="ui blue button bookbutton">  
-                                        <f:ajax event="click" execute="@form" listener="#{dateBean.book(studentslot)}" render="@form"/> 
+                                    <h:commandButton value="Book" class="ui blue button bookbutton" action="#{dateBean.book(studentslot)}" onclick="bookButtonClick()">  
                                     </h:commandButton>
                                 </h:column>
-
                             </h:dataTable>
                             <h:panelGroup rendered="#{empty dateBean.slots}">
                                 <div style="padding-top: 10px">
@@ -89,6 +86,7 @@
                 </h:form>
             </div>
         </div>
+        <h:messages globalOnly="true" class="ui visible error message"/>
     </ui:define>
     <ui:define name="footerscripts">
         <script type="text/javascript">
@@ -98,7 +96,7 @@
 
                 switch (ajaxstatus) {
                     case "begin": // This is called right before ajax request is been sent.
-//                        $('.row').dimmer('show');
+                        //                        $('.row').dimmer('show');
                         ajaxloader.style.display = 'block';
                         break;
 
@@ -111,7 +109,7 @@
                         break;
                 }
             });
-            
+
         </script>
     </ui:define>
 

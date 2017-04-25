@@ -7,9 +7,31 @@
 $(document).ready(function () {
     var selectedDate = $('.selecteddate');
     var startDate = $('.startdate');
-    var startDateMomentVal = convertUTCDateToLocalDate(new Date(startDate.val()));
+//    var startDateMomentVal = convertUTCDateToLocalDate(new Date(startDate.val()));
     var endDate = $('.enddate');
-    var endDateMomentVal = convertUTCDateToLocalDate(new Date(endDate.val()));
+    var endDateMomentVal = formatDate(new Date(endDate.val()));
+    var bookbutton = $('.bookbutton');
+    var bookingDiv = $('#bookingdiv');
+    var calendarDiv = $('#calendardiv');
+
+
+    function formatDate(d)
+    {
+        date = new Date(d);
+        var dd = date.getDate();
+        var mm = date.getMonth() + 1;
+        var yyyy = date.getFullYear();
+        if (dd < 10) {
+            dd = '0' + dd;
+        }
+        if (mm < 10) {
+            mm = '0' + mm;
+        }
+        ;
+        return d = yyyy + "-" + mm + "-" + dd;
+    }
+
+
 
     // page is now ready, initialize the calendar...
     $('#calendar').fullCalendar({
@@ -43,15 +65,11 @@ $(document).ready(function () {
         }
     });
 
-    function convertUTCDateToLocalDate(date) {
-        var newDate = new Date(date.getTime() + date.getTimezoneOffset() * 60 * 1000);
-
-        var offset = date.getTimezoneOffset() / 60;
-        var hours = date.getHours();
-
-        newDate.setHours(hours - offset);
-
-        return newDate;
+    function bookButtonClick() {
+        $("ajaxloader").show();
     }
+
+
+
 }
 );

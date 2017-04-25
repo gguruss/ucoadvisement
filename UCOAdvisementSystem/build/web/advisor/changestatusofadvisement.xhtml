@@ -17,106 +17,39 @@
             <i class="lightbulb icon"></i>
             Status of Advisement
         </h3>
-        <form class="ui form">
-            <div class="inline fields">
-                <div class="two wide field">
-                    <label>Enter Date</label>
-                </div>
-                <div class="three wide field">
-                    <div class="ui icon input">
-                        <input type="text" name="first-name" placeholder="Select a Date"/>
-                        <i class="calendar icon"></i>
-                    </div>
-                </div>
-            </div>
-            <button class="ui blue button" type="submit">Submit</button>
-        </form>
-        <table class="ui small olive table">
-            <thead>
-                <tr>
-                    <th>Date</th>
-                    <th>Time</th>
-                    <th>Student Id</th>
-                    <th>First Name</th>
-                    <th>Last Name</th>
-                    <th>Major Id</th> 
-                    <th>Major</th>
-                    <th>Advisement Status</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>4/2/17</td>
-                    <td>10:00 AM</td>
-                    <td>*20426367</td>
-                    <td>Clark</td>
-                    <td>Kent</td>
-                    <td>6660</td>
-                    <td>Applied Mathematics and Computer Science</td>
-                    <td>                                                 
-                        <div class="ui toggle checkbox">
-                            <input type="checkbox" name="public"/>
-                        </div>
-                    </td>
-                    <td>                                                 
-                        <button class="ui blue button">Change Status</button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>4/2/17</td>
-                    <td>10:15 AM</td>
-                    <td>*20426365</td>
-                    <td>Bruce</td>
-                    <td>Wayne</td>
-                    <td>6101</td>
-                    <td>Computer Science-Applied</td>
-                    <td>                                                 
-                        <div class="ui toggle checkbox">
-                            <input type="checkbox" name="public"/>
-                        </div>
-                    </td>
-                    <td>                                                 
-                       <button class="ui blue button">Change Status</button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>4/2/17</td>
-                    <td>10:30 AM</td>
-                    <td>*20159876</td>
-                    <td>Hal</td>
-                    <td>Jordan</td>
-                    <td>6110</td>
-                    <td>Software Engineering</td>
-                    <td>                                                 
-                        <div class="ui toggle checkbox">
-                            <input type="checkbox" name="public"/>
-                        </div>
-                    </td>
-                    <td>                                                 
-                        <button class="ui blue button">Change Status</button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>4/2/17</td>
-                    <td>10:45 AM</td>
-                    <td>*20425689</td>
-                    <td>Barry</td>
-                    <td>Allen</td>
-                    <td>6100</td>
-                    <td>Computer Science</td>
-                    <td>                                                 
-                        <div class="ui toggle checkbox">
-                            <input type="checkbox" name="public"/>
-                        </div>
-                    </td>
-                    <td>                                                 
-                        <button class="ui blue button">Change Status</button>
-                    </td>
-                </tr>
-            </tbody>
-
-        </table>
+        <h:form>
+            <h:dataTable value="#{userBean.studentAdvisementView}" 
+                         rendered="#{not empty userBean.studentAdvisementView}" id="advisementview" var="advisementview" class="ui olive celled collapsing table">
+                <h:column>
+                    <f:facet name="header">Student Id</f:facet>
+                    <h:message for="studentid" style="color: red;"/>
+                    <h:outputText value="#{advisementview.studentId}"/>
+                </h:column>
+                <h:column>
+                    <f:facet name="header">First Name</f:facet>
+                    <h:outputText value="#{advisementview.firstname}" />
+                </h:column>
+                <h:column>
+                    <f:facet name="header">Last Name</f:facet>
+                    <h:outputText value="#{advisementview.lastname}">
+                    </h:outputText>
+                </h:column>
+                <h:column>
+                    <f:facet name="header">Major</f:facet>
+                    <h:outputText value="#{advisementview.major}" />
+                </h:column>
+                <h:column class="collapsing">
+                    <f:facet name="header">Advisement Status</f:facet>
+                    <h:commandButton value="Change to Advised" class="ui blue button"
+                                     action="#{userBean.updateAction(advisementview)}" rendered="#{advisementview.advisementStatus eq 0}">
+                    </h:commandButton>
+                    <h:outputText value="#{advisementview.advisementDescription}" rendered="#{advisementview.advisementStatus eq 1}" />
+                </h:column>
+            </h:dataTable>
+            <h:panelGroup rendered="#{empty userBean.studentAdvisementView}">
+                <p>Table is empty! There are no students signed up for advisement.</p>
+            </h:panelGroup>
+        </h:form>
     </ui:define>
     <ui:define name="footerscripts">
         <script type="text/javascript">

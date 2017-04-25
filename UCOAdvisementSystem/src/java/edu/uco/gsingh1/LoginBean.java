@@ -4,6 +4,7 @@
  */
 package edu.uco.gsingh1;
 
+import static com.sun.faces.facelets.util.Path.context;
 import edu.uco.gsingh1.businesslayer.UserDAO;
 import edu.uco.gsingh1.businesslayer.UserDAOImpl;
 import edu.uco.gsingh1.businesslayer.Utility;
@@ -11,10 +12,14 @@ import edu.uco.gsingh1.entity.User;
 import javax.inject.Named;
 import javax.enterprise.context.SessionScoped;
 import java.io.Serializable;
+import java.security.Principal;
 import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.faces.application.FacesMessage;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -35,10 +40,9 @@ public class LoginBean implements Serializable {
     private DataSource ds;
     @NotEmpty(message = "enter uco user email")
     private String useremail;
-    
+
     private User user;
-   
-   
+
     public User getUser() {
         return user;
     }
@@ -64,23 +68,45 @@ public class LoginBean implements Serializable {
         this.userpassword = userpassword;
     }
     private String userpassword;
+    private String username;
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
 
     @PostConstruct
     public void init() {
         user = new User();
+        FacesContext fc = FacesContext.getCurrentInstance();
+        Principal p = fc.getExternalContext().getUserPrincipal();
+        if (p != null) {
+            username = p.getName();
+            try {
+                doLogin();
+            } catch (SQLException ex) {
+                Logger.getLogger(LoginBean.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
     }
 
     public String doLogin() throws SQLException {
+
         UserDAO userDAO = new UserDAOImpl();
         String hashedPassword = Utility.encrypt(userpassword);
         user = userDAO.verifyUser(useremail, hashedPassword, ds);
         if (user.userid > 0) {
+
             if (user.usertype.equals("advisor")) {
-                return "advisor/advisorhome";
+                return "advisor/advisorhome.xhtml?faces-redirect=true";
             } else if ((user.usertype.equals("student")) && (user.isuserverified == 1)) {
-                return "student/profile";
+                return "student/profile.xhtml?faces-redirect=true";
             } else {
-                return "verificationpage";
+                return "verificationpage.xhtml?faces-redirect=true";
             }
         } else {
             FacesContext.getCurrentInstance().addMessage(
@@ -92,10 +118,10 @@ public class LoginBean implements Serializable {
         }
     }
 
-   
     public String logout() {
         HttpSession session = SessionUtils.getSession();
+
         session.invalidate();
-        return "/faces/index";
+        return "/faces/index.xhtml?faces-redirect=true";
     }
 }

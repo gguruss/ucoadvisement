@@ -7,6 +7,10 @@
     <ui:define name="title">
         Browse Student Appointments
     </ui:define>
+    <ui:define name="jsscripts">
+        <h:outputStylesheet name="calendar.min.css" library="css"/>
+        <h:outputScript name="calendar.min.js" library="js"/>
+    </ui:define>
 
     <ui:define name="fourthitem">
         <div class="active item">
@@ -16,74 +20,92 @@
     <ui:define name="secondcolumn">
         <h3 class="ui dividing center aligned header">
             <i class="users icon"></i>
-           Browse Appointments
+            Browse Appointments
         </h3>
-        <form class="ui form">
+        <h:form class="ui form">
             <div class="inline fields">
                 <div class="two wide field">
                     <label>Enter Date</label>
                 </div>
-                <div class="three wide field">
-                    <div class="ui icon input">
-                        <input type="text" name="first-name" placeholder="Select a Date"/>
+                <div class="three wide field ui calendar customdate">
+                    <div class="ui input right icon">
                         <i class="calendar icon"></i>
+                        <h:inputText id="appointmentdate" value="#{advisorBean.advisorSelectedDate}"/>
+                        <h:message for="appointmentdate"/>
                     </div>
                 </div>
             </div>
-            <button class="ui blue button" type="submit">Submit</button>
-        </form>
-        <table class="ui small olive table">
-            <thead>
-                <tr>
-                    <th>Date</th>
-                    <th>Time</th>
-                    <th>Student Id</th>
-                    <th>First Name</th>
-                    <th>Last Name</th>
-                    <th>Major Id</th> 
-                    <th>Major</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>4/2/17</td>
-                    <td>10:00 AM</td>
-                    <td>*20426367</td>
-                    <td>Clark</td>
-                    <td>Kent</td>
-                    <td>6660</td>
-                    <td>Applied Mathematics and Computer Science</td>
-                </tr>
-                <tr>
-                    <td>4/2/17</td>
-                    <td>10:15 AM</td>
-                    <td>*20426365</td>
-                    <td>Bruce</td>
-                    <td>Wayne</td>
-                    <td>6101</td>
-                    <td>Computer Science-Applied</td>
-                </tr>
-                <tr>
-                    <td>4/2/17</td>
-                    <td>10:30 AM</td>
-                    <td>*20159876</td>
-                    <td>Hal</td>
-                    <td>Jordan</td>
-                    <td>6110</td>
-                    <td>Software Engineering</td>
-                </tr>
-                <tr>
-                    <td>4/2/17</td>
-                    <td>10:45 AM</td>
-                    <td>*20425689</td>
-                    <td>Barry</td>
-                    <td>Allen</td>
-                    <td>6100</td>
-                    <td>Computer Science</td>
-                </tr>
-            </tbody>
+            <h:commandButton class="ui blue button" value="Submit" action="#{advisorBean.getAppointmentAtSelectedDate(advisorBean.advisorSelectedDate)}"/>
 
-        </table>
+
+
+            <h:dataTable value="#{advisorBean.advisorAppointmentsView}" rendered="#{not empty advisorBean.advisorAppointmentsView}" id="advisorappointments" var="advisorappointment" class="ui olive celled collapsing table">
+                <h:column>
+                    <f:facet name="header">Appointment Date</f:facet>
+                    <h:outputText value="#{advisorappointment.outputAppointmentDate}"/>
+                </h:column>
+                <h:column>
+                    <f:facet name="header">From</f:facet>
+                    <h:outputText value="#{advisorappointment.outputAppointmentStartTime}"/>
+                </h:column>
+                <h:column>
+                    <f:facet name="header">To</f:facet>
+                    <h:outputText value="#{advisorappointment.outputAppointmentEndTime}" />
+                </h:column>
+                <h:column>
+                    <f:facet name="header">Student Id</f:facet>
+                    <h:outputText value="#{advisorappointment.studentId}">
+                    </h:outputText>
+                </h:column>
+                <h:column>
+                    <f:facet name="header">First Name</f:facet>
+                    <h:outputText value="#{advisorappointment.firstname}">
+                    </h:outputText>
+                </h:column>
+                <h:column>
+                    <f:facet name="header">Last Name</f:facet>
+                    <h:outputText value="#{advisorappointment.lastname}">
+                    </h:outputText>
+                </h:column>
+                <h:column>
+                    <f:facet name="header">Major</f:facet>
+                    <h:outputText value="#{advisorappointment.majorid}">
+                    </h:outputText>
+                </h:column>
+                <h:column>
+                    <f:facet name="header">Status</f:facet>
+                    <h:outputText value="#{advisorappointment.bookingStatusDescription}">
+                    </h:outputText>
+                </h:column>
+                <h:column class="collapsing">
+                    <f:facet name="header">Action</f:facet>
+                    <h:commandButton value="Cancel Appointment" class="ui negative button" id="cancelappointment" rendered="#{advisorappointment.bookingStatus eq 1}" action="#{advisorBean.cancelBookingByAdvisor(advisorappointment)}">
+                    </h:commandButton>
+                </h:column>
+
+            </h:dataTable>
+            <h:panelGroup rendered="#{empty advisorBean.advisorAppointmentsView}" class="ui center aligned middle aligned grid">
+                There are no appointment records at the selected Date.
+            </h:panelGroup>
+        </h:form>
+    </ui:define>
+    <ui:define name="footerscripts">
+        <script type="text/javascript">
+            $('.customdate').calendar({
+                type: 'date',
+                monthFirst: false,
+                formatter: {
+                    date: function (date, settings) {
+                        if (!date)
+                            return '';
+                        var day = date.getDate();
+                        var month = date.getMonth() + 1;
+                        var year = date.getFullYear();
+                        return year + '-' + month + '-' + day;
+                    }
+                }
+            });
+        </script>
     </ui:define>
 </ui:composition>
 

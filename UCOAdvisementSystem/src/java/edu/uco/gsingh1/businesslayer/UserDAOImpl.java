@@ -4,10 +4,15 @@
  */
 package edu.uco.gsingh1.businesslayer;
 
+import edu.uco.gsingh1.entity.AppointmentView;
+import edu.uco.gsingh1.entity.FileInfo;
 import edu.uco.gsingh1.entity.Slots;
+import edu.uco.gsingh1.entity.StudentAdvisementView;
+import edu.uco.gsingh1.entity.StudentAppointments;
 import edu.uco.gsingh1.entity.StudentCourses;
 import edu.uco.gsingh1.entity.User;
 import edu.uco.gsingh1.entity.UserView;
+import java.io.UnsupportedEncodingException;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -15,6 +20,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.sql.DataSource;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
@@ -85,7 +92,11 @@ public class UserDAOImpl implements UserDAO {
             if (result == 1) {
                 String verifCode = getVerificationCode(user.username, ds);
                 if (verifCode.length() > 0) {
-                    EmailHandler.sendEmail(user.username, verifCode);
+                    try {
+                        EmailHandler.sendVerificationCodeEmail(user.username, verifCode);
+                    } catch (UnsupportedEncodingException ex) {
+                        Logger.getLogger(UserDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 }
                 return true;
             }
@@ -306,6 +317,8 @@ public class UserDAOImpl implements UserDAO {
                     user.setMajorcode(result.getInt("majorcode"));
                     user.setMajor(result.getString("major"));
                     user.setDegree(result.getString("degree"));
+                    user.setAdvisementStatus(result.getInt("advisementstatus"));
+                    user.setAdvisementDescription(result.getString("advisementDescription"));
                 }
             }
 
@@ -467,5 +480,190 @@ public class UserDAOImpl implements UserDAO {
             conn.close();
         }
         return false;
+    }
+
+    @Override
+    public boolean insertAppointment(StudentAppointments appointment, String useremail, DataSource ds) throws SQLException {
+        if (ds == null) {
+            throw new SQLException("Cannot get DataSource");
+        }
+        Connection conn = ds.getConnection();
+        if (conn == null) {
+            throw new SQLException("Cannot get connection");
+        }
+        try {
+            PreparedStatement insertQuery = conn.prepareStatement(
+                    "INSERT INTO appointments(advisorid,userid,appointmentday,appointmentdate,starttime,endtime,status)VALUES(?,?,?,?,?,?,?)");
+            insertQuery.setInt(1, appointment.getAdvisorId());
+            insertQuery.setInt(2, appointment.getUserId());
+            insertQuery.setInt(3, appointment.getAppointmentDay());
+            insertQuery.setDate(4, new java.sql.Date(appointment.getAppointmentDate().toDate().getTime()));
+            insertQuery.setTimestamp(5, new java.sql.Timestamp(appointment.getStartTime().toDate().getTime()));
+            insertQuery.setTimestamp(6, new java.sql.Timestamp(appointment.getEndTime().toDate().getTime()));
+            insertQuery.setInt(7, appointment.getStatus());
+            int result = insertQuery.executeUpdate();
+            if (result == 1) {
+                try {
+                    EmailHandler.sendAppointmentConfirmation(useremail, appointment.getOutputAppointmentDate(), appointment.getOutputAppointmentStartTime(), appointment.getOutputAppointmentEndTime());
+                } catch (UnsupportedEncodingException ex) {
+                    Logger.getLogger(UserDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                return true;
+            }
+
+        } finally {
+            conn.close();
+        }
+        return false;
+    }
+
+    @Override
+    public ArrayList<AppointmentView> getAppointments(String useremail, DataSource ds) throws SQLException {
+        ArrayList<AppointmentView> appointments = new ArrayList<>();
+        DateTimeFormatter fmtDate = DateTimeFormat.forPattern("yyyy-MM-dd");
+        DateTimeFormatter fmtTime = DateTimeFormat.forPattern("HH:mm a");
+        DateTimeFormatter fmtDateTime = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm");
+        if (ds == null) {
+            throw new SQLException("Cannot get DataSource");
+        }
+        Connection conn = ds.getConnection();
+        if (conn == null) {
+            throw new SQLException("Cannot get connection");
+        }
+        try {
+            CallableStatement appointmentView = conn.prepareCall("{CALL getAppointmentViewForStudent(?)}");
+            appointmentView.setString(1, useremail.trim());
+            boolean exists = appointmentView.execute();
+            if (exists) {
+                ResultSet result = appointmentView.getResultSet();
+                while (result.next()) {
+                    AppointmentView appointment = new AppointmentView();
+                    appointment.setAppointmentId(result.getInt("appointmentid"));
+                    appointment.setStatusDescription(result.getString("description"));
+                    appointment.setStatus(result.getInt("status"));
+                    appointment.setUserId(result.getInt("userid"));
+                    appointment.setOutputAppointmentDate(fmtDate.print(new DateTime(result.getDate("appointmentdate"))));
+                    appointment.setOutputAppointmentStartTime(fmtTime.print(new DateTime(result.getTimestamp("starttime"))));
+                    appointment.setOutputAppointmentEndTime(fmtTime.print(new DateTime(result.getTimestamp("endtime"))));
+                    appointments.add(appointment);
+                }
+            }
+
+        } finally {
+            conn.close();
+        }
+        return appointments;
+    }
+
+    @Override
+    public boolean cancelAppointmentByStudent(Integer appointmentId, Integer userid, DataSource ds) throws SQLException {
+        if (ds == null) {
+            throw new SQLException("Cannot get DataSource");
+        }
+        Connection conn = ds.getConnection();
+        if (conn == null) {
+            throw new SQLException("Cannot get connection");
+        }
+        try {
+            PreparedStatement updateAppointmentStatus = conn.prepareStatement(
+                    "UPDATE appointments SET status=?, cancelledbyuserid=? WHERE appointmentid=?");
+            updateAppointmentStatus.setInt(1, -2);
+            updateAppointmentStatus.setInt(2, userid);
+            updateAppointmentStatus.setInt(3, appointmentId);
+            int updated = updateAppointmentStatus.executeUpdate();
+            if (updated == -1) {
+                return false;
+            }
+        } finally {
+            conn.close();
+        }
+        return true;
+    }
+
+    @Override
+    public FileInfo loadFileInfo(String userEmail, DataSource ds) throws SQLException {
+        FileInfo file = new FileInfo();
+
+        if (ds == null) {
+            throw new SQLException("Cannot get DataSource");
+        }
+        Connection conn = ds.getConnection();
+        if (conn == null) {
+            throw new SQLException("Cannot get connection");
+        }
+        try {
+            PreparedStatement selectQuery = conn.prepareStatement(
+                    "SELECT * FROM userimage WHERE useremail=?");
+            selectQuery.setString(1, userEmail.trim());
+
+            ResultSet result = selectQuery.executeQuery();
+            while (result.next()) {
+                file.setId(result.getLong("fileid"));
+                file.setUserid(result.getInt("userid"));
+                file.setName(result.getString("filename"));
+                file.setType(result.getString("filetype"));
+                file.setSize(result.getLong("filesize"));
+            }
+        } finally {
+            conn.close();
+        }
+        return file;
+    }
+
+    @Override
+    public ArrayList<StudentAdvisementView> getAllStudentAdvisementStatus(DataSource ds) throws SQLException {
+        ArrayList<StudentAdvisementView> users = new ArrayList<>();
+        if (ds == null) {
+            throw new SQLException("Cannot get DataSource");
+        }
+        Connection conn = ds.getConnection();
+        if (conn == null) {
+            throw new SQLException("Cannot get connection");
+        }
+        try {
+            PreparedStatement selectQuery = conn.prepareStatement(
+                    "SELECT * FROM studentadvisementstatusview");
+            ResultSet result = selectQuery.executeQuery();
+            while (result.next()) {
+                StudentAdvisementView user = new StudentAdvisementView();
+                user.setUserId(result.getInt("userid"));
+                user.setFirstname(result.getString("firstname"));
+                user.setLastname(result.getString("lastname"));
+                user.setStudentId(result.getString("studentid"));
+                user.setMajor(result.getString("major"));
+                user.setDegree(result.getString("degree"));
+                user.setAdvisementStatus(result.getInt("advisementstatus"));
+                user.setAdvisementDescription(result.getString("advisementDescription"));
+                users.add(user);
+            }
+
+        } finally {
+            conn.close();
+        }
+        return users;
+    }
+
+    @Override
+    public boolean updateAdvisementStatus(int userId, DataSource ds) throws SQLException {
+        if (ds == null) {
+            throw new SQLException("Cannot get DataSource");
+        }
+        Connection conn = ds.getConnection();
+        if (conn == null) {
+            throw new SQLException("Cannot get connection");
+        }
+        try {
+            PreparedStatement updateQuery = conn.prepareStatement(
+                    "UPDATE usertable SET advisementstatus=? WHERE userid=?");
+            updateQuery.setInt(1, 1);
+            updateQuery.setInt(2, userId);
+            int updated = updateQuery.executeUpdate();
+            if (updated == -1) {
+                return false;
+            }
+        } finally {
+            conn.close();
+        }
+        return true;
     }
 }

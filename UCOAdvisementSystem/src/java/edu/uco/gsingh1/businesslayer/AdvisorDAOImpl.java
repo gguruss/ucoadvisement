@@ -5,8 +5,12 @@
 package edu.uco.gsingh1.businesslayer;
 
 import edu.uco.gsingh1.entity.Advisor;
+import edu.uco.gsingh1.entity.AdvisorAppointmentView;
 import edu.uco.gsingh1.entity.AdvisorSchedule;
+import edu.uco.gsingh1.entity.AppointmentView;
 import edu.uco.gsingh1.entity.Breaks;
+import java.io.UnsupportedEncodingException;
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -176,6 +180,83 @@ public class AdvisorDAOImpl implements AdvisorDAO {
         } finally {
             conn.close();
         }
+        return true;
+    }
+
+    @Override
+    public ArrayList<AdvisorAppointmentView> getAppointments(String date, DataSource ds) throws SQLException {
+        String selectedDate="";
+        ArrayList<AdvisorAppointmentView> appointments = new ArrayList<>();
+        DateTimeFormatter fmtDate = DateTimeFormat.forPattern("yyyy-MM-dd");
+        if (!date.isEmpty()) {
+            selectedDate = fmtDate.print(new DateTime(date));
+        }
+        DateTimeFormatter fmtTime = DateTimeFormat.forPattern("HH:mm a");
+        DateTimeFormatter fmtDateTime = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm");
+        if (ds == null) {
+            throw new SQLException("Cannot get DataSource");
+        }
+        Connection conn = ds.getConnection();
+        if (conn == null) {
+            throw new SQLException("Cannot get connection");
+        }
+        PreparedStatement selectQuery;
+        try {
+            if (date.isEmpty()) {
+                selectQuery = conn.prepareStatement(
+                        "SELECT * FROM advisorappointmentview");
+            } else {
+                selectQuery = conn.prepareStatement(
+                        "SELECT * FROM advisorappointmentview WHERE appointmentdate=?");
+                selectQuery.setDate(1, new java.sql.Date(new DateTime(selectedDate).toDate().getTime()));
+            }
+
+            ResultSet result = selectQuery.executeQuery();
+            while (result.next()) {
+                AdvisorAppointmentView appointment = new AdvisorAppointmentView();
+                appointment.setAppointmentId(result.getInt("appointmentid"));
+                appointment.setBookingStatusDescription(result.getString("bookingstatus"));
+                appointment.setBookingStatus(result.getInt("status"));
+                appointment.setUserId(result.getInt("userid"));
+                appointment.setOutputAppointmentDate(fmtDate.print(new DateTime(result.getDate("appointmentdate"))));
+                appointment.setOutputAppointmentStartTime(fmtTime.print(new DateTime(result.getTimestamp("starttime"))));
+                appointment.setOutputAppointmentEndTime(fmtTime.print(new DateTime(result.getTimestamp("endtime"))));
+                appointment.setFirstname(result.getString("firstname"));
+                appointment.setLastname(result.getString("lastname"));
+                appointment.setMajorid(result.getInt("majorid"));
+                appointment.setStudentId(result.getString("studentid"));
+                appointment.setStudentemail(result.getString("username"));
+                appointments.add(appointment);
+            }
+        } finally {
+            conn.close();
+        }
+        return appointments;
+    }
+
+    @Override
+    public boolean cancelAppointmentByAdvisor(AdvisorAppointmentView appointment, Integer userid, DataSource ds) throws SQLException, UnsupportedEncodingException {
+        if (ds == null) {
+            throw new SQLException("Cannot get DataSource");
+        }
+        Connection conn = ds.getConnection();
+        if (conn == null) {
+            throw new SQLException("Cannot get connection");
+        }
+        try {
+            PreparedStatement updateAppointmentStatus = conn.prepareStatement(
+                    "UPDATE appointments SET status=?, cancelledbyuserid=? WHERE appointmentid=?");
+            updateAppointmentStatus.setInt(1, -1);
+            updateAppointmentStatus.setInt(2, userid);
+            updateAppointmentStatus.setInt(3, appointment.getAppointmentId());
+            int updated = updateAppointmentStatus.executeUpdate();
+            if (updated == -1) {
+                return false;
+            }
+        } finally {
+            conn.close();
+        }
+        EmailHandler.sendAppointmentCancellation(appointment.getStudentEmail(), appointment.getOutputAppointmentDate(), appointment.getOutputAppointmentStartTime(), appointment.getOutputAppointmentEndTime());
         return true;
     }
 

@@ -19,7 +19,34 @@ public class StudentAppointments {
     private DateTime endTime;
     private int status;
     private String cancelledByUserType;
+    private String outputAppointmentDate;
+    private String outputAppointmentStartTime;
+    private String outputAppointmentEndTime;
 
+    public String getOutputAppointmentDate() {
+        return outputAppointmentDate;
+    }
+
+    public void setOutputAppointmentDate(String outputAppointmentDate) {
+        this.outputAppointmentDate = outputAppointmentDate;
+    }
+
+    public String getOutputAppointmentStartTime() {
+        return outputAppointmentStartTime;
+    }
+
+    public void setOutputAppointmentStartTime(String outputAppointmentStartTime) {
+        this.outputAppointmentStartTime = outputAppointmentStartTime;
+    }
+
+    public String getOutputAppointmentEndTime() {
+        return outputAppointmentEndTime;
+    }
+
+    public void setOutputAppointmentEndTime(String outputAppointmentEndTime) {
+        this.outputAppointmentEndTime = outputAppointmentEndTime;
+    }
+    
     public String getCancelledByUserType() {
         return cancelledByUserType;
     }

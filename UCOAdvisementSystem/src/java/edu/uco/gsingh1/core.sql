@@ -1,4 +1,4 @@
-/* 
+ /* 
  * Author: Guru Singh
  * Web Server Programming, Spring 17
  */
@@ -9,6 +9,8 @@
 
 
 --create  major table
+DROP TABLE IF EXISTS userimage;
+DROP TABLE IF EXISTS advisementstatus;
 DROP TABLE IF EXISTS daytable;
 DROP TABLE IF EXISTS advisorschedule;
 DROP TABLE IF EXISTS breaks;
@@ -31,6 +33,8 @@ majorcode INT NOT NULL,
 major varchar(255),
 program varchar(255),
 degree varchar(255),
+datecreated TIMESTAMP,
+datemodified TIMESTAMP,
 primary key(majorcode) 
 );
 
@@ -40,64 +44,66 @@ CREATE TABLE courses(
 courseprefix varchar(4),
 coursenumber int NOT NULL,
 coursetitle varchar(255),
-credithrs int
+credithrs int,
+datecreated TIMESTAMP,
+datemodified TIMESTAMP
 );
 
 --insert all the majors into the major table
-INSERT INTO major VALUES(6100,'Computer Science','Computer Science','Bachelor of Science');
-INSERT INTO major VALUES(6110,'Software Engineering','Software Engineering','Bachelor of Science');
-INSERT INTO major VALUES(6102,'Computer Science-Information Science','Computer Science','Bachelor of Science');
-INSERT INTO major VALUES(6101,'Computer Science-Applied','Computer Science','Bachelor of Science');
-INSERT INTO major VALUES(6660,'Applied Mathematics and Computer Science','Applied Mathematics and Computer Science','Master of Science');
+INSERT INTO major(majorcode,major,program,degree) VALUES(6100,'Computer Science','Computer Science','Bachelor of Science');
+INSERT INTO major(majorcode,major,program,degree) VALUES(6110,'Software Engineering','Software Engineering','Bachelor of Science');
+INSERT INTO major(majorcode,major,program,degree) VALUES(6102,'Computer Science-Information Science','Computer Science','Bachelor of Science');
+INSERT INTO major(majorcode,major,program,degree) VALUES(6101,'Computer Science-Applied','Computer Science','Bachelor of Science');
+INSERT INTO major(majorcode,major,program,degree) VALUES(6660,'Applied Mathematics and Computer Science','Applied Mathematics and Computer Science','Master of Science');
 
 --insert all the courses into the courses table
-INSERT INTO courses VALUES('HSAP',0001,'High School AP',0);
-INSERT INTO courses VALUES('CMSC',1613,'Programming I',3);
-INSERT INTO courses VALUES('CMSC',1621,'Programming I Lab',1);
-INSERT INTO courses VALUES('CMSC',2413,'Visual Programming',3);
-INSERT INTO courses VALUES('CMSC',2123,'Discrete Structures',3);
-INSERT INTO courses VALUES('CMSC',2613,'Programming II',3);
-INSERT INTO courses VALUES('CMSC',2621,'Programming II Lab',3);
-INSERT INTO courses VALUES('CMSC',2833,'Computer Organization I',3);
-INSERT INTO courses VALUES('CMSC',3833,'Computer Organization II',3);
-INSERT INTO courses VALUES('SE',3103,'Object Oriented Software Design and Construction',3);
-INSERT INTO courses VALUES('CMSC',3303,'System Analysis and Design',3);
-INSERT INTO courses VALUES('CMSC',3413,'Enterprise Programming',3);
-INSERT INTO courses VALUES('SE',4283,'Software Engineering I',3);
-INSERT INTO courses VALUES('SE',4423,'Software Engineering II',3);
-INSERT INTO courses VALUES('SE',4433,'Software Architecture and Design',3);
-INSERT INTO courses VALUES('SE',4513,'Software Engineering Senior Project',3);
-INSERT INTO courses VALUES('CMSC',3613,'Data Structures and Algorithms',3);
-INSERT INTO courses VALUES('CMSC',4003,'Application Database Management',3);
-INSERT INTO courses VALUES('CMSC',4023,'Programming Languagues',3);
-INSERT INTO courses VALUES('CMSC',4063,'Networks',3);
-INSERT INTO courses VALUES('CMSC',4173,'Translator Design',3);
-INSERT INTO courses VALUES('CMSC',4153,'Operating Systems',3);
-INSERT INTO courses VALUES('CMSC',4513,'Software Design and Development',3);
-INSERT INTO courses VALUES('CMSC',4323,'Computer and Network Security',3);
-INSERT INTO courses VALUES('CMSC',4401,'Ethics in Computing',1);
-INSERT INTO courses VALUES('MATH',2313,'Calculus 1',3);
-INSERT INTO courses VALUES('MATH',2323,'Calculus 2',3);
-INSERT INTO courses VALUES('MATH',2333,'Calculus 3',3);
-INSERT INTO courses VALUES('MATH',3143,'Linear Algebra',3);
-INSERT INTO courses VALUES('STAT',2113,'Statistical Methods',3);
-INSERT INTO courses VALUES('STAT',2103,'Introduction to Statistics for Sciences',3);
-INSERT INTO courses VALUES('STAT',4113,'Mathematical Statistics',3);
-INSERT INTO courses VALUES('ACCT',2113,'Accounting I',3);
-INSERT INTO courses VALUES('ACCT',2133,'Accounting II',3);
-INSERT INTO courses VALUES('MGMT',3103,'Principles of Management',3);
-INSERT INTO courses VALUES('ISOM',3263,'Management Information Systems',3);
-INSERT INTO courses VALUES('CMSC',5043,'Applied Database Management',3);
-INSERT INTO courses VALUES('CMSC',5053,'Operating Systems',3);
-INSERT INTO courses VALUES('CMSC',5063,'Networks',3);
-INSERT INTO courses VALUES('CMSC',5283,'Software Engineering',3);
-INSERT INTO courses VALUES('CMSC',5023,'Programming Languagues',3);
-INSERT INTO courses VALUES('CMSC',5273,'Theory of Computing',3);
-INSERT INTO courses VALUES('MATH',5113,'Operations Research 1',3);
-INSERT INTO courses VALUES('MATH',5143,'Advanced Calculus for Applications 1',3);
-INSERT INTO courses VALUES('MATH',5853,'Introduction to Graduate Research',3);
-INSERT INTO courses VALUES('STAT',5263,'Computer Applications in Statistics',3);
-INSERT INTO courses VALUES('CMSC',4273,'Theory of Computing',3);
+INSERT INTO courses(courseprefix,coursenumber,coursetitle,credithrs) VALUES('HSAP',0001,'High School AP',0);
+INSERT INTO courses(courseprefix,coursenumber,coursetitle,credithrs) VALUES('CMSC',1613,'Programming I',3);
+INSERT INTO courses(courseprefix,coursenumber,coursetitle,credithrs) VALUES('CMSC',1621,'Programming I Lab',1);
+INSERT INTO courses(courseprefix,coursenumber,coursetitle,credithrs) VALUES('CMSC',2413,'Visual Programming',3);
+INSERT INTO courses(courseprefix,coursenumber,coursetitle,credithrs) VALUES('CMSC',2123,'Discrete Structures',3);
+INSERT INTO courses(courseprefix,coursenumber,coursetitle,credithrs) VALUES('CMSC',2613,'Programming II',3);
+INSERT INTO courses(courseprefix,coursenumber,coursetitle,credithrs) VALUES('CMSC',2621,'Programming II Lab',3);
+INSERT INTO courses(courseprefix,coursenumber,coursetitle,credithrs) VALUES('CMSC',2833,'Computer Organization I',3);
+INSERT INTO courses(courseprefix,coursenumber,coursetitle,credithrs) VALUES('CMSC',3833,'Computer Organization II',3);
+INSERT INTO courses(courseprefix,coursenumber,coursetitle,credithrs) VALUES('SE',3103,'Object Oriented Software Design and Construction',3);
+INSERT INTO courses(courseprefix,coursenumber,coursetitle,credithrs) VALUES('CMSC',3303,'System Analysis and Design',3);
+INSERT INTO courses(courseprefix,coursenumber,coursetitle,credithrs) VALUES('CMSC',3413,'Enterprise Programming',3);
+INSERT INTO courses(courseprefix,coursenumber,coursetitle,credithrs) VALUES('SE',4283,'Software Engineering I',3);
+INSERT INTO courses(courseprefix,coursenumber,coursetitle,credithrs) VALUES('SE',4423,'Software Engineering II',3);
+INSERT INTO courses(courseprefix,coursenumber,coursetitle,credithrs) VALUES('SE',4433,'Software Architecture and Design',3);
+INSERT INTO courses(courseprefix,coursenumber,coursetitle,credithrs) VALUES('SE',4513,'Software Engineering Senior Project',3);
+INSERT INTO courses(courseprefix,coursenumber,coursetitle,credithrs) VALUES('CMSC',3613,'Data Structures and Algorithms',3);
+INSERT INTO courses(courseprefix,coursenumber,coursetitle,credithrs) VALUES('CMSC',4003,'Application Database Management',3);
+INSERT INTO courses(courseprefix,coursenumber,coursetitle,credithrs) VALUES('CMSC',4023,'Programming Languagues',3);
+INSERT INTO courses(courseprefix,coursenumber,coursetitle,credithrs) VALUES('CMSC',4063,'Networks',3);
+INSERT INTO courses(courseprefix,coursenumber,coursetitle,credithrs) VALUES('CMSC',4173,'Translator Design',3);
+INSERT INTO courses(courseprefix,coursenumber,coursetitle,credithrs) VALUES('CMSC',4153,'Operating Systems',3);
+INSERT INTO courses(courseprefix,coursenumber,coursetitle,credithrs) VALUES('CMSC',4513,'Software Design and Development',3);
+INSERT INTO courses(courseprefix,coursenumber,coursetitle,credithrs) VALUES('CMSC',4323,'Computer and Network Security',3);
+INSERT INTO courses(courseprefix,coursenumber,coursetitle,credithrs) VALUES('CMSC',4401,'Ethics in Computing',1);
+INSERT INTO courses(courseprefix,coursenumber,coursetitle,credithrs) VALUES('MATH',2313,'Calculus 1',3);
+INSERT INTO courses(courseprefix,coursenumber,coursetitle,credithrs) VALUES('MATH',2323,'Calculus 2',3);
+INSERT INTO courses(courseprefix,coursenumber,coursetitle,credithrs) VALUES('MATH',2333,'Calculus 3',3);
+INSERT INTO courses(courseprefix,coursenumber,coursetitle,credithrs) VALUES('MATH',3143,'Linear Algebra',3);
+INSERT INTO courses(courseprefix,coursenumber,coursetitle,credithrs) VALUES('STAT',2113,'Statistical Methods',3);
+INSERT INTO courses(courseprefix,coursenumber,coursetitle,credithrs) VALUES('STAT',2103,'Introduction to Statistics for Sciences',3);
+INSERT INTO courses(courseprefix,coursenumber,coursetitle,credithrs) VALUES('STAT',4113,'Mathematical Statistics',3);
+INSERT INTO courses(courseprefix,coursenumber,coursetitle,credithrs) VALUES('ACCT',2113,'Accounting I',3);
+INSERT INTO courses(courseprefix,coursenumber,coursetitle,credithrs) VALUES('ACCT',2133,'Accounting II',3);
+INSERT INTO courses(courseprefix,coursenumber,coursetitle,credithrs) VALUES('MGMT',3103,'Principles of Management',3);
+INSERT INTO courses(courseprefix,coursenumber,coursetitle,credithrs) VALUES('ISOM',3263,'Management Information Systems',3);
+INSERT INTO courses(courseprefix,coursenumber,coursetitle,credithrs) VALUES('CMSC',5043,'Applied Database Management',3);
+INSERT INTO courses(courseprefix,coursenumber,coursetitle,credithrs) VALUES('CMSC',5053,'Operating Systems',3);
+INSERT INTO courses(courseprefix,coursenumber,coursetitle,credithrs) VALUES('CMSC',5063,'Networks',3);
+INSERT INTO courses(courseprefix,coursenumber,coursetitle,credithrs) VALUES('CMSC',5283,'Software Engineering',3);
+INSERT INTO courses(courseprefix,coursenumber,coursetitle,credithrs) VALUES('CMSC',5023,'Programming Languagues',3);
+INSERT INTO courses(courseprefix,coursenumber,coursetitle,credithrs) VALUES('CMSC',5273,'Theory of Computing',3);
+INSERT INTO courses(courseprefix,coursenumber,coursetitle,credithrs) VALUES('MATH',5113,'Operations Research 1',3);
+INSERT INTO courses(courseprefix,coursenumber,coursetitle,credithrs) VALUES('MATH',5143,'Advanced Calculus for Applications 1',3);
+INSERT INTO courses(courseprefix,coursenumber,coursetitle,credithrs) VALUES('MATH',5853,'Introduction to Graduate Research',3);
+INSERT INTO courses(courseprefix,coursenumber,coursetitle,credithrs) VALUES('STAT',5263,'Computer Applications in Statistics',3);
+INSERT INTO courses(courseprefix,coursenumber,coursetitle,credithrs) VALUES('CMSC',4273,'Theory of Computing',3);
 
 --this column adds a new column course to the courses table
 ALTER TABLE courses ADD COLUMN course VARCHAR(12);
@@ -122,7 +128,10 @@ studentid varchar(12) NOT NULL UNIQUE,
 majorid INT,
 phone char(10),
 isverified smallint DEFAULT 0, --1 for verified --0 for not verified
+advisementstatus TINYINT DEFAULT 0, -- 0 for not advised, 1 for advised,2 for noshow
 randomcode varchar(255),
+datecreated TIMESTAMP,
+datemodified TIMESTAMP,
 PRIMARY KEY(userid),
 FOREIGN KEY (majorid) REFERENCES major(majorcode)
 );
@@ -134,6 +143,8 @@ create table grouptable (
     id INT NOT NULL AUTO_INCREMENT,
     groupname varchar(255),
     username varchar(255),
+datecreated TIMESTAMP,
+datemodified TIMESTAMP,
     primary key (id)
     --FOREIGN KEY (useremail) REFERENCES usertable(username) getting wierd error while dropping tables need to analyze
 );
@@ -315,6 +326,8 @@ CREATE TABLE daytable(
 dayid INT NOT NULL AUTO_INCREMENT,
 daynum TINYINT,
 dayname VARCHAR(12),
+datecreated TIMESTAMP,
+datemodified TIMESTAMP,
 PRIMARY KEY (dayid)
 );
 
@@ -330,15 +343,31 @@ INSERT INTO daytable(daynum,dayname) VALUES (7,'saturday');
 DROP TABLE IF EXISTS bookingstatus;
 CREATE TABLE bookingstatus(
 statusid INT NOT NULL AUTO_INCREMENT,
-status TINYINT, -- 0 for open -1 for cancelled and 1 for booked
+status TINYINT, -- 0 for open -1 for cancelled by advisor and 1 for booked -2 cancelled by student
 description VARCHAR(255),
+datecreated TIMESTAMP,
+datemodified TIMESTAMP,
 PRIMARY KEY (statusid)
 );
+
 
 INSERT INTO bookingstatus(status,description) VALUES (0,'open');
 INSERT INTO bookingstatus(status,description) VALUES (1,'booked');
 INSERT INTO bookingstatus(status,description) VALUES (-1,'cancelledbyadvisor');
 INSERT INTO bookingstatus(status,description) VALUES (-2,'cancelledbystudent');
+
+DROP TABLE IF EXISTS advisementstatus;
+CREATE TABLE advisementstatus(
+advisementstatusid INT NOT NULL AUTO_INCREMENT,
+advisementstatus TINYINT, -- 0 for not advised, 1 for advised
+advisementdescription VARCHAR(255),
+datecreated TIMESTAMP,
+datemodified TIMESTAMP,
+PRIMARY KEY (advisementstatusid)
+);
+
+INSERT INTO advisementstatus(advisementstatus,advisementdescription) VALUES (0,'not advised');
+INSERT INTO advisementstatus(advisementstatus,advisementdescription) VALUES (1,'advised');
 
 DROP TABLE IF EXISTS advisor;
 CREATE TABLE advisor(
@@ -346,6 +375,8 @@ advisorid INT NOT NULL AUTO_INCREMENT,
 userid INT,
 advisorfirstname VARCHAR(255),
 advisorlastname VARCHAR(255),
+datecreated TIMESTAMP,
+datemodified TIMESTAMP,
 PRIMARY KEY (advisorid),
 FOREIGN KEY (userid) REFERENCES usertable(userid)
 );
@@ -364,6 +395,8 @@ availTo DATE,
 availfromtime TIME,
 availtotime TIME,
 duration TINYINT,
+datecreated TIMESTAMP,
+datemodified TIMESTAMP,
 PRIMARY KEY (advisorscheduleid),
 FOREIGN KEY (advisorid) REFERENCES advisor(advisorid)
 );
@@ -395,6 +428,8 @@ timeslotday TINYINT,
 start_time DATETIME,
 end_time DATETIME,
 duration INT,
+datecreated TIMESTAMP,
+datemodified TIMESTAMP,
 PRIMARY KEY (timeslotid)
 );
 
@@ -422,6 +457,8 @@ advisorid INT NOT NULL,
 breakday TINYINT,
 start_time TIME,
 end_time TIME,
+datecreated TIMESTAMP,
+datemodified TIMESTAMP,
 PRIMARY KEY (breakid)
 );
 
@@ -443,6 +480,8 @@ endtime DATETIME,
 status TINYINT,
 cancelledbyusertype VARCHAR(25),
 cancelledbyuserid INT,
+datecreated TIMESTAMP,
+datemodified TIMESTAMP,
 PRIMARY KEY (appointmentid),
 FOREIGN KEY (userid) REFERENCES usertable(userid),
 FOREIGN KEY (cancelledbyuserid) REFERENCES usertable(userid)
@@ -457,10 +496,7 @@ FOREIGN KEY (cancelledbyuserid) REFERENCES usertable(userid)
 -- (advisorid,userid,appointmentday,appointmentdate,starttime,endtime,status)
 -- VALUES
 -- (1,2,2,'2017-03-27','2017-03-27 16:20:00','2017-03-27 16:30:00',1);
--- INSERT INTO appointments
--- (advisorid,userid,appointmentday,appointmentdate,starttime,endtime,status)
--- VALUES
--- (1,2,2,'2017-03-27','2017-03-27 11:10:00','2017-03-27 11:20:00',1);
+
 -- INSERT INTO appointments
 -- (advisorid,userid,appointmentday,appointmentdate,starttime,endtime,status)
 -- VALUES
@@ -472,6 +508,8 @@ CREATE TABLE studentcourses(
 suid INT NOT NULL,
 scourse VARCHAR(12) NOT NULL,
 susername VARCHAR(255),
+datecreated TIMESTAMP,
+datemodified TIMESTAMP,
 PRIMARY KEY(suid,scourse),
 FOREIGN KEY (suid) REFERENCES usertable(userid),
 FOREIGN KEY (scourse) REFERENCES courses(course)
@@ -563,10 +601,34 @@ SELECT u.userid,
        u.phone,
        m.majorcode,
        m.major,
-       m.degree
+       m.degree,
+       a.advisementstatus,
+       a.advisementdescription
 FROM usertable u
 JOIN major m 
-ON m.majorcode=u.majorid;
+ON m.majorcode=u.majorid
+JOIN advisementstatus a 
+ON a.advisementstatus=u.advisementstatus;
+
+DROP VIEW IF EXISTS studentadvisementstatusview;
+CREATE OR REPLACE VIEW studentadvisementstatusview
+AS
+SELECT u.userid,
+        u.firstname,
+       u.middleinitial,
+       u.lastname,
+       u.username,
+       u.studentid,
+       m.majorcode,
+       m.major,
+       m.degree,
+       a.advisementstatus,
+       a.advisementdescription
+FROM usertable u
+JOIN major m 
+ON m.majorcode=u.majorid
+JOIN advisementstatus a 
+ON a.advisementstatus=u.advisementstatus;
 
 DROP PROCEDURE IF EXISTS getUserDetail;
 DELIMITER #
@@ -808,6 +870,8 @@ LEFT JOIN appointments ap on
 allslotsinaday.start_at=ap.starttime
 AND
 allslotsinaday.end_at=ap.endtime
+AND
+ap.status IN (1,-1)
 LEFT JOIN breaks br ON
 TIME(allslotsinaday.start_at)>=br.start_time
 AND
@@ -822,3 +886,55 @@ AND  DAYOFWEEK(allslotsinaday.end_at)=DAYOFWEEK(userselecteddate)
 END#
 
 DELIMITER ;
+
+
+DROP VIEW IF EXISTS appointmentview;
+CREATE OR REPLACE VIEW appointmentview
+AS
+SELECT appointmentid,ap.userid, appointmentdate,starttime,endtime,ap.status,b.description,u.username FROM appointments ap
+JOIN usertable u
+ON
+ap.userid=u.userid
+JOIN daytable d 
+ON 
+d.daynum=ap.appointmentday
+JOIN bookingstatus b
+ON b.status=ap.status;
+
+DROP PROCEDURE IF EXISTS getAppointmentViewForStudent;
+DELIMITER #
+
+CREATE PROCEDURE getAppointmentViewForStudent(IN useremail VARCHAR(255))
+BEGIN
+SELECT *
+FROM appointmentview
+WHERE username=useremail;
+END#
+
+DELIMITER ;
+
+DROP VIEW IF EXISTS advisorappointmentview;
+CREATE OR REPLACE VIEW advisorappointmentview
+AS
+SELECT appointmentid,ap.userid,appointmentdate,starttime,endtime,ap.status,b.description AS bookingstatus,u.firstname,u.lastname,u.studentid,u.username,u.majorid FROM appointments ap
+JOIN usertable u
+ON
+ap.userid=u.userid
+JOIN daytable d 
+ON 
+d.daynum=ap.appointmentday
+JOIN bookingstatus b
+ON b.status=ap.status;
+
+DROP TABLE IF EXISTS userimage;
+create table userimage (
+    fileid INT NOT NULL AUTO_INCREMENT,
+    userid INT,
+    useremail VARCHAR(255),
+    filename VARCHAR(255),
+    filetype VARCHAR(255),
+    filesize BIGINT,
+    filecontents LONGBLOB,  /* binary data */
+    PRIMARY KEY (fileid),
+    FOREIGN KEY (userid) REFERENCES usertable(userid)
+    );
