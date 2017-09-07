@@ -35,6 +35,25 @@ public class User {
     public String phone;
     public int isuserverified;
     public String randomcode;    
+    public int isAdmin;
+    public int isAdvisor;
+
+    public int getIsAdvisor() {
+        return isAdvisor;
+    }
+
+    public void setIsAdvisor(int isAdvisor) {
+        this.isAdvisor = isAdvisor;
+    }
+
+    public int getIsAdmin() {
+        return isAdmin;
+    }
+
+    public void setIsAdmin(int isAdmin) {
+        this.isAdmin = isAdmin;
+    }
+    
 
     public String getRandomcode() {
         return randomcode;

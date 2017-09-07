@@ -72,8 +72,8 @@
                                     </h:outputText>
                                 </h:column>
                                 <h:column>
-                                    <h:commandButton value="Book" class="ui blue button bookbutton" action="#{dateBean.book(studentslot)}" onclick="bookButtonClick()">  
-                                    </h:commandButton>
+                                    <h:commandLink value="Book" class="ui blue button bookbutton">  
+                                    </h:commandLink>
                                 </h:column>
                             </h:dataTable>
                             <h:panelGroup rendered="#{empty dateBean.slots}">
@@ -85,11 +85,39 @@
                     </div>
                 </h:form>
             </div>
+            <div class="bookingdetaildiv">
+                <div class="ui modal">
+                    <i class="close icon"></i>
+                    <div class="header">
+                        Modal Title
+                    </div>
+                    <div class="image content">
+                        <div class="image">
+                            An image can appear on left or an icon
+                        </div>
+                        <div class="description">
+                            A description can appear on the right
+                        </div>
+                    </div>
+                    <div class="actions">
+                        <div class="ui button">Cancel</div>
+                        <div class="ui button">OK</div>
+                    </div>
+                </div>
+            </div>
         </div>
         <h:messages globalOnly="true" class="ui visible error message"/>
     </ui:define>
     <ui:define name="footerscripts">
         <script type="text/javascript">
+            $(document).ready(function () {
+                var bookbutton = $(".ui.blue.button.bookbutton");
+                bookbutton.click(function () {
+                    alert("bholu");
+                    $('.ui.modal').modal('show');
+                });
+
+            });
             jsf.ajax.addOnEvent(function (data) {
                 var ajaxstatus = data.status; // Can be "begin", "complete" and "success"
                 var ajaxloader = document.getElementById("ajaxloader");
@@ -110,7 +138,10 @@
                 }
             });
 
+
+
         </script>
+
     </ui:define>
 
 </ui:composition>

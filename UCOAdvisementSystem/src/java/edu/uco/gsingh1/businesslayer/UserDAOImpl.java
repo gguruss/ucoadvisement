@@ -76,31 +76,52 @@ public class UserDAOImpl implements UserDAO {
             throw new SQLException("Cannot get connection");
         }
         try {
-            PreparedStatement insertQuery = conn.prepareStatement(
-                    "INSERT INTO usertable(firstname,middleinitial,lastname,username,password,usertype,studentid,majorid,phone,randomcode) VALUES(?,?,?,?,?,?,?,?,?,?)");
+            PreparedStatement insertQuery;
+            if (user.isAdvisor == 1) {
+                insertQuery = conn.prepareStatement(
+                        "INSERT INTO usertable(firstname,middleinitial,lastname,username,password,usertype,studentid,phone,isadvisor) VALUES(?,?,?,?,?,?,?,?,?)");
+            } else {
+                insertQuery = conn.prepareStatement(
+                        "INSERT INTO usertable(firstname,middleinitial,lastname,username,password,usertype,studentid,majorid,phone,randomcode,isadvisor) VALUES(?,?,?,?,?,?,?,?,?,?,?)");
+            }
+
             insertQuery.setString(1, user.firstname.toLowerCase().trim());
             insertQuery.setString(2, user.middleinitial.toLowerCase().trim());
             insertQuery.setString(3, user.lastname.toLowerCase().trim());
             insertQuery.setString(4, user.username.toLowerCase().trim());
             insertQuery.setString(5, user.password);
-            insertQuery.setString(6, "student");
-            insertQuery.setString(7, user.studentid);
-            insertQuery.setInt(8, user.majorid);
-            insertQuery.setString(9, user.phone);
-            insertQuery.setString(10, user.randomcode);
+            if (user.isAdvisor == 1) {
+                insertQuery.setString(6, "advisor");
+                insertQuery.setString(7, user.studentid);
+                insertQuery.setString(8, user.phone);
+                insertQuery.setInt(9, 1);
+            } else {
+                insertQuery.setString(6, "student");
+                insertQuery.setString(7, user.studentid);
+                insertQuery.setInt(8, user.majorid);
+                insertQuery.setString(9, user.phone);
+                insertQuery.setString(10, user.randomcode);
+                insertQuery.setInt(11, 0);
+            }
+
             int result = insertQuery.executeUpdate();
             if (result == 1) {
-                String verifCode = getVerificationCode(user.username, ds);
-                if (verifCode.length() > 0) {
-                    try {
-                        EmailHandler.sendVerificationCodeEmail(user.username, verifCode);
-                    } catch (UnsupportedEncodingException ex) {
-                        Logger.getLogger(UserDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
+
+                if (user.isAdvisor != 1) { //send verification links only to students, advisors should be automatically added
+                    String verifCode = getVerificationCode(user.username, ds);
+                    if (verifCode.length() > 0) {
+                        try {
+                            EmailHandler.sendVerificationCodeEmail(user.username, verifCode);
+                        } catch (UnsupportedEncodingException ex) {
+                            Logger.getLogger(UserDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
+                        }
                     }
                 }
                 return true;
             }
 
+        } catch (SQLException e) {
+            System.out.println(e.toString());
         } finally {
             conn.close();
         }
@@ -665,5 +686,10 @@ public class UserDAOImpl implements UserDAO {
             conn.close();
         }
         return true;
+    }
+
+    @Override
+    public boolean insertAdvisorUser(User user, DataSource ds) throws SQLException {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

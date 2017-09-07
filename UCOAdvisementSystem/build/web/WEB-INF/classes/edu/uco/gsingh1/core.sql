@@ -22,6 +22,9 @@ DROP TABLE IF EXISTS bookingstatus;
 DROP TABLE IF EXISTS majorprereq;
 DROP TABLE IF EXISTS studentcourses;
 DROP TABLE IF EXISTS advisor;
+DROP TABLE IF EXISTS prerequisite;
+DROP TABLE IF EXISTS corequisite;
+DROP TABLE IF EXISTS suggested;
 DROP TABLE IF EXISTS courses;
 DROP TABLE IF EXISTS grouptable;
 DROP TABLE IF EXISTS usertable;
@@ -57,6 +60,11 @@ INSERT INTO major(majorcode,major,program,degree) VALUES(6101,'Computer Science-
 INSERT INTO major(majorcode,major,program,degree) VALUES(6660,'Applied Mathematics and Computer Science','Applied Mathematics and Computer Science','Master of Science');
 
 --insert all the courses into the courses table
+INSERT INTO courses(courseprefix,coursenumber,coursetitle,credithrs) VALUES('MATH',1513,'College Algebra',3);
+INSERT INTO courses(courseprefix,coursenumber,coursetitle,credithrs) VALUES('MATH',1593,'Plane Trigonometry',3);
+INSERT INTO courses(courseprefix,coursenumber,coursetitle,credithrs) VALUES('MATH',1555,'College Algebra & Trigonometry',5);
+INSERT INTO courses(courseprefix,coursenumber,coursetitle,credithrs) VALUES('CMSC',1513,'Beginning Programming',3);
+INSERT INTO courses(courseprefix,coursenumber,coursetitle,credithrs) VALUES('CMSC',1521,'Beginning Programming Lab',5);
 INSERT INTO courses(courseprefix,coursenumber,coursetitle,credithrs) VALUES('HSAP',0001,'High School AP',0);
 INSERT INTO courses(courseprefix,coursenumber,coursetitle,credithrs) VALUES('CMSC',1613,'Programming I',3);
 INSERT INTO courses(courseprefix,coursenumber,coursetitle,credithrs) VALUES('CMSC',1621,'Programming I Lab',1);
@@ -104,6 +112,11 @@ INSERT INTO courses(courseprefix,coursenumber,coursetitle,credithrs) VALUES('MAT
 INSERT INTO courses(courseprefix,coursenumber,coursetitle,credithrs) VALUES('MATH',5853,'Introduction to Graduate Research',3);
 INSERT INTO courses(courseprefix,coursenumber,coursetitle,credithrs) VALUES('STAT',5263,'Computer Applications in Statistics',3);
 INSERT INTO courses(courseprefix,coursenumber,coursetitle,credithrs) VALUES('CMSC',4273,'Theory of Computing',3);
+INSERT INTO courses(courseprefix,coursenumber,coursetitle,credithrs) VALUES('CMSC',4133,'Artificial Intelligence',3);
+INSERT INTO courses(courseprefix,coursenumber,coursetitle,credithrs) VALUES('CMSC',4193,'Robotics',3);
+INSERT INTO courses(courseprefix,coursenumber,coursetitle,credithrs) VALUES('CMSC',4910,'Seminar',3);
+INSERT INTO courses(courseprefix,coursenumber,coursetitle,credithrs) VALUES('CMSC',4303,'Mobile Application Development',3);
+INSERT INTO courses(courseprefix,coursenumber,coursetitle,credithrs) VALUES('CMSC',4373,'Web Server Programming',3);
 
 --this column adds a new column course to the courses table
 ALTER TABLE courses ADD COLUMN course VARCHAR(12);
@@ -113,6 +126,135 @@ ALTER TABLE courses ADD COLUMN course VARCHAR(12);
 UPDATE courses SET course = CONCAT(courseprefix,coursenumber);
 
 ALTER TABLE courses ADD PRIMARY KEY (course);
+
+CREATE TABLE prerequisite
+    (   
+        prereqid INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+        maincourse VARCHAR(12),
+        prereqcourse VARCHAR(12),
+        FOREIGN KEY main_fk(maincourse) REFERENCES
+        courses(course),
+        FOREIGN KEY prereq_fk(prereqcourse) REFERENCES
+        courses(course)
+    );
+
+CREATE TABLE corequisite
+    (   
+        coreqid INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+        maincourse varchar(12),
+        corequisitecourse varchar(12),
+        FOREIGN KEY main_fk(maincourse) REFERENCES
+        courses(course),
+        FOREIGN KEY coreq_fk(corequisitecourse) REFERENCES
+        courses(course)
+    );
+ 
+CREATE TABLE suggested
+    (   
+        suggestedid INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+        maincourse varchar(12),
+        suggestedcourse varchar(12),
+        FOREIGN KEY main_fk(maincourse) REFERENCES
+        courses(course),
+        FOREIGN KEY suggested_fk(suggestedcourse) REFERENCES
+        courses(course)
+    );
+
+INSERT INTO  prerequisite(maincourse,prereqcourse)
+        values ('CMSC2413','CMSC1513');
+ INSERT INTO  corequisite(maincourse,corequisitecourse)
+        values ('CMSC1613','MATH1513');
+ INSERT INTO  corequisite(maincourse,corequisitecourse)
+        values ('CMSC1613','MATH1555');
+INSERT INTO  prerequisite (maincourse,prereqcourse)
+        values ('CMSC2833','CMSC1613');
+INSERT INTO  prerequisite (maincourse,prereqcourse)
+        values ('MATH2313','MATH1513');
+ INSERT INTO  corequisite (maincourse,corequisitecourse)
+        values ('CMSC2123','MATH2313');
+INSERT INTO  prerequisite (maincourse,prereqcourse)
+        values ('CMSC2613','CMSC1613');
+INSERT INTO  prerequisite (maincourse,prereqcourse)
+        values ('MATH2323','MATH2313');
+INSERT INTO  prerequisite (maincourse,prereqcourse)
+        values ('MATH2333','MATH2323');
+INSERT INTO  prerequisite (maincourse,prereqcourse)
+        values ('MATH3143','MATH2333');
+INSERT INTO  prerequisite (maincourse,prereqcourse)
+        values ('STAT2103','MATH1513');
+INSERT INTO  prerequisite (maincourse,prereqcourse)
+        values ('MATH2313','MATH1593');
+INSERT INTO  prerequisite (maincourse,prereqcourse)
+        values ('MATH3143','MATH2333');
+INSERT INTO  prerequisite (maincourse,prereqcourse)
+        values ('CMSC3833','CMSC2833');
+INSERT INTO  prerequisite (maincourse,prereqcourse)
+        values ('CMSC3413','CMSC2613');
+INSERT INTO  prerequisite (maincourse,prereqcourse)
+        values ('SE3103','CMSC2613');
+INSERT INTO  prerequisite (maincourse,prereqcourse)
+        values ('SE4283','CMSC2613');
+ INSERT INTO  corequisite (maincourse,corequisitecourse)
+        values ('SE4283','MATH2313');
+ INSERT INTO  corequisite (maincourse,corequisitecourse)
+        values ('SE4283','STAT2103');
+INSERT INTO  suggested (maincourse,suggestedcourse)
+        values ('SE4283','SE3103');
+ INSERT INTO  corequisite (maincourse,corequisitecourse)
+        values ('CMSC4003','MATH2313');
+ INSERT INTO  corequisite (maincourse,corequisitecourse)
+        values ('CMSC4003','STAT2103');
+INSERT INTO  prerequisite (maincourse,prereqcourse)
+        values ('CMSC4003','CMSC2613');
+INSERT INTO  prerequisite (maincourse,prereqcourse)
+        values ('CMSC4303','SE3103');
+INSERT INTO  prerequisite (maincourse,prereqcourse)
+        values ('CMSC4373','SE3103');
+INSERT INTO  suggested (maincourse,suggestedcourse)
+        values ('CMSC4373','CMSC4003');
+INSERT INTO  prerequisite (maincourse,prereqcourse)
+        values ('CMSC3613','CMSC2123');
+INSERT INTO  prerequisite (maincourse,prereqcourse)
+        values ('CMSC3613','CMSC2613');
+ INSERT INTO  corequisite (maincourse,corequisitecourse)
+        values ('CMSC3613','MATH2313');
+ INSERT INTO  corequisite (maincourse,corequisitecourse)
+        values ('CMSC3613','STAT2103');
+INSERT INTO  prerequisite (maincourse,prereqcourse)
+        values ('CMSC4910','CMSC3613');
+INSERT INTO  prerequisite (maincourse,prereqcourse)
+        values ('CMSC4133','CMSC3613');
+INSERT INTO  prerequisite (maincourse,prereqcourse)
+        values ('CMSC4153','CMSC3613');
+INSERT INTO  prerequisite (maincourse,prereqcourse)
+        values ('CMSC4323','CMSC3613');
+INSERT INTO  prerequisite (maincourse,prereqcourse)
+        values ('CMSC4063','CMSC3613');
+INSERT INTO  prerequisite (maincourse,prereqcourse)
+        values ('CMSC4193','CMSC3613');
+INSERT INTO  prerequisite (maincourse,prereqcourse)
+        values ('CMSC4401','CMSC3613');
+INSERT INTO  prerequisite (maincourse,prereqcourse)
+        values ('CMSC4023','CMSC3613');
+INSERT INTO  prerequisite (maincourse,prereqcourse)
+        values ('CMSC4173','CMSC3613');
+INSERT INTO  prerequisite (maincourse,prereqcourse)
+        values ('CMSC4273','CMSC3613');
+INSERT INTO  prerequisite (maincourse,prereqcourse)
+        values ('SE4423','SE4283');
+INSERT INTO  prerequisite (maincourse,prereqcourse)
+        values ('SE4433','SE4283');
+INSERT INTO  prerequisite (maincourse,prereqcourse)
+        values ('SE4513','SE4423');
+INSERT INTO  prerequisite (maincourse,prereqcourse)
+        values ('SE4513','SE4433');
+INSERT INTO  prerequisite (maincourse,prereqcourse)
+        values ('SE4513','CMSC4003');
+INSERT INTO  prerequisite (maincourse,prereqcourse)
+        values ('CMSC4513','CMSC4003');
+INSERT INTO  prerequisite (maincourse,prereqcourse)
+        values ('CMSC4513','SE4283');
+
 
 --dropping the usertable
 DROP TABLE IF EXISTS usertable;
@@ -124,10 +266,12 @@ lastname varchar(255),
 username varchar(255), -- tried to add UNIQUE constraint to this which causes error in dropping table major
 password char(64), /* SHA-256 encryption */
 usertype varchar(25) NOT NULL,
-studentid varchar(12) NOT NULL UNIQUE,
+studentid varchar(12) NOT NULL,
 majorid INT,
 phone char(10),
-isverified smallint DEFAULT 0, --1 for verified --0 for not verified
+isverified smallint DEFAULT 0, --1 for verified ,0 for not verified
+isadmin smallint DEFAULT 0, --1 for admin role, 0 for not verified
+isadvisor smallint DEFAULT 0, --1 for advisor, 0 for normal users
 advisementstatus TINYINT DEFAULT 0, -- 0 for not advised, 1 for advised,2 for noshow
 randomcode varchar(255),
 datecreated TIMESTAMP,
@@ -141,46 +285,74 @@ FOREIGN KEY (majorid) REFERENCES major(majorcode)
 DROP TABLE IF EXISTS grouptable;
 create table grouptable (
     id INT NOT NULL AUTO_INCREMENT,
+    uid INT NOT NULL,
     groupname varchar(255),
     username varchar(255),
 datecreated TIMESTAMP,
 datemodified TIMESTAMP,
-    primary key (id)
+    primary key (id),
+FOREIGN KEY(uid) REFERENCES usertable(userid)
     --FOREIGN KEY (useremail) REFERENCES usertable(username) getting wierd error while dropping tables need to analyze
+);
+
+DROP TABLE IF EXISTS advisor;
+CREATE TABLE advisor(
+advisorid INT NOT NULL AUTO_INCREMENT,
+userid INT NOT NULL,
+advisorfirstname VARCHAR(255),
+advisorlastname VARCHAR(255),
+datecreated TIMESTAMP,
+datemodified TIMESTAMP,
+PRIMARY KEY (advisorid),
+FOREIGN KEY (userid) REFERENCES usertable(userid)
 );
 
 DROP TRIGGER IF EXISTS groupnameinsert_after_ins_trigger;
 
 DELIMITER #
 
+--adds the user to their respective group and if its an advisor insert record into advisor table
 CREATE TRIGGER groupnameinsert_after_ins_trigger AFTER INSERT ON usertable
 FOR EACH ROW
 BEGIN
-  INSERT INTO grouptable (groupname, username) VALUES ("studentgroup", new.username);
+  IF(new.isadvisor = 0) THEN
+    INSERT INTO grouptable (groupname, username,uid) VALUES ("studentgroup", new.username,new.userid);
+  ELSE
+    INSERT INTO grouptable (groupname, username,uid) VALUES ("advisorgroup", new.username,new.userid);
+    INSERT INTO advisor (userid, advisorfirstname, advisorlastname) VALUES(new.userid,new.firstname,new.lastname);
+  END IF;
 END#
 
 
 DELIMITER ;
 
-DROP TRIGGER IF EXISTS groupname_after_delete_trigger;
+DROP TRIGGER IF EXISTS groupname_before_delete_trigger;
 
 DELIMITER #
 
-CREATE TRIGGER groupname_after_delete_trigger AFTER DELETE ON usertable
+CREATE TRIGGER groupname_before_delete_trigger BEFORE DELETE ON usertable
 FOR EACH ROW
 BEGIN
-  DELETE FROM grouptable where username=old.username;
+  DELETE FROM advisor where userid=old.userid;
+  DELETE FROM grouptable where uid=old.userid;
+  
 END#
 
 DELIMITER ;
 
-
-INSERT INTO usertable(firstname,middleinitial,lastname,username,password,usertype,studentid,majorid,isverified)
+--user hong sung with password 121
+INSERT INTO usertable(firstname,middleinitial,lastname,username,password,usertype,studentid,majorid,isverified,isadmin,isadvisor)
 VALUES
-('hong','','sung','hsung@uco.edu','89aa1e580023722db67646e8149eb246c748e180e34a1cf679ab0b41a416d904','advisor','',null,1);
+('hong','','sung','hsung@uco.edu','89aa1e580023722db67646e8149eb246c748e180e34a1cf679ab0b41a416d904','advisor','',null,1,1,1);
+--user grace park with password 123
+INSERT INTO usertable(firstname,middleinitial,lastname,username,password,usertype,studentid,majorid,isverified,isadmin,isadvisor)
+VALUES
+('grace','','park','gpark@uco.edu','a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3','advisor','',null,1,0,1);
+--user guru singh with password 321
 INSERT INTO usertable(firstname,middleinitial,lastname,username,password,usertype,studentid,majorid,isverified)
 VALUES
 ('guru','c','singh','gsingh1@uco.edu','8d23cf6c86e834a7aa6eded54c26ce2bb2e74903538c61bdd5d2197997ab2f72','student','*20280118',6660,1);
+--other users with password 987
 INSERT INTO usertable(firstname,middleinitial,lastname,username,password,usertype,studentid,majorid,isverified)
 VALUES
 ('clark','','kent','ckent@uco.edu','55c8079ac96c6a4f6a94e3460c79e4006d62374cce6e9fc8b281938a3abc7627','student','*20280119',6100,1);
@@ -199,9 +371,6 @@ VALUES
 INSERT INTO usertable(firstname,middleinitial,lastname,username,password,usertype,studentid,majorid,isverified)
 VALUES
 ('matt','','damon','mdamon@uco.edu','55c8079ac96c6a4f6a94e3460c79e4006d62374cce6e9fc8b281938a3abc7627','student','*20280124',6100,1);
-
---trigger not applicable for advisor
-UPDATE grouptable SET groupname='advisorgroup' WHERE username='hsung@uco.edu';
 
 --This table consists of the prerequisites of a major
 DROP TABLE IF EXISTS majorprereq;
@@ -369,21 +538,6 @@ PRIMARY KEY (advisementstatusid)
 INSERT INTO advisementstatus(advisementstatus,advisementdescription) VALUES (0,'not advised');
 INSERT INTO advisementstatus(advisementstatus,advisementdescription) VALUES (1,'advised');
 
-DROP TABLE IF EXISTS advisor;
-CREATE TABLE advisor(
-advisorid INT NOT NULL AUTO_INCREMENT,
-userid INT,
-advisorfirstname VARCHAR(255),
-advisorlastname VARCHAR(255),
-datecreated TIMESTAMP,
-datemodified TIMESTAMP,
-PRIMARY KEY (advisorid),
-FOREIGN KEY (userid) REFERENCES usertable(userid)
-);
-
-INSERT INTO advisor(userid,advisorfirstname,advisorlastname)
-VALUES
- (1,'hong','sung');
 
 DROP TABLE IF EXISTS advisorschedule;
 CREATE TABLE advisorschedule(
@@ -401,22 +555,32 @@ PRIMARY KEY (advisorscheduleid),
 FOREIGN KEY (advisorid) REFERENCES advisor(advisorid)
 );
 
--- test data
--- INSERT INTO advisorschedule (advisorid,availday,availfromtime,availtotime,duration)
--- VALUES
--- (1,2,'9:30','17:30',10);
--- INSERT INTO advisorschedule (advisorid,availday,availfromtime,availtotime,duration)
--- VALUES
--- (1,3,'11:30','15:30',10);
--- INSERT INTO advisorschedule (advisorid,availday,availfromtime,availtotime,duration)
--- VALUES
--- (1,4,'10:00','11:45',10);
--- INSERT INTO advisorschedule (advisorid,availday,availfromtime,availtotime,duration)
--- VALUES
--- (1,5,'14:00','15:00',10);
--- INSERT INTO advisorschedule (advisorid,availday,availfromtime,availtotime,duration)
--- VALUES
--- (1,6,'16:00','17:30',10);
+-- test data for Dr Sung
+INSERT INTO advisorschedule (advisorid,availday,availfromtime,availtotime,duration,availFrom,availTo)
+VALUES
+(1,2,'9:30','17:30',10,'2017-09-05','2017-09-15');
+INSERT INTO advisorschedule (advisorid,availday,availfromtime,availtotime,duration,availFrom,availTo)
+VALUES
+(1,3,'11:30','15:30',10,'2017-09-05','2017-09-15');
+INSERT INTO advisorschedule (advisorid,availday,availfromtime,availtotime,duration,availFrom,availTo)
+VALUES
+(1,4,'10:00','11:45',10,'2017-09-05','2017-09-15');
+INSERT INTO advisorschedule (advisorid,availday,availfromtime,availtotime,duration,availFrom,availTo)
+VALUES
+(1,5,'14:00','15:00',10,'2017-09-05','2017-09-15');
+INSERT INTO advisorschedule (advisorid,availday,availfromtime,availtotime,duration,availFrom,availTo)
+VALUES
+(1,6,'16:00','17:30',10,'2017-09-05','2017-09-15');
+--test data for Dr Park
+INSERT INTO advisorschedule (advisorid,availday,availfromtime,availtotime,duration,availFrom,availTo)
+VALUES
+(2,2,'9:00','14:30',10,'2017-09-05','2017-09-15');
+INSERT INTO advisorschedule (advisorid,availday,availfromtime,availtotime,duration,availFrom,availTo)
+VALUES
+(2,4,'10:00','15:00',10,'2017-09-05','2017-09-15');
+INSERT INTO advisorschedule (advisorid,availday,availfromtime,availtotime,duration,availFrom,availTo)
+VALUES
+(2,5,'16:00','17:30',10,'2017-09-05','2017-09-15');
 
 
 
@@ -430,7 +594,8 @@ end_time DATETIME,
 duration INT,
 datecreated TIMESTAMP,
 datemodified TIMESTAMP,
-PRIMARY KEY (timeslotid)
+PRIMARY KEY (timeslotid),
+FOREIGN KEY (advisorid) REFERENCES advisor(advisorid)
 );
 
 -- INSERT INTO timeslots(advisorid,timeslotday,start_time,end_time,duration)
@@ -459,19 +624,24 @@ start_time TIME,
 end_time TIME,
 datecreated TIMESTAMP,
 datemodified TIMESTAMP,
-PRIMARY KEY (breakid)
+PRIMARY KEY (breakid),
+FOREIGN KEY(advisorid) REFERENCES advisor(advisorid)
 );
 
 --testing breaks data
--- INSERT INTO breaks
---     (advisorid, breakday, start_time, end_time)
--- VALUES
---     (1, 2, '11:00:00', '14:30:00');
+INSERT INTO breaks
+    (advisorid, breakday, start_time, end_time)
+VALUES
+    (1, 4, '11:00:00', '12:00:00');
+INSERT INTO breaks
+    (advisorid, breakday, start_time, end_time)
+VALUES
+    (2, 4, '11:00:00', '12:00:00');
 
 DROP TABLE IF EXISTS appointments;
 CREATE TABLE appointments(
 appointmentid INT NOT NULL AUTO_INCREMENT,
-advisorid INT,
+advisorid INT NOT NULL,
 userid INT,
 appointmentday TINYINT,
 appointmentdate DATE,
@@ -484,23 +654,24 @@ datecreated TIMESTAMP,
 datemodified TIMESTAMP,
 PRIMARY KEY (appointmentid),
 FOREIGN KEY (userid) REFERENCES usertable(userid),
-FOREIGN KEY (cancelledbyuserid) REFERENCES usertable(userid)
+FOREIGN KEY (cancelledbyuserid) REFERENCES usertable(userid),
+FOREIGN KEY (advisorid) REFERENCES advisor(advisorid)
 );
 
 --test data
--- INSERT INTO appointments
--- (advisorid,userid,appointmentday,appointmentdate,starttime,endtime,status)
--- VALUES
--- (1,2,2,'2017-03-27','2017-03-27 16:10:00','2017-03-27 16:20:00',1);
--- INSERT INTO appointments
--- (advisorid,userid,appointmentday,appointmentdate,starttime,endtime,status)
--- VALUES
--- (1,2,2,'2017-03-27','2017-03-27 16:20:00','2017-03-27 16:30:00',1);
+INSERT INTO appointments
+(advisorid,userid,appointmentday,appointmentdate,starttime,endtime,status)
+VALUES
+(1,1,4,'2017-09-06','2017-09-06 10:10:00','2017-09-06 10:20:00',1);
+INSERT INTO appointments
+(advisorid,userid,appointmentday,appointmentdate,starttime,endtime,status)
+VALUES
+(1,1,4,'2017-09-06','2017-09-06 10:20:00','2017-09-06 10:30:00',1);
 
--- INSERT INTO appointments
--- (advisorid,userid,appointmentday,appointmentdate,starttime,endtime,status)
--- VALUES
--- (1,2,2,'2017-03-27','2017-03-27 11:20:00','2017-03-27 11:30:00',-1);
+INSERT INTO appointments
+(advisorid,userid,appointmentday,appointmentdate,starttime,endtime,status)
+VALUES
+(2,2,4,'2017-09-06','2017-09-06 10:20:00','2017-09-06 10:30:00',1);
 
 --This table consists of all the courses student has taken
 DROP TABLE IF EXISTS studentcourses;
@@ -824,8 +995,8 @@ DELIMITER ;
 --procedure to get time slots that are not booked and that is within advisors available time in a particular day and excludes time range which fall on breaks
 DROP PROCEDURE IF EXISTS getAvailableAppointmentSlotsWithoutBreaks;
 DELIMITER #
-
-CREATE PROCEDURE getAvailableAppointmentSlotsWithoutBreaks(IN userselecteddate DATE, IN advisorid INTEGER)
+--advid here refers to advisor id
+CREATE PROCEDURE getAvailableAppointmentSlotsWithoutBreaks(IN userselecteddate DATE, IN advid INTEGER)
 
 BEGIN
 DECLARE availslots INT DEFAULT 0;
@@ -833,7 +1004,7 @@ DECLARE slotlimit INT DEFAULT 0;
 DECLARE appointmentslots INT DEFAULT 0;
 DECLARE advisingduration INT DEFAULT 0;
 
-SET advisingduration=(SELECT duration FROM advisorschedule WHERE availday=DAYOFWEEK(userselecteddate));
+SET advisingduration=(SELECT duration FROM advisorschedule WHERE availday=DAYOFWEEK(userselecteddate) AND advisorid=advid);
 SELECT *
 FROM(
 SELECT dts.start_at,dts.end_at,ads.advisorid,ads.availday
@@ -865,19 +1036,23 @@ ON
 ads.availday=dts.dayofweek
 WHERE TIME(dts.start_at)>=ads.availfromtime 
 AND TIME(dts.end_at)<=ads.availtotime
-AND ads.advisorid=advisorid)allslotsinaday
+AND ads.advisorid=advid)allslotsinaday
 LEFT JOIN appointments ap on
 allslotsinaday.start_at=ap.starttime
 AND
 allslotsinaday.end_at=ap.endtime
 AND
 ap.status IN (1,-1)
+AND
+ap.advisorid=advid
 LEFT JOIN breaks br ON
 TIME(allslotsinaday.start_at)>=br.start_time
 AND
 TIME(allslotsinaday.end_at)<=br.end_time
 AND
 DAYOFWEEK(allslotsinaday.end_at) = br.breakday
+AND
+br.advisorid=advid
 WHERE ap.starttime is NULL
 AND br.start_time is NULL
 AND  DAYOFWEEK(allslotsinaday.end_at)=DAYOFWEEK(userselecteddate)

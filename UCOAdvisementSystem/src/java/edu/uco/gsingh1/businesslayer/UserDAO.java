@@ -64,8 +64,10 @@ public interface UserDAO {
     public boolean cancelAppointmentByStudent(Integer appointmentId, Integer userId, DataSource ds) throws SQLException;
 
     public FileInfo loadFileInfo(String userEmail, DataSource ds) throws SQLException;
-    
-     public ArrayList<StudentAdvisementView> getAllStudentAdvisementStatus(DataSource ds) throws SQLException;
+
+    public ArrayList<StudentAdvisementView> getAllStudentAdvisementStatus(DataSource ds) throws SQLException;
 
     public boolean updateAdvisementStatus(int userId, DataSource ds) throws SQLException;
+    
+    public boolean insertAdvisorUser(User user, DataSource ds) throws SQLException;
 }

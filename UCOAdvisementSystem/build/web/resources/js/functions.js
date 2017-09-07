@@ -65,11 +65,7 @@ $(document).ready(function () {
         }
     });
 
-    function bookButtonClick() {
-        $("ajaxloader").show();
-    }
-
-
+  
 
 }
 );
