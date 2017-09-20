@@ -3,7 +3,7 @@
  * Web Server Programming, Spring 17
  */
 
-
+//date utility to manipulate calendar
 $(document).ready(function () {
     var selectedDate = $('.selecteddate');
     var startDate = $('.startdate');

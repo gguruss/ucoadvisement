@@ -20,69 +20,76 @@
     </ui:define>
     <ui:define name="seventhitem">
         <div class="active item">
-            <i class="large add users icon"></i>  <h:link outcome="/advisor/advisors" value="Add Advisors" /> 
+            <i class="large add user icon"></i>  <h:link outcome="/advisor/advisors" value="Add Advisors" /> 
         </div>
     </ui:define>
     <ui:define name="secondcolumn">
         <h:form class="ui form" id="registrationform">
-            <h4 class="ui dividing header">Advisor Registration Form</h4>
-            <div class="three fields">
-                <div class="six wide field">
-                    <label>First Name</label>
-                    <h:inputText id="firstname" value="#{advisorRegistrationBean.newAdvisor.firstname}" />
-                </div>
-                <div class="four wide field">
-                    <label>Middle Initial</label>
-                    <h:inputText value="#{advisorRegistrationBean.newAdvisor.middleinitial}"/>
-                </div>
-                <div class="six wide field">
-                    <label>Last Name</label>
-                    <h:inputText value="#{advisorRegistrationBean.newAdvisor.lastname}" id="lastname"/>
-                </div>
-            </div>
-            <div class="three fields">
-                <div class="six wide field">
-                    <h:message for="firstname" class="errormsg"/>
-                </div>
-                <div class="four wide field">
-                </div>
-                <div class="six wide field">
-                    <h:message for="lastname" class="errormsg"/>
-                </div>
-            </div>
-            <div class="field">
-                <label>UCO Email</label>
-                <h:inputText value="#{advisorRegistrationBean.newAdvisor.username}" id="username">
-                    <f:validator validatorId="studentEmailValidator" />
-                    <f:ajax event="blur" render="studentEmailmessage" /> 
-                </h:inputText>
-            </div>
-            <div class="field">
-                <h:message id="studentEmailmessage" for="username" class="errormsg" />
-            </div>
-            <div class="field">
-                <label>Password</label>
-                <h:inputSecret value="#{advisorRegistrationBean.newAdvisor.password}" id="password"/>
-            </div>
-            <div class="field">
-                <h:message for="password" class="errormsg"/>
-            </div>
-            <div class="field">
-                <label>Advisor Id</label>
-                <h:inputText value="#{advisorRegistrationBean.newAdvisor.studentid}" id="studentid">
-                    <f:validator validatorId="studentIdValidator" />
-                    <f:ajax event="blur" render="studentIdMessage" /> 
-                </h:inputText>
-            </div>
-            <div class="field">
-                <h:message id="studentIdMessage" for="studentid" class="errormsg" />
-            </div>
-            <div class="field">
-                <label>Phone Number</label>
-                <h:inputText value="#{advisorRegistrationBean.newAdvisor.phone}" />
-            </div>
+            <div class="ui grid">
+                <div class="ten wide column">
+                    <h3 class="ui dividing center aligned header">
+                        <i class="add user icon"></i>
+                        Advisor Registration
+                    </h3>
+                    <div class="three fields">
+                        <div class="six wide field">
+                            <label>First Name</label>
+                            <h:inputText id="firstname" value="#{advisorRegistrationBean.newAdvisor.firstname}" />
+                        </div>
+                        <div class="four wide field">
+                            <label>Middle Initial</label>
+                            <h:inputText value="#{advisorRegistrationBean.newAdvisor.middleinitial}"/>
+                        </div>
+                        <div class="six wide field">
+                            <label>Last Name</label>
+                            <h:inputText value="#{advisorRegistrationBean.newAdvisor.lastname}" id="lastname"/>
+                        </div>
+                    </div>
+                    <div class="three fields">
+                        <div class="six wide field">
+                            <h:message for="firstname" class="errormsg"/>
+                        </div>
+                        <div class="four wide field">
+                        </div>
+                        <div class="six wide field">
+                            <h:message for="lastname" class="errormsg"/>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label>UCO Email</label>
+                        <h:inputText value="#{advisorRegistrationBean.newAdvisor.username}" id="username">
+                            <f:validator validatorId="studentEmailValidator" />
+                            <f:ajax event="blur" render="studentEmailmessage" /> 
+                        </h:inputText>
+                    </div>
+                    <div class="field">
+                        <h:message id="studentEmailmessage" for="username" class="errormsg" />
+                    </div>
+                    <div class="field">
+                        <label>Password</label>
+                        <h:inputSecret value="#{advisorRegistrationBean.newAdvisor.password}" id="password"/>
+                    </div>
+                    <div class="field">
+                        <h:message for="password" class="errormsg"/>
+                    </div>
+                    <div class="field">
+                        <label>Advisor Id</label>
+                        <h:inputText value="#{advisorRegistrationBean.newAdvisor.studentid}" id="studentid">
+                            <f:validator validatorId="studentIdValidator" />
+                            <f:ajax event="blur" render="studentIdMessage" /> 
+                        </h:inputText>
+                    </div>
+                    <div class="field">
+                        <h:message id="studentIdMessage" for="studentid" class="errormsg" />
+                    </div>
+                    <div class="field">
+                        <label>Phone Number</label>
+                        <h:inputText value="#{advisorRegistrationBean.newAdvisor.phone}" />
+                    </div>
 
-            <h:commandButton value="Sign Up" class="ui very fluid teal button" action="#{advisorRegistrationBean.doSave()}"/>
+                    <h:commandButton value="Sign Up" class="ui very fluid teal button" action="#{advisorRegistrationBean.doSave()}"/>
+                </div>
+            </div>
         </h:form>
 
     </ui:define>

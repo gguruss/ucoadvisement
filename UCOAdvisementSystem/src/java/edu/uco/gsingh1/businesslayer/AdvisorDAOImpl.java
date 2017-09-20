@@ -7,6 +7,7 @@ package edu.uco.gsingh1.businesslayer;
 import edu.uco.gsingh1.entity.Advisor;
 import edu.uco.gsingh1.entity.AdvisorAppointmentView;
 import edu.uco.gsingh1.entity.AdvisorSchedule;
+import edu.uco.gsingh1.entity.AdvisorScheduleView;
 import edu.uco.gsingh1.entity.AppointmentView;
 import edu.uco.gsingh1.entity.Breaks;
 import java.io.UnsupportedEncodingException;
@@ -16,6 +17,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Time;
+import java.sql.Types;
 import java.util.ArrayList;
 import javax.annotation.Resource;
 import javax.sql.DataSource;
@@ -49,8 +51,8 @@ public class AdvisorDAOImpl implements AdvisorDAO {
         try {
             PreparedStatement insertQuery = conn.prepareStatement(
                     "INSERT INTO advisorschedule"
-                    + "(advisorid,availday,availfromtime,availtotime,duration,availFrom,availTo) "
-                    + "VALUES(?,?,?,?,?,?,?)");
+                    + "(advisorid,availday,availfromtime,availtotime,duration,availFrom,availTo,userid) "
+                    + "VALUES(?,?,?,?,?,?,?,?)");
             insertQuery.setInt(1, advisorschedule.getAdvisorId());
             insertQuery.setInt(2, advisorschedule.getAvailDay());
             insertQuery.setTime(3, new java.sql.Time(advisorschedule.getAvailFromTime().toDate().getTime()));
@@ -58,6 +60,7 @@ public class AdvisorDAOImpl implements AdvisorDAO {
             insertQuery.setInt(5, advisorschedule.getDuration());
             insertQuery.setDate(6, new java.sql.Date(advisorschedule.getAvailFromDate().toDate().getTime()));
             insertQuery.setDate(7, new java.sql.Date(advisorschedule.getAvailToDate().toDate().getTime()));
+            insertQuery.setInt(8, advisorschedule.getUserId());
             int result = insertQuery.executeUpdate();
             if (result == 1) {
                 return true;
@@ -184,8 +187,8 @@ public class AdvisorDAOImpl implements AdvisorDAO {
     }
 
     @Override
-    public ArrayList<AdvisorAppointmentView> getAppointments(String date, DataSource ds) throws SQLException {
-        String selectedDate="";
+    public ArrayList<AdvisorAppointmentView> getAppointments(String date, int advisorId, DataSource ds) throws SQLException {
+        String selectedDate = "";
         ArrayList<AdvisorAppointmentView> appointments = new ArrayList<>();
         DateTimeFormatter fmtDate = DateTimeFormat.forPattern("yyyy-MM-dd");
         if (!date.isEmpty()) {
@@ -207,8 +210,9 @@ public class AdvisorDAOImpl implements AdvisorDAO {
                         "SELECT * FROM advisorappointmentview");
             } else {
                 selectQuery = conn.prepareStatement(
-                        "SELECT * FROM advisorappointmentview WHERE appointmentdate=?");
+                        "SELECT * FROM advisorappointmentview WHERE appointmentdate=? AND advisorid=?");
                 selectQuery.setDate(1, new java.sql.Date(new DateTime(selectedDate).toDate().getTime()));
+                selectQuery.setInt(2, advisorId);
             }
 
             ResultSet result = selectQuery.executeQuery();
@@ -258,6 +262,62 @@ public class AdvisorDAOImpl implements AdvisorDAO {
         }
         EmailHandler.sendAppointmentCancellation(appointment.getStudentEmail(), appointment.getOutputAppointmentDate(), appointment.getOutputAppointmentStartTime(), appointment.getOutputAppointmentEndTime());
         return true;
+    }
+
+    @Override
+    public ArrayList<AdvisorScheduleView> getAdvisorScheduleView(int advisorId, DataSource ds) throws SQLException {
+        ArrayList<AdvisorScheduleView> advisorScheduleView = new ArrayList<>();
+        DateTimeFormatter fmtTime = DateTimeFormat.forPattern("HH:mm a");
+        if (ds == null) {
+            throw new SQLException("Cannot get DataSource");
+        }
+        Connection conn = ds.getConnection();
+        if (conn == null) {
+            throw new SQLException("Cannot get connection");
+        }
+        try {
+            CallableStatement schedule = conn.prepareCall("{CALL getAdvisorSchedule(?)}");
+            schedule.setInt(1, advisorId);
+            boolean exists = schedule.execute();
+            if (exists) {
+                ResultSet result = schedule.getResultSet();
+                while (result.next()) {
+                    AdvisorScheduleView advisorSchedule = new AdvisorScheduleView();
+                    advisorSchedule.setDayNum(result.getInt("daynum"));
+                    advisorSchedule.setDayName(result.getString("dayname"));
+                    advisorSchedule.setOutputStartTime(fmtTime.print(new DateTime(result.getTimestamp("availfromtime"))));
+                    advisorSchedule.setOutputEndTime(fmtTime.print(new DateTime(result.getTimestamp("availtotime"))));
+                    advisorSchedule.setDuration(result.getInt("duration"));
+                    advisorScheduleView.add(advisorSchedule);
+                }
+            }
+
+        } finally {
+            conn.close();
+        }
+        return advisorScheduleView;
+    }
+
+    @Override
+    public int getAdvisorId(int userId, DataSource ds) throws SQLException {
+        if (ds == null) {
+            throw new SQLException("Cannot get DataSource");
+        }
+        Connection conn = ds.getConnection();
+        if (conn == null) {
+            throw new SQLException("Cannot get connection");
+        }
+        try {
+            CallableStatement getAdvisorId = conn.prepareCall("{ ? = CALL getLoggedInAdvisorId(?)}");
+            getAdvisorId.registerOutParameter(1, Types.INTEGER);
+            getAdvisorId.setInt(2, userId);
+            getAdvisorId.execute();
+            Integer advisorId = getAdvisorId.getInt(1);
+            return advisorId;
+
+        } finally {
+            conn.close();
+        }
     }
 
 }

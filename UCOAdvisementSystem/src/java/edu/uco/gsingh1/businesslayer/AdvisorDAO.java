@@ -7,6 +7,7 @@ package edu.uco.gsingh1.businesslayer;
 import edu.uco.gsingh1.entity.Advisor;
 import edu.uco.gsingh1.entity.AdvisorAppointmentView;
 import edu.uco.gsingh1.entity.AdvisorSchedule;
+import edu.uco.gsingh1.entity.AdvisorScheduleView;
 import edu.uco.gsingh1.entity.Breaks;
 import java.io.UnsupportedEncodingException;
 import java.sql.SQLException;
@@ -32,7 +33,11 @@ public interface AdvisorDAO {
 
     public ArrayList<Breaks> getBreaks(int advisorId, DataSource ds) throws SQLException;
 
-    public ArrayList<AdvisorAppointmentView> getAppointments(String date, DataSource ds) throws SQLException;
+    public ArrayList<AdvisorAppointmentView> getAppointments(String date, int advisorId, DataSource ds) throws SQLException;
 
     public boolean cancelAppointmentByAdvisor(AdvisorAppointmentView appointment, Integer userid, DataSource ds) throws SQLException, UnsupportedEncodingException;
+
+    public ArrayList<AdvisorScheduleView> getAdvisorScheduleView(int advisorId, DataSource ds) throws SQLException;
+
+    public int getAdvisorId(int userId, DataSource ds) throws SQLException;
 }

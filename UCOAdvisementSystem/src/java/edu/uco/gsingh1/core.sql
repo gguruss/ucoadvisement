@@ -551,36 +551,38 @@ availtotime TIME,
 duration TINYINT,
 datecreated TIMESTAMP,
 datemodified TIMESTAMP,
+userid INT NOT NULL,
 PRIMARY KEY (advisorscheduleid),
-FOREIGN KEY (advisorid) REFERENCES advisor(advisorid)
+FOREIGN KEY (advisorid) REFERENCES advisor(advisorid),
+FOREIGN KEY (userid) REFERENCES usertable(userid)
 );
 
 -- test data for Dr Sung
-INSERT INTO advisorschedule (advisorid,availday,availfromtime,availtotime,duration,availFrom,availTo)
+INSERT INTO advisorschedule (advisorid,availday,availfromtime,availtotime,duration,availFrom,availTo,userid)
 VALUES
-(1,2,'9:30','17:30',10,'2017-09-05','2017-09-15');
-INSERT INTO advisorschedule (advisorid,availday,availfromtime,availtotime,duration,availFrom,availTo)
+(1,2,'9:30','17:30',10,'2017-09-05','2017-09-15',1);
+INSERT INTO advisorschedule (advisorid,availday,availfromtime,availtotime,duration,availFrom,availTo,userid)
 VALUES
-(1,3,'11:30','15:30',10,'2017-09-05','2017-09-15');
-INSERT INTO advisorschedule (advisorid,availday,availfromtime,availtotime,duration,availFrom,availTo)
+(1,3,'11:30','15:30',10,'2017-09-05','2017-09-15',1);
+INSERT INTO advisorschedule (advisorid,availday,availfromtime,availtotime,duration,availFrom,availTo,userid)
 VALUES
-(1,4,'10:00','11:45',10,'2017-09-05','2017-09-15');
-INSERT INTO advisorschedule (advisorid,availday,availfromtime,availtotime,duration,availFrom,availTo)
+(1,4,'10:00','11:45',10,'2017-09-05','2017-09-15',1);
+INSERT INTO advisorschedule (advisorid,availday,availfromtime,availtotime,duration,availFrom,availTo,userid)
 VALUES
-(1,5,'14:00','15:00',10,'2017-09-05','2017-09-15');
-INSERT INTO advisorschedule (advisorid,availday,availfromtime,availtotime,duration,availFrom,availTo)
+(1,5,'14:00','15:00',10,'2017-09-05','2017-09-15',1);
+INSERT INTO advisorschedule (advisorid,availday,availfromtime,availtotime,duration,availFrom,availTo,userid)
 VALUES
-(1,6,'16:00','17:30',10,'2017-09-05','2017-09-15');
+(1,6,'16:00','17:30',10,'2017-09-05','2017-09-15',1);
 --test data for Dr Park
-INSERT INTO advisorschedule (advisorid,availday,availfromtime,availtotime,duration,availFrom,availTo)
+INSERT INTO advisorschedule (advisorid,availday,availfromtime,availtotime,duration,availFrom,availTo,userid)
 VALUES
-(2,2,'9:00','14:30',10,'2017-09-05','2017-09-15');
-INSERT INTO advisorschedule (advisorid,availday,availfromtime,availtotime,duration,availFrom,availTo)
+(2,2,'9:00','14:30',10,'2017-09-05','2017-09-15',2);
+INSERT INTO advisorschedule (advisorid,availday,availfromtime,availtotime,duration,availFrom,availTo,userid)
 VALUES
-(2,4,'10:00','15:00',10,'2017-09-05','2017-09-15');
-INSERT INTO advisorschedule (advisorid,availday,availfromtime,availtotime,duration,availFrom,availTo)
+(2,4,'10:00','15:00',10,'2017-09-05','2017-09-15',2);
+INSERT INTO advisorschedule (advisorid,availday,availfromtime,availtotime,duration,availFrom,availTo,userid)
 VALUES
-(2,5,'16:00','17:30',10,'2017-09-05','2017-09-15');
+(2,5,'16:00','17:30',10,'2017-09-05','2017-09-15',2);
 
 
 
@@ -662,16 +664,16 @@ FOREIGN KEY (advisorid) REFERENCES advisor(advisorid)
 INSERT INTO appointments
 (advisorid,userid,appointmentday,appointmentdate,starttime,endtime,status)
 VALUES
-(1,1,4,'2017-09-06','2017-09-06 10:10:00','2017-09-06 10:20:00',1);
+(1,3,4,'2017-09-07','2017-09-06 10:10:00','2017-09-06 10:20:00',1);
 INSERT INTO appointments
 (advisorid,userid,appointmentday,appointmentdate,starttime,endtime,status)
 VALUES
-(1,1,4,'2017-09-06','2017-09-06 10:20:00','2017-09-06 10:30:00',1);
+(1,4,4,'2017-09-06','2017-09-06 10:20:00','2017-09-06 10:30:00',1);
 
 INSERT INTO appointments
 (advisorid,userid,appointmentday,appointmentdate,starttime,endtime,status)
 VALUES
-(2,2,4,'2017-09-06','2017-09-06 10:20:00','2017-09-06 10:30:00',1);
+(2,5,4,'2017-09-07','2017-09-06 10:20:00','2017-09-06 10:30:00',1);
 
 --This table consists of all the courses student has taken
 DROP TABLE IF EXISTS studentcourses;
@@ -1066,7 +1068,7 @@ DELIMITER ;
 DROP VIEW IF EXISTS appointmentview;
 CREATE OR REPLACE VIEW appointmentview
 AS
-SELECT appointmentid,ap.userid, appointmentdate,starttime,endtime,ap.status,b.description,u.username FROM appointments ap
+SELECT appointmentid,ap.userid,ap.advisorid appointmentdate,starttime,endtime,ap.status,b.description,u.username FROM appointments ap
 JOIN usertable u
 ON
 ap.userid=u.userid
@@ -1091,7 +1093,7 @@ DELIMITER ;
 DROP VIEW IF EXISTS advisorappointmentview;
 CREATE OR REPLACE VIEW advisorappointmentview
 AS
-SELECT appointmentid,ap.userid,appointmentdate,starttime,endtime,ap.status,b.description AS bookingstatus,u.firstname,u.lastname,u.studentid,u.username,u.majorid FROM appointments ap
+SELECT appointmentid,ap.userid,ap.advisorid,appointmentdate,starttime,endtime,ap.status,b.description AS bookingstatus,u.firstname,u.lastname,u.studentid,u.username,u.majorid FROM appointments ap
 JOIN usertable u
 ON
 ap.userid=u.userid
@@ -1113,3 +1115,35 @@ create table userimage (
     PRIMARY KEY (fileid),
     FOREIGN KEY (userid) REFERENCES usertable(userid)
     );
+
+DROP VIEW IF EXISTS advisorscheduleview;
+CREATE OR REPLACE VIEW advisorscheduleview
+AS
+SELECT d.daynum,d.dayname,a.advisorid,a.availfromtime,a.availtotime,a.duration FROM advisorschedule a
+JOIN daytable d
+on a.availday = d.daynum;
+
+DROP PROCEDURE IF EXISTS getAdvisorSchedule;
+DELIMITER #
+
+CREATE PROCEDURE getAdvisorSchedule(IN advId int) --here advId refers to advisor Id
+BEGIN
+SELECT *
+FROM advisorscheduleview
+WHERE advisorid=advId;
+END#
+
+DELIMITER ;
+
+DROP FUNCTION getLoggedInAdvisorId;
+DELIMITER #
+
+CREATE FUNCTION getLoggedInAdvisorId(uId INTEGER) --here uId refers to user Id
+  RETURNS INT
+BEGIN
+  DECLARE advId INT;
+  SELECT advisorid INTO advId FROM advisor WHERE userid=uId;
+  RETURN advId;
+END#
+
+DELIMITER ;

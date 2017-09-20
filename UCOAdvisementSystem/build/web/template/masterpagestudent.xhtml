@@ -11,12 +11,20 @@ Web Server Programming, Spring 17
     <h:head>
         <title><ui:insert name="title">Master Page title</ui:insert></title>
         <meta content="text/html;charset=utf-8" http-equiv="Content-Type"/>
+        <meta http-equiv="refresh" content="#{session.maxInactiveInterval};url=#{request.contextPath}/index.xhtml"/>
         <meta content="utf-8" http-equiv="encoding"/>
         <h:outputStylesheet name="semantic.css" library="css"/>
         <h:outputScript name="jquery-3.1.1.min.js" library="js"/>
         <h:outputScript name="semantic.js" library="js"/>
         <ui:insert name="dependencies"></ui:insert>
         <ui:insert name="jsscripts"></ui:insert>
+        <ui:insert name="customcss">
+            <style>
+                .errormsg{
+                    color:red;
+                }
+            </style>
+        </ui:insert>
     </h:head>
     <body class="Site">
         <ui:insert name="topLayer">

@@ -5,6 +5,8 @@
 package edu.uco.gsingh1;
 
 import static com.sun.faces.facelets.util.Path.context;
+import edu.uco.gsingh1.businesslayer.AdvisorDAO;
+import edu.uco.gsingh1.businesslayer.AdvisorDAOImpl;
 import edu.uco.gsingh1.businesslayer.UserDAO;
 import edu.uco.gsingh1.businesslayer.UserDAOImpl;
 import edu.uco.gsingh1.businesslayer.Utility;
@@ -78,6 +80,16 @@ public class LoginBean implements Serializable {
         this.username = username;
     }
 
+    private int advisorId;
+
+    public int getAdvisorId() {
+        return advisorId;
+    }
+
+    public void setAdvisorId(int advisorId) {
+        this.advisorId = advisorId;
+    }
+
     @PostConstruct
     public void init() {
         user = new User();
@@ -102,6 +114,8 @@ public class LoginBean implements Serializable {
         if (user.userid > 0) {
 
             if (user.usertype.equals("advisor")) {
+                AdvisorDAO advisorDAO = new AdvisorDAOImpl();
+                advisorId = advisorDAO.getAdvisorId(user.userid, ds);
                 return "advisor/advisorhome.xhtml?faces-redirect=true";
             } else if ((user.usertype.equals("student")) && (user.isuserverified == 1)) {
                 return "student/profile.xhtml?faces-redirect=true";

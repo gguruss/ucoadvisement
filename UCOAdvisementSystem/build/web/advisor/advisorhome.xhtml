@@ -1,18 +1,15 @@
- <ui:composition template="/template/masterpageadmin.xhtml"
+<ui:composition template="/template/masterpageadmin.xhtml"
                 xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:f="http://xmlns.jcp.org/jsf/core"
                 xmlns:h="http://xmlns.jcp.org/jsf/html"
                 xmlns:ui="http://java.sun.com/jsf/facelets">
 
     <ui:define name="dependencies">
-        <h:outputStylesheet name="fullcalendar.css" library="css"/>
-        <h:outputScript name="moment.min.js" library="js"/>
-        <h:outputScript name="fullcalendar.js" library="js"/>
-        <h:outputScript name="functions.js" library="js"/>
+
     </ui:define>
     <ui:define name="jsscripts">
         <script type="text/javascript">
-            
+
         </script>
     </ui:define>
     <ui:define name="title">
@@ -24,21 +21,72 @@
         </div>
     </ui:define>
     <ui:define name="secondcolumn">
-        
-        <div id="calendar">
-
+        <div class="row">
+            <h3 class="ui center aligned header">
+                <i class="green checked calendar icon"></i>
+                Your Appointments for Today
+            </h3>
         </div>
-        <h:form id="calendarForm">
-            <h:inputText class="selecteddate" value="#{calendarBean.selectedDate}" style="display: none;">
-                <f:ajax event="change" listener="#{calendarBean.getAdvisorSlots()}"/> 
-            </h:inputText>
-            <h:inputText class="startdate" value="#{calendarBean.startDate}" style="display: none;">
-            </h:inputText>
-            <h:inputText class="enddate" value="#{calendarBean.endDate}" style="display: none;">
-            </h:inputText>
-        </h:form>
-        
-      
+        <div class="row" style="padding-top: 20px;">
+            <h:form>
+                <div class="ui center aligned grid">
+                    <h:dataTable value="#{advisorBean.advisorAppointmentsView}" rendered="#{not empty advisorBean.advisorAppointmentsView}" id="advisorappointments" var="advisorappointment" class="ui olive center aligned celled collapsing table">
+                        <h:column>
+                            <f:facet name="header">Appointment Date</f:facet>
+                            <h:outputText value="#{advisorappointment.outputAppointmentDate}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">From</f:facet>
+                            <h:outputText value="#{advisorappointment.outputAppointmentStartTime}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">To</f:facet>
+                            <h:outputText value="#{advisorappointment.outputAppointmentEndTime}" />
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">Student Id</f:facet>
+                            <h:outputText value="#{advisorappointment.studentId}">
+                            </h:outputText>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">First Name</f:facet>
+                            <h:outputText value="#{advisorappointment.firstname}">
+                            </h:outputText>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">Last Name</f:facet>
+                            <h:outputText value="#{advisorappointment.lastname}">
+                            </h:outputText>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">Major</f:facet>
+                            <h:outputText value="#{advisorappointment.majorid}">
+                            </h:outputText>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">Status</f:facet>
+                            <h:outputText value="#{advisorappointment.bookingStatusDescription}">
+                            </h:outputText>
+                        </h:column>
+                        <h:column class="collapsing">
+                            <f:facet name="header">Action</f:facet>
+                            <h:commandButton value="Cancel Appointment" class="ui negative button" id="cancelappointment" rendered="#{advisorappointment.bookingStatus eq 1}" action="#{advisorBean.cancelBookingByAdvisor(advisorappointment)}">
+                            </h:commandButton>
+                        </h:column>
+
+                    </h:dataTable>
+                    <h:panelGroup rendered="#{empty advisorBean.advisorAppointmentsView}" class="ui center aligned middle aligned grid">
+                        <div class="ui visible green info message">
+                            <div class="content"> You have no appointments today </div>
+                        </div>
+
+                    </h:panelGroup>
+                </div>
+            </h:form>
+        </div>
+
+
+
     </ui:define>
 
     <ui:define name="footerscripts">

@@ -9,6 +9,7 @@ import edu.uco.gsingh1.businesslayer.AdvisorDAOImpl;
 import edu.uco.gsingh1.businesslayer.DateUtil;
 import edu.uco.gsingh1.businesslayer.Utility;
 import edu.uco.gsingh1.entity.AdvisorSchedule;
+import edu.uco.gsingh1.entity.AdvisorScheduleView;
 import edu.uco.gsingh1.entity.Breaks;
 import java.io.Serializable;
 import java.sql.SQLException;
@@ -61,6 +62,15 @@ public class PublishDates implements Serializable {
     private Boolean saturday;
     private Boolean sunday;
     private ArrayList<AdvisorSchedule> advisorSchedules;
+    private ArrayList<AdvisorScheduleView> advisorScheduleView;
+
+    public ArrayList<AdvisorScheduleView> getAdvisorScheduleView() {
+        return advisorScheduleView;
+    }
+
+    public void setAdvisorScheduleView(ArrayList<AdvisorScheduleView> advisorScheduleView) {
+        this.advisorScheduleView = advisorScheduleView;
+    }
     private AdvisorSchedule advisorSchedule;
     private ArrayList<Breaks> breaks1;
     private int breakday;
@@ -89,9 +99,9 @@ public class PublishDates implements Serializable {
     public void setBreakToTime(String breakToTime) {
         this.breakToTime = breakToTime;
     }
-    
+
     private String breakFromTime;
-    
+
     private String breakToTime;
 
     public ArrayList<Breaks> getBreaks1() {
@@ -128,13 +138,24 @@ public class PublishDates implements Serializable {
 
     @PostConstruct
     public void init() {
-        setMonday(false);
-        setTuesday(false);
-        setWednesday(false);
-        setThursday(false);
-        setFriday(false);
-        setSaturday(false);
-        setSunday(false);
+        AdvisorDAO advisorDAO = new AdvisorDAOImpl();
+        int advisorId = loginBean.getAdvisorId();
+
+        try {
+            advisorScheduleView = advisorDAO.getAdvisorScheduleView(advisorId, ds);
+        } catch (SQLException ex) {
+            Logger.getLogger(PublishDates.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        if (advisorScheduleView.isEmpty()) {
+            setMonday(false);
+            setTuesday(false);
+            setWednesday(false);
+            setThursday(false);
+            setFriday(false);
+            setSaturday(false);
+            setSunday(false);
+        }
+
         breaks = new Breaks();
         breaks1 = new ArrayList<>();
         bindBreakGrid();
@@ -344,7 +365,8 @@ public class PublishDates implements Serializable {
         if (monday) {
             advisorSchedule = new AdvisorSchedule();
             advisorSchedule.setDuration(getDuration());
-            advisorSchedule.setAdvisorId(loginBean.getUser().userid);
+            advisorSchedule.setAdvisorId(loginBean.getAdvisorId());
+            advisorSchedule.setUserId(loginBean.getUser().userid);
             advisorSchedule.setAvailDay(2);
             advisorSchedule.setAvailFromDate(Utility.getDate(getFromDate()));
             advisorSchedule.setAvailToDate(Utility.getDate(getToDate()));
@@ -355,7 +377,8 @@ public class PublishDates implements Serializable {
         if (tuesday) {
             advisorSchedule = new AdvisorSchedule();
             advisorSchedule.setDuration(getDuration());
-            advisorSchedule.setAdvisorId(loginBean.getUser().userid);
+            advisorSchedule.setUserId(loginBean.getUser().userid);
+            advisorSchedule.setAdvisorId(loginBean.getAdvisorId());
             advisorSchedule.setAvailDay(3);
             advisorSchedule.setAvailFromTime(Utility.getTime(getTuesdayFromTime()));
             advisorSchedule.setAvailToTime(Utility.getTime(getTuesdayToTime()));
@@ -366,7 +389,8 @@ public class PublishDates implements Serializable {
         if (wednesday) {
             advisorSchedule = new AdvisorSchedule();
             advisorSchedule.setDuration(getDuration());
-            advisorSchedule.setAdvisorId(loginBean.getUser().userid);
+            advisorSchedule.setAdvisorId(loginBean.getAdvisorId());
+            advisorSchedule.setUserId(loginBean.getUser().userid);
             advisorSchedule.setAvailDay(4);
             advisorSchedule.setAvailFromTime(Utility.getTime(getWednesdayFromTime()));
             advisorSchedule.setAvailToTime(Utility.getTime(getWednesdayToTime()));
@@ -377,7 +401,8 @@ public class PublishDates implements Serializable {
         if (thursday) {
             advisorSchedule = new AdvisorSchedule();
             advisorSchedule.setDuration(getDuration());
-            advisorSchedule.setAdvisorId(loginBean.getUser().userid);
+            advisorSchedule.setUserId(loginBean.getUser().userid);
+            advisorSchedule.setAdvisorId(loginBean.getAdvisorId());
             advisorSchedule.setAvailDay(5);
             advisorSchedule.setAvailFromTime(Utility.getTime(getThursdayFromTime()));
             advisorSchedule.setAvailToTime(Utility.getTime(getThursdayToTime()));
@@ -388,7 +413,8 @@ public class PublishDates implements Serializable {
         if (friday) {
             advisorSchedule = new AdvisorSchedule();
             advisorSchedule.setDuration(getDuration());
-            advisorSchedule.setAdvisorId(loginBean.getUser().userid);
+            advisorSchedule.setAdvisorId(loginBean.getAdvisorId());
+            advisorSchedule.setUserId(loginBean.getUser().userid);
             advisorSchedule.setAvailDay(6);
             advisorSchedule.setAvailFromTime(Utility.getTime(getFridayFromTime()));
             advisorSchedule.setAvailToTime(Utility.getTime(getFridayToTime()));
@@ -399,7 +425,8 @@ public class PublishDates implements Serializable {
         if (saturday) {
             advisorSchedule = new AdvisorSchedule();
             advisorSchedule.setDuration(getDuration());
-            advisorSchedule.setAdvisorId(loginBean.getUser().userid);
+            advisorSchedule.setAdvisorId(loginBean.getAdvisorId());
+            advisorSchedule.setUserId(loginBean.getUser().userid);
             advisorSchedule.setAvailDay(7);
             advisorSchedule.setAvailFromTime(Utility.getTime(getSaturdayFromTime()));
             advisorSchedule.setAvailToTime(Utility.getTime(getSaturdayToTime()));
@@ -410,7 +437,8 @@ public class PublishDates implements Serializable {
         if (sunday) {
             advisorSchedule = new AdvisorSchedule();
             advisorSchedule.setDuration(getDuration());
-            advisorSchedule.setAdvisorId(loginBean.getUser().userid);
+            advisorSchedule.setAdvisorId(loginBean.getAdvisorId());
+            advisorSchedule.setUserId(loginBean.getUser().userid);
             advisorSchedule.setAvailDay(1);
             advisorSchedule.setAvailFromTime(Utility.getTime(getSundayFromTime()));
             advisorSchedule.setAvailToTime(Utility.getTime(getSundayToTime()));
@@ -432,7 +460,7 @@ public class PublishDates implements Serializable {
 
     public void saveBreak() {
         Boolean result = false;
-        breaks.setAdvisorId(loginBean.getUser().userid);
+        breaks.setAdvisorId(loginBean.getAdvisorId());
         breaks.setBreakday(getBreakday());
         breaks.setBreakFromTime(Utility.getTime(getBreakFromTime()));
         breaks.setBreakToTime(Utility.getTime(getBreakToTime()));
@@ -467,7 +495,7 @@ public class PublishDates implements Serializable {
     private void bindBreakGrid() {
         AdvisorDAO advisorDAO = new AdvisorDAOImpl();
         try {
-            breaks1 = advisorDAO.getBreaks(loginBean.getUser().userid, ds);
+            breaks1 = advisorDAO.getBreaks(loginBean.getAdvisorId(), ds);
         } catch (SQLException ex) {
             Logger.getLogger(PublishDates.class.getName()).log(Level.SEVERE, null, ex);
         }

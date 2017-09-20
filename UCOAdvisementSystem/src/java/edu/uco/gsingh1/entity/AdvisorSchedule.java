@@ -18,6 +18,15 @@ public class AdvisorSchedule {
     private int advisorId;
     private Integer availDay;
     private DateTime availFromDate;
+    private int userId;
+
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
 
     public DateTime getAvailFromDate() {
         return availFromDate;

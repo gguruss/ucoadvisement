@@ -37,7 +37,29 @@
             <a class="item" data-tab="second">Breaks</a>
         </div>
         <div class="ui bottom attached active tab segment" data-tab="first">
-            <h:form id="publishdateform">
+            <h:form>
+                <h:dataTable value="#{publishDates.advisorScheduleView}" rendered="#{not empty publishDates.advisorScheduleView}" id="advisorScheduleView" var="advisorScheduleView" class="ui olive center aligned celled collapsing table">
+                    <h:column>
+                        <f:facet name="header">Day</f:facet>
+                        <h:outputText value="#{advisorScheduleView.dayName}"/>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">From</f:facet>
+                        <h:outputText value="#{advisorScheduleView.outputStartTime}"/>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">To</f:facet>
+                        <h:outputText value="#{advisorScheduleView.outputEndTime}" />
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">Duration</f:facet>
+                        <h:outputText value="#{advisorScheduleView.duration}">
+                        </h:outputText>
+                    </h:column>
+                </h:dataTable>
+            </h:form>
+            
+            <h:form id="publishdateform" rendered="#{empty publishDates.advisorScheduleView}">
                 <div class="ui form" id="workdaysform">
                     <div class="ui visible info message">
                         <div class="content">This field is for specifying the work hours in a day. To add breaks in between the work timing, please click the breaks tab.</div>
@@ -376,7 +398,7 @@
                     <h:messages id="messages" globalOnly="true" layout="table" />   
                 </h:form>
                 <div class="ui text loader" style="display:none;" id="ajaxloader">Loading</div>
-                
+
             </div>
         </div>
 

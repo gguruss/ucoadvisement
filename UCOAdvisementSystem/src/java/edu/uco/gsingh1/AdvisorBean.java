@@ -20,7 +20,9 @@ import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.inject.Named;
 import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
 import javax.sql.DataSource;
+import org.joda.time.LocalDate;
 
 /**
  *
@@ -34,6 +36,26 @@ public class AdvisorBean implements Serializable {
      * Creates a new instance of AdvisorBean
      */
     public AdvisorBean() {
+    }
+    int advisorId;
+
+    public int getAdvisorId() {
+        return advisorId;
+    }
+
+    public void setAdvisorId(int advisorId) {
+        this.advisorId = advisorId;
+    }
+
+    @Inject
+    private LoginBean loginBean;
+
+    public LoginBean getLoginBean() {
+        return loginBean;
+    }
+
+    public void setLoginBean(LoginBean loginBean) {
+        this.loginBean = loginBean;
     }
 
     @Resource(name = "jdbc/ds_wsp")
@@ -61,12 +83,14 @@ public class AdvisorBean implements Serializable {
     @PostConstruct
     public void init() {
         advisorAppointmentsView = new ArrayList<>();
+        setAdvisorId(loginBean.getAdvisorId());
         AdvisorDAO advisorDAO = new AdvisorDAOImpl();
         if (advisorSelectedDate == null) {
-            setAdvisorSelectedDate("");
+            LocalDate localDate = new LocalDate();
+            setAdvisorSelectedDate(localDate.toString());
         }
         try {
-            advisorAppointmentsView = advisorDAO.getAppointments(advisorSelectedDate, ds);
+            advisorAppointmentsView = advisorDAO.getAppointments(advisorSelectedDate, advisorId, ds);
         } catch (SQLException ex) {
             Logger.getLogger(AdvisorBean.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -90,13 +114,12 @@ public class AdvisorBean implements Serializable {
         if (advisorSelectedDate != null) {
             AdvisorDAO advisorDAO = new AdvisorDAOImpl();
             try {
-                advisorAppointmentsView = advisorDAO.getAppointments(advisorSelectedDate, ds);
+                advisorAppointmentsView = advisorDAO.getAppointments(advisorSelectedDate, advisorId, ds);
             } catch (SQLException ex) {
                 Logger.getLogger(AdvisorBean.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
 
     }
-    
-    
+
 }
